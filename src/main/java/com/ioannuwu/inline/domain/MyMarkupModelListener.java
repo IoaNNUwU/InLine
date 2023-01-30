@@ -9,8 +9,10 @@ import com.ioannuwu.inline.domain.render.RenderData;
 import com.ioannuwu.inline.domain.render.RenderDataProvider;
 import com.ioannuwu.inline.ui.render.MyElementRenderer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class MyMarkupModelListener implements MarkupModelListener {
 
@@ -31,42 +33,76 @@ public class MyMarkupModelListener implements MarkupModelListener {
             return;
         }
         RenderData data = renderDataProvider.provide(wrapper);
-        Inlay<MyElementRenderer> inlay = editor.getEditor().getInlayModel().addAfterLineEndElement(
-                highlighter.getStartOffset(), false,
-                new MyElementRenderer(data, renderDataProvider.getBorder(), renderDataProvider.getNumberOfWhitespaces()));
 
-        RangeHighlighter lineHighlighter = editor.getEditor().getMarkupModel().addLineHighlighter(highlighter.getDocument()
-                .getLineNumber(highlighter.getStartOffset()), 0, new MyTextAttributes(data.backgroundColor));
+        Inlay<MyElementRenderer> textAndEffectInlay = null;
+        RangeHighlighter lineHighlighter = null;
 
-        map.put(highlighter, new MyRenderElements(inlay, lineHighlighter));
+        final boolean backgroundNeeded = data.backgroundColor != null;
+        final boolean textNeeded = data.textColor != null;
+        final boolean effectNeeded = data.effectColor != null;
+
+        if (!backgroundNeeded && !textNeeded && !effectNeeded) {
+            map.put(highlighter, MyRenderElements.EMPTY);
+            return;
+        }
+        if (backgroundNeeded) {
+            lineHighlighter = editor.getEditor().getMarkupModel().addLineHighlighter(highlighter.getDocument()
+                    .getLineNumber(highlighter.getStartOffset()), 0, new MyTextAttributes(data.backgroundColor));
+        }
+        if (textNeeded || effectNeeded) {
+            textAndEffectInlay = editor.getEditor().getInlayModel().addAfterLineEndElement(
+                    highlighter.getStartOffset(), false,
+                    new MyElementRenderer(data, renderDataProvider.getBorder(), renderDataProvider.getNumberOfWhitespaces()));
+        }
+        map.put(highlighter, new MyRenderElements(textAndEffectInlay, lineHighlighter));
+    }
+
+    @Override
+    public void attributesChanged(@NotNull RangeHighlighterEx highlighter, boolean renderersChanged, boolean fontStyleOrColorChanged) {
+        beforeRemoved(highlighter);
+        afterAdded(highlighter);
     }
 
     @Override
     public void beforeRemoved(@NotNull RangeHighlighterEx highlighter) {
         if (!map.containsKey(highlighter)) return;
-
         MyRenderElements elements = map.get(highlighter);
+        if (elements == MyRenderElements.EMPTY) {
+            map.remove(highlighter);
+            return;
+        }
 
-        elements.inlay.dispose();
-        elements.lineHighlighter.dispose();
+        Inlay<MyElementRenderer> inlay = elements.inlay;
+        if (inlay != null) inlay.dispose();
+
+        RangeHighlighter lineHighlighter = elements.lineHighlighter;
+        if (lineHighlighter != null) lineHighlighter.dispose();
 
         map.remove(highlighter);
     }
 
-    @Override
-    public void attributesChanged(@NotNull RangeHighlighterEx highlighter, boolean renderersChanged, boolean fontStyleOrColorChanged) {
-        if (!map.containsKey(highlighter)) return;
-        MyRenderElements elements = map.get(highlighter);
-        elements.inlay.update();
-    }
-
     private static class MyRenderElements {
-        private final Inlay<MyElementRenderer> inlay;
-        private final RangeHighlighter lineHighlighter;
+        public final @Nullable Inlay<MyElementRenderer> inlay;
+        public final @Nullable RangeHighlighter lineHighlighter;
 
-        public MyRenderElements(Inlay<MyElementRenderer> inlay, RangeHighlighter lineHighlighter) {
+        public MyRenderElements(@Nullable Inlay<MyElementRenderer> inlay, @Nullable RangeHighlighter lineHighlighter) {
             this.inlay = inlay;
             this.lineHighlighter = lineHighlighter;
+        }
+
+        private static final @NotNull MyRenderElements EMPTY = new MyRenderElements(null, null);
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            MyRenderElements that = (MyRenderElements) o;
+            return Objects.equals(inlay, that.inlay) && Objects.equals(lineHighlighter, that.lineHighlighter);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(inlay, lineHighlighter);
         }
     }
 }
