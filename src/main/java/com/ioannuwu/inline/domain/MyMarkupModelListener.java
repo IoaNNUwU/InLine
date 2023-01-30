@@ -17,7 +17,7 @@ public class MyMarkupModelListener implements MarkupModelListener {
     private final TextEditor editor;
     private final RenderDataProvider renderDataProvider;
 
-    private final HashMap<RangeHighlighter, Inlay<MyElementRenderer>> map = new HashMap<>(20);
+    private final HashMap<RangeHighlighter, Inlay<MyElementRenderer>> rangeHighlighterInlayHashMap = new HashMap<>(20);
     private final HashMap<RangeHighlighter, RangeHighlighter> lineHighlightersMap = new HashMap<>(20);
 
     public MyMarkupModelListener(TextEditor editor, RenderDataProvider renderDataProvider) {
@@ -36,7 +36,7 @@ public class MyMarkupModelListener implements MarkupModelListener {
                 highlighter.getStartOffset(), false,
                 new MyElementRenderer(data, renderDataProvider.getBorder(), renderDataProvider.getNumberOfWhitespaces()));
 
-        map.put(highlighter, inlay);
+        rangeHighlighterInlayHashMap.put(highlighter, inlay);
         RangeHighlighter lineHighlighter = editor.getEditor().getMarkupModel().addLineHighlighter(highlighter.getDocument()
                 .getLineNumber(highlighter.getStartOffset()), 0, new MyTextAttributes(data.backgroundColor));
         lineHighlightersMap.put(highlighter, lineHighlighter);
@@ -44,10 +44,10 @@ public class MyMarkupModelListener implements MarkupModelListener {
 
     @Override
     public void beforeRemoved(@NotNull RangeHighlighterEx highlighter) {
-        if (!map.containsKey(highlighter)) return;
-        Inlay<MyElementRenderer> inlay = map.get(highlighter);
+        if (!rangeHighlighterInlayHashMap.containsKey(highlighter)) return;
+        Inlay<MyElementRenderer> inlay = rangeHighlighterInlayHashMap.get(highlighter);
         inlay.dispose();
-        map.remove(highlighter);
+        rangeHighlighterInlayHashMap.remove(highlighter);
         RangeHighlighter fromMap = lineHighlightersMap.get(highlighter);
         fromMap.dispose();
         lineHighlightersMap.remove(highlighter);
@@ -55,8 +55,8 @@ public class MyMarkupModelListener implements MarkupModelListener {
 
     @Override
     public void attributesChanged(@NotNull RangeHighlighterEx highlighter, boolean renderersChanged, boolean fontStyleOrColorChanged) {
-        if (!map.containsKey(highlighter)) return;
-        Inlay<MyElementRenderer> inlay = map.get(highlighter);
+        if (!rangeHighlighterInlayHashMap.containsKey(highlighter)) return;
+        Inlay<MyElementRenderer> inlay = rangeHighlighterInlayHashMap.get(highlighter);
         inlay.update();
     }
 }
