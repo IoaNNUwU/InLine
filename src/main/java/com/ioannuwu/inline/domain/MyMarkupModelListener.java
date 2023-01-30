@@ -3,6 +3,7 @@ package com.ioannuwu.inline.domain;
 import com.intellij.openapi.editor.Inlay;
 import com.intellij.openapi.editor.ex.RangeHighlighterEx;
 import com.intellij.openapi.editor.impl.event.MarkupModelListener;
+import com.intellij.openapi.editor.markup.RangeHighlighter;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.ioannuwu.inline.domain.render.RenderData;
 import com.ioannuwu.inline.domain.render.RenderDataProvider;
@@ -16,7 +17,8 @@ public class MyMarkupModelListener implements MarkupModelListener {
     private final TextEditor editor;
     private final RenderDataProvider renderDataProvider;
 
-    private final HashMap<RangeHighlighterEx, Inlay<MyElementRenderer>> map = new HashMap<>(20);
+    private final HashMap<RangeHighlighter, Inlay<MyElementRenderer>> map = new HashMap<>(20);
+    private final HashMap<RangeHighlighter, RangeHighlighter> lineHighlightersMap = new HashMap<>(20);
 
     public MyMarkupModelListener(TextEditor editor, RenderDataProvider renderDataProvider) {
         this.editor = editor;
@@ -35,6 +37,9 @@ public class MyMarkupModelListener implements MarkupModelListener {
                 new MyElementRenderer(data, renderDataProvider.getBorder(), renderDataProvider.getNumberOfWhitespaces()));
 
         map.put(highlighter, inlay);
+        RangeHighlighter lineHighlighter = editor.getEditor().getMarkupModel().addLineHighlighter(highlighter.getDocument()
+                .getLineNumber(highlighter.getStartOffset()), 0, new MyTextAttributes(data.backgroundColor));
+        lineHighlightersMap.put(highlighter, lineHighlighter);
     }
 
     @Override
@@ -43,7 +48,9 @@ public class MyMarkupModelListener implements MarkupModelListener {
         Inlay<MyElementRenderer> inlay = map.get(highlighter);
         inlay.dispose();
         map.remove(highlighter);
-
+        RangeHighlighter fromMap = lineHighlightersMap.get(highlighter);
+        fromMap.dispose();
+        lineHighlightersMap.remove(highlighter);
     }
 
     @Override
