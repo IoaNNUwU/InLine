@@ -30,7 +30,6 @@ public class MyElementRenderer implements EditorCustomElementRenderer {
 
     @Override
     public @Nullable GutterIconRenderer calcGutterIconRenderer(@NotNull Inlay inlay) {
-        System.out.println("Pososi");
         return new MyGutterRenderer(renderData.gutterIcon);
     }
 
