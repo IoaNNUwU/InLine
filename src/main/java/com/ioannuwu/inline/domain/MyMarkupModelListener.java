@@ -52,7 +52,7 @@ public class MyMarkupModelListener implements MarkupModelListener {
         if (textNeeded || effectNeeded) {
             textAndEffectInlay = editor.getEditor().getInlayModel().addAfterLineEndElement(
                     highlighter.getStartOffset(), false,
-                    new MyElementRenderer(data, renderDataProvider.getBorder(), renderDataProvider.getNumberOfWhitespaces()));
+                    new MyElementRenderer(data, renderDataProvider.getNumberOfWhitespaces()));
         }
         map.put(highlighter, new MyRenderElements(textAndEffectInlay, lineHighlighter));
     }

@@ -17,13 +17,11 @@ public class MyElementRenderer implements EditorCustomElementRenderer {
 
     private final RenderData renderData;
 
-    private final int borderMagicNumberToFixBoxBlinking;
     private final int numberOfWhitespaces;
 
     private final EditorFontType fontType = EditorFontType.PLAIN;
 
-    public MyElementRenderer(RenderData renderData, int border, int numberOfWhitespaces) {
-        this.borderMagicNumberToFixBoxBlinking = border;
+    public MyElementRenderer(RenderData renderData, int numberOfWhitespaces) {
         this.renderData = renderData;
         this.numberOfWhitespaces = numberOfWhitespaces;
     }
@@ -44,6 +42,7 @@ public class MyElementRenderer implements EditorCustomElementRenderer {
     @Override
     public void paint(@NotNull Inlay inlay, @NotNull Graphics g, @NotNull Rectangle targetRegion, @NotNull TextAttributes textAttributes) {
         if (renderData.text == null) return;
+        int borderMagicNumberToFixBoxBlinking = 2;
         targetRegion.y = targetRegion.y + borderMagicNumberToFixBoxBlinking;
         targetRegion.x = targetRegion.x + borderMagicNumberToFixBoxBlinking;
         targetRegion.width = targetRegion.width - 2 * borderMagicNumberToFixBoxBlinking;

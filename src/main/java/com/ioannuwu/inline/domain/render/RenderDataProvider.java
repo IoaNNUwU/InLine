@@ -18,8 +18,6 @@ public interface RenderDataProvider {
 
     int getNumberOfWhitespaces();
 
-    int getBorder();
-
     class BySettings implements RenderDataProvider {
 
         private final MySettingsService mySettingsService;
@@ -74,11 +72,6 @@ public interface RenderDataProvider {
         @Override
         public int getNumberOfWhitespaces() {
             return mySettingsService.getState().numberOfWhitespaces;
-        }
-
-        @Override
-        public int getBorder() {
-            return mySettingsService.getState().border;
         }
     }
 }

@@ -1,13 +1,20 @@
 package com.ioannuwu.inline.ui;
 
 import com.intellij.openapi.options.Configurable;
-import com.intellij.openapi.options.ConfigurationException;
+import com.ioannuwu.inline.data.MySettingsService;
+import com.ioannuwu.inline.domain.EditorOpenedListener;
+import com.ioannuwu.inline.domain.MyMarkupModelListener;
+import com.ioannuwu.inline.ui.settingscomponent.SettingsComponentProvider;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
 public class MyConfigurable implements Configurable {
+
+    private final MySettingsService settingsService = MySettingsService.getInstance();
+    private final SettingsComponentProvider settingsComponentProvider =
+            new SettingsComponentProvider.Main(settingsService.getState());
 
     @Override
     public @Nullable @NonNls String getHelpTopic() {
@@ -16,21 +23,22 @@ public class MyConfigurable implements Configurable {
 
     @Override
     public String getDisplayName() {
-        return "IntelliJ Plugin";
+        return "InLine Settings";
     }
 
     @Override
     public @Nullable JComponent createComponent() {
-        return new JPanel();
+        return settingsComponentProvider.createComponent();
     }
 
     @Override
     public boolean isModified() {
-        return false;
+        return !settingsService.getState().equals(settingsComponentProvider.getState());
     }
 
     @Override
-    public void apply() throws ConfigurationException {
-
+    public void apply() {
+        settingsService.loadState(settingsComponentProvider.getState());
+        EditorOpenedListener.updateActiveListeners();
     }
 }
