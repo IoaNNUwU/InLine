@@ -1,4 +1,6 @@
-package com.ioannuwu.inline.domain;
+package com.ioannuwu.inline.domain.utils;
+
+import com.ioannuwu.inline.domain.RangeHighlighterWrapper;
 
 import java.util.Arrays;
 

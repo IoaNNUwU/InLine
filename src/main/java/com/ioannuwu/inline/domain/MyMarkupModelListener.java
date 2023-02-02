@@ -7,6 +7,8 @@ import com.intellij.openapi.editor.markup.RangeHighlighter;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.ioannuwu.inline.domain.render.RenderData;
 import com.ioannuwu.inline.domain.render.RenderDataProvider;
+import com.ioannuwu.inline.domain.utils.MyTextAttributes;
+import com.ioannuwu.inline.domain.utils.RangeHighlighterWrapperException;
 import com.ioannuwu.inline.ui.render.MyElementRenderer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

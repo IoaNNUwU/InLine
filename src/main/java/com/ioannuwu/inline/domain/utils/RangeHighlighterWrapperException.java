@@ -1,4 +1,4 @@
-package com.ioannuwu.inline.domain;
+package com.ioannuwu.inline.domain.utils;
 
 public class RangeHighlighterWrapperException extends IllegalArgumentException {
 

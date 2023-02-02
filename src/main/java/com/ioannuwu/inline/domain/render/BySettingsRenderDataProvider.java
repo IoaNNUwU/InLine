@@ -2,12 +2,11 @@ package com.ioannuwu.inline.domain.render;
 
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.ioannuwu.inline.data.*;
-import com.ioannuwu.inline.domain.Filter;
+import com.ioannuwu.inline.domain.utils.Filter;
 import com.ioannuwu.inline.domain.RangeHighlighterWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class BySettingsRenderDataProvider implements RenderDataProvider, SetSettingsSource {
 
