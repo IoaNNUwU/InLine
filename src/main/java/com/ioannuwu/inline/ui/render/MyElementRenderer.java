@@ -53,9 +53,11 @@ public class MyElementRenderer implements EditorCustomElementRenderer {
 
         targetRegion.x = targetRegion.x + renderData.numberOfWhitespaces * charWidth;
 
-        g.setFont(font);
-        g.setColor(renderData.textColor);
-        g.drawString(renderData.description, targetRegion.x + charWidth * 2 / 3, targetRegion.y + editor.getLineHeight() * 3 / 4 - borderMagicNumberToFixBoxBlinking);
+        if (renderData.showText) {
+            g.setFont(font);
+            g.setColor(renderData.textColor);
+            g.drawString(renderData.description, targetRegion.x + charWidth * 2 / 3, targetRegion.y + editor.getLineHeight() * 3 / 4 - borderMagicNumberToFixBoxBlinking);
+        }
 
         if (renderData.showEffect) {
             switch (renderData.effectType) {

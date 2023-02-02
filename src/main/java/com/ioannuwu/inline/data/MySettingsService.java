@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 @State(
   name = "com.ioannuwu.intellijerrors.data.SettingsState",
-  storages = @Storage("com.ioannuwu.intellijerrors.data.SettingsState.xml")
+  storages = @Storage("com.ioannuwu.intellijerrors.data.Settings.xml")
 )
 public class MySettingsService implements PersistentStateComponent<SettingsState> {
 
@@ -25,9 +25,7 @@ public class MySettingsService implements PersistentStateComponent<SettingsState
         XmlSerializerUtil.copyBean(state, settingsState);
     }
 
-    private static final MySettingsService instance = ApplicationManager.getApplication().getService(MySettingsService.class);
-
     public static MySettingsService getInstance() {
-        return instance;
+        return ApplicationManager.getApplication().getService(MySettingsService.class);
     }
 }

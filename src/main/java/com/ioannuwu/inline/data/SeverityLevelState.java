@@ -1,5 +1,9 @@
 package com.ioannuwu.inline.data;
 
+import com.intellij.util.xmlb.annotations.Attribute;
+import com.intellij.util.xmlb.annotations.OptionTag;
+import org.apache.xmlgraphics.java2d.color.DefaultColorConverter;
+
 import java.awt.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -38,9 +42,11 @@ public class SeverityLevelState implements Serializable {
     public boolean showText = true;
     public boolean showBackground = true;
     public boolean showEffect = true;
-
+    @Attribute(converter = MyColorConverter.class)
     public Color textColor = Color.RED;
+    @Attribute(converter = MyColorConverter.class)
     public Color backgroundColor = Color.GREEN;
+    @Attribute(converter = MyColorConverter.class)
     public Color effectColor = Color.ORANGE;
 
     @Override
