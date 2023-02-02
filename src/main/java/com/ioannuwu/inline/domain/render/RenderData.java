@@ -1,37 +1,50 @@
 package com.ioannuwu.inline.domain.render;
 
-import org.jetbrains.annotations.Nullable;
+import com.ioannuwu.inline.data.EffectType;
+import com.ioannuwu.inline.data.SettingsState;
+import com.ioannuwu.inline.data.SeverityLevelState;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class RenderData {
+public class RenderData extends SeverityLevelState {
 
-    public final @Nullable String text;
-    public final @Nullable Color textColor;
-    public final @Nullable Color effectColor;
-    public final @Nullable Color backgroundColor;
-    public final @Nullable Icon gutterIcon;
+    public final int numberOfWhitespaces;
+    public final EffectType effectType;
+    public final String description;
+    public final Icon icon;
 
-    public RenderData(@Nullable String text, @Nullable Color textColor, @Nullable Color effectColor,
-                      @Nullable Color backgroundColor, @Nullable Icon gutterIcon) {
-        this.text = text;
+    public RenderData(SeverityLevelState severityLevelState, SettingsState settingsState, String description, Icon icon) {
+        super(severityLevelState);
+        this.numberOfWhitespaces = settingsState.numberOfWhitespaces;
+        this.effectType = settingsState.effectType;
+        this.description = description;
+        this.icon = icon;
+    }
+
+    public RenderData(SeverityLevelState severityLevelState, int numberOfWhitespaces, EffectType effectType, String description, Icon icon) {
+        super(severityLevelState);
+        this.numberOfWhitespaces = numberOfWhitespaces;
+        this.effectType = effectType;
+        this.description = description;
+        this.icon = icon;
+    }
+
+    public RenderData(boolean showGutterIcon, boolean showText, boolean showBackground, boolean showEffect,
+                      Color textColor, Color backgroundColor, Color effectColor, int numberOfWhitespaces,
+                      EffectType effectType, String description, Icon icon) {
+        this.showGutterIcon = showGutterIcon;
+        this.showText = showText;
+        this.showBackground = showBackground;
+        this.showEffect = showEffect;
         this.textColor = textColor;
-        this.effectColor = effectColor;
         this.backgroundColor = backgroundColor;
-        this.gutterIcon = gutterIcon;
+        this.effectColor = effectColor;
+        this.numberOfWhitespaces = numberOfWhitespaces;
+        this.effectType = effectType;
+        this.description = description;
+        this.icon = icon;
     }
 
-    public static RenderData EMPTY = new RenderData(null, null, null, null, null);
-
-    @Override
-    public String toString() {
-        return "RenderData{" +
-                "text='" + text + '\'' +
-                ", textColor=" + textColor +
-                ", effectColor=" + effectColor +
-                ", backgroundColor=" + backgroundColor +
-                ", gutterIcon=" + gutterIcon +
-                '}';
-    }
+    public static final RenderData EMPTY = new RenderData(false, false, false, false, Color.RED, Color.GREEN, Color.BLUE, 0, EffectType.NONE, "", null);
 }

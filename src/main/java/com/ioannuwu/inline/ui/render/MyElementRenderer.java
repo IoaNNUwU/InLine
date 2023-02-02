@@ -17,31 +17,27 @@ public class MyElementRenderer implements EditorCustomElementRenderer {
 
     private final RenderData renderData;
 
-    private final int numberOfWhitespaces;
-
     private final EditorFontType fontType = EditorFontType.PLAIN;
 
-    public MyElementRenderer(RenderData renderData, int numberOfWhitespaces) {
+    public MyElementRenderer(RenderData renderData) {
         this.renderData = renderData;
-        this.numberOfWhitespaces = numberOfWhitespaces;
     }
 
     @Override
     public @Nullable GutterIconRenderer calcGutterIconRenderer(@NotNull Inlay inlay) {
-        return new MyGutterRenderer(renderData.gutterIcon);
+        return new MyGutterRenderer(renderData.icon);
     }
 
     @Override
     public int calcWidthInPixels(@NotNull Inlay inlay) {
-        if (renderData.text == null) return 1;
         Editor editor = inlay.getEditor();
         FontMetrics fontMetrics = UIUtilities.getFontMetrics(editor.getComponent(), editor.getColorsScheme().getFont(fontType));
-        return fontMetrics.stringWidth(renderData.text) + fontMetrics.charWidth(' ') * 3 / 2;
+        if (!renderData.showText) return fontMetrics.stringWidth("     ");
+        return fontMetrics.stringWidth(renderData.description) + fontMetrics.charWidth(' ') * 3 / 2;
     }
 
     @Override
     public void paint(@NotNull Inlay inlay, @NotNull Graphics g, @NotNull Rectangle targetRegion, @NotNull TextAttributes textAttributes) {
-        if (renderData.text == null) return;
         int borderMagicNumberToFixBoxBlinking = 2;
         targetRegion.y = targetRegion.y + borderMagicNumberToFixBoxBlinking;
         targetRegion.x = targetRegion.x + borderMagicNumberToFixBoxBlinking;
@@ -55,13 +51,20 @@ public class MyElementRenderer implements EditorCustomElementRenderer {
         int arc = fontMetrics.getHeight() * 4 / 10;
         int charWidth = fontMetrics.charWidth('a');
 
-        targetRegion.x = targetRegion.x + this.numberOfWhitespaces * charWidth;
-
-        g.setColor(renderData.effectColor);
-        g.drawRoundRect(targetRegion.x, targetRegion.y, targetRegion.width, targetRegion.height, arc, arc);
+        targetRegion.x = targetRegion.x + renderData.numberOfWhitespaces * charWidth;
 
         g.setFont(font);
         g.setColor(renderData.textColor);
-        g.drawString(renderData.text, targetRegion.x + charWidth * 2 / 3, targetRegion.y + editor.getLineHeight() * 3 / 4 - borderMagicNumberToFixBoxBlinking);
+        g.drawString(renderData.description, targetRegion.x + charWidth * 2 / 3, targetRegion.y + editor.getLineHeight() * 3 / 4 - borderMagicNumberToFixBoxBlinking);
+
+        if (renderData.showEffect) {
+            switch (renderData.effectType) {
+                case BOX:
+                    g.setColor(renderData.effectColor);
+                    g.drawRoundRect(targetRegion.x, targetRegion.y, targetRegion.width, targetRegion.height, arc, arc);
+                    break;
+                case NONE:
+            }
+        }
     }
 }

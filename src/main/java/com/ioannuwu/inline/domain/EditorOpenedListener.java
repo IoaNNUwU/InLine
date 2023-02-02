@@ -12,14 +12,14 @@ import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.ioannuwu.inline.data.MySettingsService;
+import com.ioannuwu.inline.domain.render.BySettingsRenderDataProvider;
 import com.ioannuwu.inline.domain.render.RenderDataProvider;
+import com.ioannuwu.inline.domain.render.SetSettingsSource;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 public class EditorOpenedListener implements FileEditorManagerListener {
-
-    private final RenderDataProvider renderDataProvider = new RenderDataProvider.BySettings(MySettingsService.getInstance());
 
     @Override
     public void fileOpenedSync(@NotNull FileEditorManager source, @NotNull VirtualFile file,
@@ -43,7 +43,10 @@ public class EditorOpenedListener implements FileEditorManagerListener {
 
     private static final ArrayList<Pair<TextEditor, MarkupModelListener>> list = new ArrayList<>();
 
+    private static final BySettingsRenderDataProvider renderDataProvider = new BySettingsRenderDataProvider(MySettingsService.getInstance());
+
     public static void updateActiveListeners() {
+        renderDataProvider.setSettingsSource(MySettingsService.getInstance());
         for (Pair<TextEditor, MarkupModelListener> pair : list) {
             Editor editor = pair.first.getEditor();
             Document document = editor.getDocument();

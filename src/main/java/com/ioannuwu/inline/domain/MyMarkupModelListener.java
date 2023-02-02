@@ -28,31 +28,28 @@ public class MyMarkupModelListener implements MarkupModelListener {
 
     @Override
     public void afterAdded(@NotNull RangeHighlighterEx highlighter) {
-        RangeHighlighterWrapper wrapper = RangeHighlighterWrapper.tryFrom(highlighter);
-        if (wrapper == null) {
-            return;
-        }
-        RenderData data = renderDataProvider.provide(wrapper);
+        RangeHighlighterWrapper wrapper;
+        try {
+            wrapper = new RangeHighlighterWrapper.WithDescription(highlighter);
+        } catch (RangeHighlighterWrapperException ignored) { return; }
+
+        RenderData renderData = renderDataProvider.provide(wrapper);
 
         Inlay<MyElementRenderer> textAndEffectInlay = null;
         RangeHighlighter lineHighlighter = null;
 
-        final boolean backgroundNeeded = data.backgroundColor != null;
-        final boolean textNeeded = data.textColor != null;
-        final boolean effectNeeded = data.effectColor != null;
-
-        if (!backgroundNeeded && !textNeeded && !effectNeeded) {
+        if (!renderData.showBackground && !renderData.showText && !renderData.showEffect) {
             map.put(highlighter, MyRenderElements.EMPTY);
             return;
         }
-        if (backgroundNeeded) {
+        if (renderData.showBackground) {
             lineHighlighter = editor.getEditor().getMarkupModel().addLineHighlighter(highlighter.getDocument()
-                    .getLineNumber(highlighter.getStartOffset()), 0, new MyTextAttributes(data.backgroundColor));
+                    .getLineNumber(highlighter.getStartOffset()), 0, new MyTextAttributes(renderData.backgroundColor));
         }
-        if (textNeeded || effectNeeded) {
+        if (renderData.showText || renderData.showEffect) {
             textAndEffectInlay = editor.getEditor().getInlayModel().addAfterLineEndElement(
                     highlighter.getStartOffset(), false,
-                    new MyElementRenderer(data, renderDataProvider.getNumberOfWhitespaces()));
+                    new MyElementRenderer(renderData));
         }
         map.put(highlighter, new MyRenderElements(textAndEffectInlay, lineHighlighter));
     }

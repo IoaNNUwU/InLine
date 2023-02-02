@@ -4,7 +4,6 @@ import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.editor.markup.RangeHighlighter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public interface RangeHighlighterWrapper {
 
@@ -12,18 +11,7 @@ public interface RangeHighlighterWrapper {
 
     @NotNull HighlightSeverity getSeverity();
 
-    static @Nullable RangeHighlighterWrapper tryFrom(@NotNull RangeHighlighter rangeHighlighter) {
-        if (rangeHighlighter.getErrorStripeTooltip() == null) return null;
-        if (!(rangeHighlighter.getErrorStripeTooltip() instanceof HighlightInfo)) return null;
-
-        HighlightInfo highlightInfo = (HighlightInfo) rangeHighlighter.getErrorStripeTooltip();
-
-        if (highlightInfo.getDescription() == null || highlightInfo.getDescription().isEmpty()) return null;
-
-        return new Impl(rangeHighlighter);
-    }
-
-    class Impl implements RangeHighlighterWrapper {
+    class WithDescription implements RangeHighlighterWrapper {
 
         private final @NotNull RangeHighlighter rangeHighlighter;
 
@@ -31,7 +19,19 @@ public interface RangeHighlighterWrapper {
 
         private final @NotNull HighlightSeverity severity;
 
-        private Impl(@NotNull RangeHighlighter rangeHighlighter) {
+        public WithDescription(@NotNull RangeHighlighter rangeHighlighter) throws RangeHighlighterWrapperException {
+
+            if (rangeHighlighter.getErrorStripeTooltip() == null)
+                throw new RangeHighlighterWrapperException("Error stripe tooltip is null");
+
+            if (!(rangeHighlighter.getErrorStripeTooltip() instanceof HighlightInfo))
+                throw new RangeHighlighterWrapperException("Error stripe tooltip !is HighlightInfo");
+
+            HighlightInfo highlightInfo = (HighlightInfo) rangeHighlighter.getErrorStripeTooltip();
+
+            if (highlightInfo.getDescription() == null || highlightInfo.getDescription().isEmpty())
+                throw new RangeHighlighterWrapperException("Description is null or empty");
+
             this.rangeHighlighter = rangeHighlighter;
             this.severity = ((HighlightInfo) rangeHighlighter.getErrorStripeTooltip()).getSeverity();
             this.description = ((HighlightInfo) rangeHighlighter.getErrorStripeTooltip()).getDescription();

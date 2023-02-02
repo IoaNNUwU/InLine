@@ -1,7 +1,5 @@
 package com.ioannuwu.inline.data;
 
-import com.intellij.ui.JBColor;
-
 import java.awt.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -23,6 +21,16 @@ public class SeverityLevelState implements Serializable {
 
     public SeverityLevelState(Color textColor, Color backgroundColor, Color effectColor) {
         this(true, true, true, true, textColor, backgroundColor, effectColor);
+    }
+
+    public SeverityLevelState(SeverityLevelState other) {
+        this.showGutterIcon = other.showGutterIcon;
+        this.showText = other.showText;
+        this.showBackground = other.showBackground;
+        this.showEffect = other.showEffect;
+        this.textColor = other.textColor;
+        this.backgroundColor = other.backgroundColor;
+        this.effectColor = other.effectColor;
     }
 
     public boolean showGutterIcon = true;

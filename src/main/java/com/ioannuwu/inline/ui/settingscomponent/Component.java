@@ -10,12 +10,8 @@ import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
 import com.ioannuwu.inline.data.EffectType;
 import com.ioannuwu.inline.data.SeverityLevelState;
-import com.sun.xml.fastinfoset.util.StringArray;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public interface Component {
 
@@ -128,10 +124,7 @@ public interface Component {
         }
 
         @Override
-        public EffectType getState() {
-            System.out.println("INDEX : " + effectTypeComboBox.getSelectedIndex());
-            System.out.println("EFFECT: " + EffectType.valueOf(values[effectTypeComboBox.getSelectedIndex()]).name());
-            int index = effectTypeComboBox.getSelectedIndex();
+        public EffectType getState() {int index = effectTypeComboBox.getSelectedIndex();
             return EffectType.valueOf(values[index]);
         }
 
