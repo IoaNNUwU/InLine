@@ -3,7 +3,6 @@ package com.ioannuwu.inline.ui;
 import com.intellij.openapi.options.Configurable;
 import com.ioannuwu.inline.data.MySettingsService;
 import com.ioannuwu.inline.domain.EditorOpenedListener;
-import com.ioannuwu.inline.domain.MyMarkupModelListener;
 import com.ioannuwu.inline.ui.settingscomponent.SettingsComponentProvider;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;

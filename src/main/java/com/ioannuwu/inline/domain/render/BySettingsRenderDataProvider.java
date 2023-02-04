@@ -37,15 +37,15 @@ public class BySettingsRenderDataProvider implements RenderDataProvider, SetSett
             icon = DefaultSettings.Icons.WARNING;
         }
         else if (severity.myVal >= HighlightSeverity.WEAK_WARNING.myVal) {
-            levelState = settingsState.error;
+            levelState = settingsState.weakWarning;
             icon = DefaultSettings.Icons.WEAK_WARNING;
         }
         else if (severity.myVal >= HighlightSeverity.GENERIC_SERVER_ERROR_OR_WARNING.myVal) {
-            levelState = settingsState.error;
+            levelState = settingsState.serverError;
             icon = DefaultSettings.Icons.SERVER_ERROR;
         }
         else if (severity.myVal >= HighlightSeverity.INFORMATION.myVal) {
-            levelState = settingsState.warning;
+            levelState = settingsState.information;
             icon = DefaultSettings.Icons.INFORMATION;
         }
         else {

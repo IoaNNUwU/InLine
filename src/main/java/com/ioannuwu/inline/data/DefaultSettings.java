@@ -14,7 +14,7 @@ public class DefaultSettings {
     public static final SeverityLevelState ERROR = defaultSeverityLevelState(new Color(183, 43, 43));
     public static final SeverityLevelState WARNING = defaultSeverityLevelState(new Color(189, 115, 37));
     public static final SeverityLevelState WEAK_WARNING = defaultSeverityLevelState(new Color(183, 155, 41));
-    public static final SeverityLevelState INFORMATION = defaultSeverityLevelState(new Color(44, 89, 180));
+    public static final SeverityLevelState INFORMATION = defaultSeverityLevelState(new Color(61, 108, 201));
     public static final SeverityLevelState SERVER_ERROR = defaultSeverityLevelState(new Color(128, 29, 185));
     public static final SeverityLevelState OTHER_ERROR = defaultSeverityLevelState(new Color(141, 169, 169));
 

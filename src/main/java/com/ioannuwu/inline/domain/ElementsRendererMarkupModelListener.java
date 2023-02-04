@@ -7,23 +7,22 @@ import com.intellij.openapi.editor.markup.RangeHighlighter;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.ioannuwu.inline.domain.render.RenderData;
 import com.ioannuwu.inline.domain.render.RenderDataProvider;
+import com.ioannuwu.inline.domain.utils.RenderElements;
 import com.ioannuwu.inline.domain.utils.MyTextAttributes;
 import com.ioannuwu.inline.domain.utils.RangeHighlighterWrapperException;
+import com.ioannuwu.inline.domain.utils.RenderElementsRangeHighlighterAndLineAccessMap;
 import com.ioannuwu.inline.ui.render.MyElementRenderer;
+import com.ioannuwu.inline.ui.render.MyGutterRenderer;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Objects;
-
-public class MyMarkupModelListener implements MarkupModelListener {
+public class ElementsRendererMarkupModelListener implements MarkupModelListener {
 
     private final TextEditor editor;
     private final RenderDataProvider renderDataProvider;
 
-    private final HashMap<RangeHighlighter, MyRenderElements> map = new HashMap<>(20);
+    private final RenderElementsRangeHighlighterAndLineAccessMap map = new RenderElementsRangeHighlighterAndLineAccessMap();
 
-    public MyMarkupModelListener(TextEditor editor, RenderDataProvider renderDataProvider) {
+    public ElementsRendererMarkupModelListener(TextEditor editor, RenderDataProvider renderDataProvider) {
         this.editor = editor;
         this.renderDataProvider = renderDataProvider;
     }
@@ -33,27 +32,32 @@ public class MyMarkupModelListener implements MarkupModelListener {
         RangeHighlighterWrapper wrapper;
         try {
             wrapper = new RangeHighlighterWrapper.WithDescription(highlighter);
-        } catch (RangeHighlighterWrapperException ignored) { return; }
+        } catch (RangeHighlighterWrapperException ignored) {
+            return;
+        }
 
         RenderData renderData = renderDataProvider.provide(wrapper);
 
         Inlay<MyElementRenderer> textAndEffectInlay = null;
         RangeHighlighter lineHighlighter = null;
 
-        if (!renderData.showBackground && !renderData.showText && !renderData.showEffect) {
-            map.put(highlighter, MyRenderElements.EMPTY);
+        if (!renderData.showBackground && !renderData.showText && !renderData.showEffect && !renderData.showGutterIcon) {
+            map.put(highlighter, RenderElements.EMPTY);
             return;
         }
-        if (renderData.showBackground) {
+        if (renderData.showBackground || renderData.showGutterIcon) {
             lineHighlighter = editor.getEditor().getMarkupModel().addLineHighlighter(highlighter.getDocument()
-                    .getLineNumber(highlighter.getStartOffset()), 0, new MyTextAttributes(renderData.backgroundColor));
+                    .getLineNumber(highlighter.getStartOffset()), 0,
+                            new MyTextAttributes(renderData.showBackground ? renderData.backgroundColor : null));
+            if (renderData.showGutterIcon)
+                lineHighlighter.setGutterIconRenderer(new MyGutterRenderer(renderData.icon));
         }
         if (renderData.showText || renderData.showEffect) {
             textAndEffectInlay = editor.getEditor().getInlayModel().addAfterLineEndElement(
                     highlighter.getStartOffset(), false,
                     new MyElementRenderer(renderData));
         }
-        map.put(highlighter, new MyRenderElements(textAndEffectInlay, lineHighlighter));
+        map.put(highlighter, new RenderElements(textAndEffectInlay, lineHighlighter));
     }
 
     @Override
@@ -64,9 +68,9 @@ public class MyMarkupModelListener implements MarkupModelListener {
 
     @Override
     public void beforeRemoved(@NotNull RangeHighlighterEx highlighter) {
-        if (!map.containsKey(highlighter)) return;
-        MyRenderElements elements = map.get(highlighter);
-        if (elements == MyRenderElements.EMPTY) {
+        RenderElements elements = map.get(highlighter);
+        if (elements == null) return;
+        if (elements == RenderElements.EMPTY) {
             map.remove(highlighter);
             return;
         }
@@ -78,30 +82,5 @@ public class MyMarkupModelListener implements MarkupModelListener {
         if (lineHighlighter != null) lineHighlighter.dispose();
 
         map.remove(highlighter);
-    }
-
-    private static class MyRenderElements {
-        public final @Nullable Inlay<MyElementRenderer> inlay;
-        public final @Nullable RangeHighlighter lineHighlighter;
-
-        public MyRenderElements(@Nullable Inlay<MyElementRenderer> inlay, @Nullable RangeHighlighter lineHighlighter) {
-            this.inlay = inlay;
-            this.lineHighlighter = lineHighlighter;
-        }
-
-        private static final @NotNull MyRenderElements EMPTY = new MyRenderElements(null, null);
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            MyRenderElements that = (MyRenderElements) o;
-            return Objects.equals(inlay, that.inlay) && Objects.equals(lineHighlighter, that.lineHighlighter);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(inlay, lineHighlighter);
-        }
     }
 }

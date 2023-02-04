@@ -13,8 +13,6 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.ioannuwu.inline.data.MySettingsService;
 import com.ioannuwu.inline.domain.render.BySettingsRenderDataProvider;
-import com.ioannuwu.inline.domain.render.RenderDataProvider;
-import com.ioannuwu.inline.domain.render.SetSettingsSource;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -34,7 +32,7 @@ public class EditorOpenedListener implements FileEditorManagerListener {
 
             if (!(markupModel instanceof MarkupModelEx)) continue;
             MarkupModelEx markupModelEx = (MarkupModelEx) markupModel;
-            MyMarkupModelListener markupModelListener = new MyMarkupModelListener(textEditor, renderDataProvider);
+            ElementsRendererMarkupModelListener markupModelListener = new ElementsRendererMarkupModelListener(textEditor, renderDataProvider);
 
             markupModelEx.addMarkupModelListener(textEditor, markupModelListener);
             list.add(new Pair<>(textEditor, markupModelListener));

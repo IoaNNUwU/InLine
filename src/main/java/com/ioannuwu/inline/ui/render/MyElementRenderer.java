@@ -24,11 +24,6 @@ public class MyElementRenderer implements EditorCustomElementRenderer {
     }
 
     @Override
-    public @Nullable GutterIconRenderer calcGutterIconRenderer(@NotNull Inlay inlay) {
-        return new MyGutterRenderer(renderData.icon);
-    }
-
-    @Override
     public int calcWidthInPixels(@NotNull Inlay inlay) {
         Editor editor = inlay.getEditor();
         FontMetrics fontMetrics = UIUtilities.getFontMetrics(editor.getComponent(), editor.getColorsScheme().getFont(fontType));
