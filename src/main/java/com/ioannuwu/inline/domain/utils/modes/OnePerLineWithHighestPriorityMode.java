@@ -3,22 +3,21 @@ package com.ioannuwu.inline.domain.utils.modes;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.openapi.editor.markup.RangeHighlighter;
 import com.ioannuwu.inline.domain.render.RenderData;
-import com.ioannuwu.inline.ui.render.EditorElementsRenderer;
-import com.ioannuwu.inline.domain.utils.RenderDataProvider;
 import com.ioannuwu.inline.domain.render.RenderElements;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.set.MutableSet;
+import com.ioannuwu.inline.domain.utils.RenderDataProvider;
+import com.ioannuwu.inline.ui.render.EditorElementsRenderer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 
 public class OnePerLineWithHighestPriorityMode implements Mode {
 
     private final EditorElementsRenderer editorElementsRenderer;
     private final RenderDataProvider renderDataProvider;
 
-    private final MutableList<Entity> list = Lists.mutable.of();
+    private final ArrayList<Entity> list = new ArrayList<>();
 
     public OnePerLineWithHighestPriorityMode(RenderDataProvider renderDataProvider, EditorElementsRenderer editorElementsRenderer) {
         this.editorElementsRenderer = editorElementsRenderer;
@@ -35,7 +34,7 @@ public class OnePerLineWithHighestPriorityMode implements Mode {
         Entity currentEntity = new Entity(highlighter, currentLine, null);
         list.add(currentEntity);
         // find all entities on same line - WITH CURRENT - IT WAS ADDED TO LIST BUT NOT RENDERED
-        MutableSet<Entity> setOnSameLine = Sets.mutable.of();
+        HashSet<Entity> setOnSameLine = new HashSet<>();
         for (final var entity : list) {
             if (entity.initialLine == currentLine) setOnSameLine.add(entity);
         }
@@ -80,7 +79,7 @@ public class OnePerLineWithHighestPriorityMode implements Mode {
         editorElementsRenderer.unRender(elements);
         list.remove(finalEntity);
         // Find on same line - WITHOUT CURRENT - IT WAS DELETED AND UNRENDERED
-        MutableSet<Entity> setOnSameLine = Sets.mutable.of();
+        HashSet<Entity> setOnSameLine = new HashSet<>();
         for (final var entity : list) {
             if (entity.initialLine == currentLine) setOnSameLine.add(entity);
         }

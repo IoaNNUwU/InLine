@@ -12,11 +12,6 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    implementation("org.eclipse.collections:eclipse-collections-api:11.1.0")
-    implementation("org.eclipse.collections:eclipse-collections:11.1.0")
-}
-
 intellij {
     pluginName.set(properties("pluginName"))
     version.set(properties("platformVersion"))
