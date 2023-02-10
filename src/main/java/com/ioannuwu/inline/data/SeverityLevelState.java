@@ -3,6 +3,7 @@ package com.ioannuwu.inline.data;
 import com.intellij.util.xmlb.annotations.Attribute;
 import com.intellij.util.xmlb.annotations.OptionTag;
 import org.apache.xmlgraphics.java2d.color.DefaultColorConverter;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.Serializable;
@@ -13,7 +14,7 @@ public class SeverityLevelState implements Serializable {
     public SeverityLevelState() {}
 
     public SeverityLevelState(boolean showGutterIcon, boolean showText, boolean showBackground, boolean showEffect,
-                              Color textColor, Color backgroundColor, Color effectColor) {
+                              @NotNull Color textColor, @NotNull Color backgroundColor, @NotNull Color effectColor) {
         this.showGutterIcon = showGutterIcon;
         this.showText = showText;
         this.showBackground = showBackground;
@@ -23,11 +24,11 @@ public class SeverityLevelState implements Serializable {
         this.effectColor = effectColor;
     }
 
-    public SeverityLevelState(Color textColor, Color backgroundColor, Color effectColor) {
+    public SeverityLevelState(@NotNull Color textColor, @NotNull Color backgroundColor, @NotNull Color effectColor) {
         this(true, true, true, true, textColor, backgroundColor, effectColor);
     }
 
-    public SeverityLevelState(SeverityLevelState other) {
+    public SeverityLevelState(@NotNull SeverityLevelState other) {
         this.showGutterIcon = other.showGutterIcon;
         this.showText = other.showText;
         this.showBackground = other.showBackground;
@@ -43,11 +44,11 @@ public class SeverityLevelState implements Serializable {
     public boolean showBackground = true;
     public boolean showEffect = true;
     @Attribute(converter = MyColorConverter.class)
-    public Color textColor = Color.RED;
+    public @NotNull Color textColor = Color.RED;
     @Attribute(converter = MyColorConverter.class)
-    public Color backgroundColor = Color.GREEN;
+    public @NotNull Color backgroundColor = Color.GREEN;
     @Attribute(converter = MyColorConverter.class)
-    public Color effectColor = Color.ORANGE;
+    public @NotNull Color effectColor = Color.ORANGE;
 
     @Override
     public boolean equals(Object o) {

@@ -1,10 +1,9 @@
-package com.ioannuwu.inline.domain.utils;
+package com.ioannuwu.inline.domain.render;
 
 
 import com.intellij.openapi.editor.Inlay;
 import com.intellij.openapi.editor.markup.RangeHighlighter;
 import com.ioannuwu.inline.ui.render.MyElementRenderer;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -17,8 +16,6 @@ public class RenderElements {
         this.inlay = inlay;
         this.lineHighlighter = lineHighlighter;
     }
-
-    public static final @NotNull RenderElements EMPTY = new RenderElements(null, null);
 
     @Override
     public boolean equals(Object o) {

@@ -4,22 +4,20 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorCustomElementRenderer;
 import com.intellij.openapi.editor.Inlay;
 import com.intellij.openapi.editor.colors.EditorFontType;
-import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.util.ui.UIUtilities;
 import com.ioannuwu.inline.domain.render.RenderData;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
 public class MyElementRenderer implements EditorCustomElementRenderer {
 
-    private final RenderData renderData;
+    private final @NotNull RenderData renderData;
 
-    private final EditorFontType fontType = EditorFontType.PLAIN;
+    private final @NotNull EditorFontType fontType = EditorFontType.PLAIN;
 
-    public MyElementRenderer(RenderData renderData) {
+    public MyElementRenderer(@NotNull RenderData renderData) {
         this.renderData = renderData;
     }
 

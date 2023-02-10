@@ -12,7 +12,11 @@ import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.ioannuwu.inline.data.MySettingsService;
-import com.ioannuwu.inline.domain.render.BySettingsRenderDataProvider;
+import com.ioannuwu.inline.ui.render.EditorElementsRenderer;
+import com.ioannuwu.inline.ui.render.EditorElementsRendererImpl;
+import com.ioannuwu.inline.domain.utils.RenderDataProvider;
+import com.ioannuwu.inline.domain.utils.RenderDataProviderBySettings;
+import com.ioannuwu.inline.domain.utils.modes.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -32,7 +36,12 @@ public class EditorOpenedListener implements FileEditorManagerListener {
 
             if (!(markupModel instanceof MarkupModelEx)) continue;
             MarkupModelEx markupModelEx = (MarkupModelEx) markupModel;
-            ElementsRendererMarkupModelListener markupModelListener = new ElementsRendererMarkupModelListener(textEditor, renderDataProvider);
+
+            RenderDataProvider renderDataProvider = new RenderDataProviderBySettings(MySettingsService.getInstance());
+            EditorElementsRenderer editorElementsRenderer = new EditorElementsRendererImpl(textEditor.getEditor());
+            Mode mode = new OnePerLineWithHighestPriorityMode(renderDataProvider, editorElementsRenderer);
+
+            ElementsRendererMarkupModelListener markupModelListener = new ElementsRendererMarkupModelListener(mode);
 
             markupModelEx.addMarkupModelListener(textEditor, markupModelListener);
             list.add(new Pair<>(textEditor, markupModelListener));
@@ -41,10 +50,7 @@ public class EditorOpenedListener implements FileEditorManagerListener {
 
     private static final ArrayList<Pair<TextEditor, MarkupModelListener>> list = new ArrayList<>();
 
-    private static final BySettingsRenderDataProvider renderDataProvider = new BySettingsRenderDataProvider(MySettingsService.getInstance());
-
     public static void updateActiveListeners() {
-        renderDataProvider.setSettingsSource(MySettingsService.getInstance());
         for (Pair<TextEditor, MarkupModelListener> pair : list) {
             Editor editor = pair.first.getEditor();
             Document document = editor.getDocument();
@@ -57,7 +63,7 @@ public class EditorOpenedListener implements FileEditorManagerListener {
             for (RangeHighlighter highlighter : allHighlighters) {
                 if (!(highlighter instanceof RangeHighlighterEx)) return;
                 RangeHighlighterEx highlighterEx = (RangeHighlighterEx) highlighter;
-                listener.attributesChanged(highlighterEx, false, false);
+                listener.attributesChanged(highlighterEx, false, true);
             }
         }
     }

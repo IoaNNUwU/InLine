@@ -2,6 +2,7 @@ package com.ioannuwu.inline.ui.render;
 
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.Objects;
@@ -10,7 +11,7 @@ public class MyGutterRenderer extends GutterIconRenderer {
 
     private final Icon icon;
 
-    public MyGutterRenderer(Icon icon) {
+    public MyGutterRenderer(@NotNull Icon icon) {
         this.icon = icon;
     }
 
