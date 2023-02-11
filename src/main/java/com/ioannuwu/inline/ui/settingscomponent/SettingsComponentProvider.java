@@ -62,10 +62,9 @@ public interface SettingsComponentProvider extends State<SettingsState> {
             final FormBuilder formBuilder = FormBuilder.createFormBuilder();
 
             numberOfWhitespacesComponent.addToBuilder(formBuilder);
+            maxErrorsPerLineComponent.addToBuilder(formBuilder);
 
             effectTypeComponent.addToBuilder(formBuilder);
-
-            maxErrorsPerLineComponent.addToBuilder(formBuilder);
 
             errorComponent.addToBuilder(formBuilder);
             formBuilder.addComponent(new JPanel());
