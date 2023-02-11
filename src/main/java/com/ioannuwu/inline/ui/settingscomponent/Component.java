@@ -8,10 +8,13 @@ import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBTextArea;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
+import com.intellij.util.ui.UIUtil;
 import com.ioannuwu.inline.data.DefaultSettings;
 import com.ioannuwu.inline.data.EffectType;
 import com.ioannuwu.inline.data.SeverityLevelState;
 
+import javax.swing.*;
+import javax.swing.plaf.FontUIResource;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -48,20 +51,40 @@ public interface Component {
             this.effectColorPanel = new ColorPanel();
             this.effectColorPanel.setSelectedColor(data.effectColor);
 
-            this.showTextCheckBox = new JBCheckBox("Text color       ", data.showText);
-            this.showBackgroundCheckBox = new JBCheckBox("Background color ", data.showBackground);
-            this.showEffectCheckBox = new JBCheckBox("Effect color     ", data.showEffect);
+            this.showTextCheckBox = new JBCheckBox(      "Text color                                                             ", data.showText);
+            this.showBackgroundCheckBox = new JBCheckBox("Background color                                               ", data.showBackground);
+            this.showEffectCheckBox = new JBCheckBox(    "Effect color                                                          ", data.showEffect);
         }
 
         @Override
         public void addToBuilder(FormBuilder formBuilder) {
+            JPanel panel = new JPanel();
+            ContextHelpLabel contextHelpLabel = ContextHelpLabel.create(helpDescription);
+            JLabel label = new JBLabel(PREFIX + name + " settings: ");
+            panel.add(label);
+            panel.add(contextHelpLabel);
+
+            JPanel panel1 = new JPanel();
+            panel1.add(showGutterIcon);
+
+            JPanel panel2 = new JPanel();
+            panel2.add(showTextCheckBox);
+            panel2.add(textColorPanel);
+
+            JPanel panel3 = new JPanel();
+            panel3.add(showBackgroundCheckBox);
+            panel3.add(backgroundColorPanel);
+
+            JPanel panel4 = new JPanel();
+            panel4.add(showEffectCheckBox);
+            panel4.add(effectColorPanel);
+
             formBuilder
-                    .addComponent(new JBLabel(name + " settings"))
-                    .addTooltip(helpDescription)
-                    .addComponent(showGutterIcon)
-                    .addLabeledComponent(showTextCheckBox, textColorPanel)
-                    .addLabeledComponent(showBackgroundCheckBox, backgroundColorPanel)
-                    .addLabeledComponent(showEffectCheckBox, effectColorPanel);
+                    .addLabeledComponent(panel, new JLabel())
+                    .addLabeledComponent(panel1, new JLabel())
+                    .addLabeledComponent(panel2, new JLabel())
+                    .addLabeledComponent(panel3, new JLabel())
+                    .addLabeledComponent(panel4, new JLabel());
         }
 
         @Override
@@ -88,7 +111,10 @@ public interface Component {
 
         @Override
         public void addToBuilder(FormBuilder formBuilder) {
-            formBuilder.addLabeledComponent(new JBLabel("Number of whitespaces after end of the line "), numberOfWhitespacesField);
+            JPanel panel = new JPanel();
+            panel.add(new JBLabel("Number of whitespaces after end of the line          "));
+            panel.add(numberOfWhitespacesField);
+            formBuilder.addLabeledComponent(panel, new JBLabel());
         }
 
         @Override
@@ -113,7 +139,10 @@ public interface Component {
 
         @Override
         public void addToBuilder(FormBuilder formBuilder) {
-            formBuilder.addLabeledComponent(new JBLabel("Max number of errors per line"), maxErrorsPerLineField);
+            JPanel panel = new JPanel();
+            panel.add(new JBLabel("Max number of errors per line                                   "));
+            panel.add(maxErrorsPerLineField);
+            formBuilder.addLabeledComponent(panel, new JBLabel());
         }
 
         @Override
@@ -147,7 +176,10 @@ public interface Component {
 
         @Override
         public void addToBuilder(FormBuilder formBuilder) {
-            formBuilder.addLabeledComponent(new JBLabel("Effect type "), effectTypeComboBox);
+            JPanel panel = new JPanel();
+            panel.add(new JBLabel("Effect type                                                                    "));
+            panel.add(effectTypeComboBox);
+            formBuilder.addLabeledComponent(panel, new JLabel());
         }
 
         @Override
@@ -183,8 +215,10 @@ public interface Component {
 
         @Override
         public void addToBuilder(FormBuilder formBuilder) {
-            formBuilder.addComponent(new JBLabel("Ignore: "));
-            formBuilder.addComponent(ContextHelpLabel.create(description));
+            JPanel panel = new JPanel();
+            panel.add(new JBLabel(PREFIX + "Ignore: "));
+            panel.add(ContextHelpLabel.create(description));
+            formBuilder.addLabeledComponent(panel, new JLabel());
             formBuilder.addComponent(textComponent);
         }
 
@@ -195,14 +229,10 @@ public interface Component {
             return Arrays.stream(split).filter(line -> !line.isBlank()).toArray(String[]::new);
         }
 
-        private static final String description = "<h1 id=\"list-of-strings-divided-by-new-line\">List of strings divided by new line</h1>" +
-                "<h2 id=\"hint-will-be-ignored-if-it-s-description-contains-one-of-them\">hint will be ignored if it&#39;s description contains one of them</h2>" +
-                "<h3 id=\"example-\">Example:</h3>" +
-                "<h3 id=\"___todo___\"><strong><em>TODO</em></strong></h3>" +
-                "<h3 id=\"___typo___\"><strong><em>TYPO</em></strong></h3>" +
-                "<h3 id=\"___is-never-used___\"><strong><em>is never used</em></strong></h3>";
-
+        private static final String description = "<h2 id=\"list-of-strings-divided-by-new-line\">List of strings divided by new line</h1>" +
+                "<h3 id=\"hint-will-be-ignored-if-it-s-description-contains-one-of-them\">hint will be ignored if it&#39;s description contains one of them</h2>";
     }
+    String PREFIX = " >   ";
 }
 
 

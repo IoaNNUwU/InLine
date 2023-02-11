@@ -66,6 +66,8 @@ public interface SettingsComponentProvider extends State<SettingsState> {
 
             effectTypeComponent.addToBuilder(formBuilder);
 
+            formBuilder.addComponent(new JPanel());
+
             errorComponent.addToBuilder(formBuilder);
             formBuilder.addComponent(new JPanel());
             warningComponent.addToBuilder(formBuilder);
