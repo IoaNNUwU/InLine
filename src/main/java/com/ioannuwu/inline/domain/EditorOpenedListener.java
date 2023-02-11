@@ -39,7 +39,7 @@ public class EditorOpenedListener implements FileEditorManagerListener {
 
             RenderDataProvider renderDataProvider = new RenderDataProviderBySettings(MySettingsService.getInstance());
             EditorElementsRenderer editorElementsRenderer = new EditorElementsRendererImpl(textEditor.getEditor());
-            Mode mode = new OnePerLineWithHighestPriorityMode(renderDataProvider, editorElementsRenderer);
+            Mode mode = new CouplePerLineWithHighestPriorityMode(renderDataProvider, editorElementsRenderer, 2);
 
             ElementsRendererMarkupModelListener markupModelListener = new ElementsRendererMarkupModelListener(mode);
 
