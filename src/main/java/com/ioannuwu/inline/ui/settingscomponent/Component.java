@@ -12,6 +12,7 @@ import com.ioannuwu.inline.data.EffectType;
 import com.ioannuwu.inline.data.SeverityLevelState;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public interface Component {
 
@@ -164,7 +165,8 @@ public interface Component {
         @Override
         public String[] getState() {
             String fulltext = textComponent.getText();
-            return fulltext.split("\n");
+            String[] split = fulltext.split("\n");
+            return Arrays.stream(split).filter(line -> !line.isBlank()).toArray(String[]::new);
         }
 
         private static final String description = "<h1 id=\"list-of-strings-divided-by-new-line\">List of strings divided by new line</h1>" +
