@@ -70,6 +70,8 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
         editorElementsRenderer.unRender(elements);
         list.remove(entity);
 
+        if (highlighter.getStartOffset() > highlighter.getDocument().getTextLength()) return;
+
         List<Entity> entitiesOnCurrentLineSorted = list.stream()
                 .filter(myEntity -> myEntity.initialLine == currentLine)
                 .sorted()
@@ -119,10 +121,10 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
             int thisVal = thisInfo.getSeverity().myVal;
             int otherVal = otherInfo.getSeverity().myVal;
 
-            if (thisVal != otherVal) {
-                return thisInfo.getDescription().compareTo(otherInfo.getDescription());
-            }
-            return thisInfo.getSeverity().myVal - otherInfo.getSeverity().myVal;
+            int thisValPlus = thisVal * 10000000 + thisInfo.getDescription().hashCode() / 10000;
+            int otherValPlus = otherVal * 10000000 + otherInfo.getDescription().hashCode() / 10000;
+
+            return thisValPlus - otherValPlus;
         }
     }
 }
