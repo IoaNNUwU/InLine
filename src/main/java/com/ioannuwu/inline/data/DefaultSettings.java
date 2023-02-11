@@ -1,6 +1,5 @@
 package com.ioannuwu.inline.data;
 
-
 import com.intellij.icons.AllIcons;
 
 import javax.swing.*;
@@ -9,7 +8,7 @@ import java.awt.*;
 public class DefaultSettings {
     public static final int NUMBER_OF_WHITESPACES = 2;
 
-    public static final EffectType EFFECT_TYPE = EffectType.BOX;
+    public static final EffectType EFFECT_TYPE = EffectType.NONE;
 
     public static final SeverityLevelState ERROR = defaultSeverityLevelState(new Color(183, 43, 43));
     public static final SeverityLevelState WARNING = defaultSeverityLevelState(new Color(189, 115, 37));

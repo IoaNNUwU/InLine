@@ -1,15 +1,13 @@
 package com.ioannuwu.inline.domain.utils.modes;
 
-import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.openapi.editor.markup.RangeHighlighter;
 import com.ioannuwu.inline.domain.render.RenderData;
 import com.ioannuwu.inline.domain.render.RenderElements;
 import com.ioannuwu.inline.domain.utils.RenderDataProvider;
 import com.ioannuwu.inline.ui.render.EditorElementsRenderer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,13 +17,16 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
     private final EditorElementsRenderer editorElementsRenderer;
     private final RenderDataProvider renderDataProvider;
 
+    private final Comparator<Entity> comparator;
+
     private final ArrayList<Entity> list = new ArrayList<>();
 
     private final int MAX_PER_LINE;
 
-    public CouplePerLineWithHighestPriorityMode(RenderDataProvider renderDataProvider, EditorElementsRenderer editorElementsRenderer, int max_per_line) {
+    public CouplePerLineWithHighestPriorityMode(RenderDataProvider renderDataProvider, EditorElementsRenderer editorElementsRenderer, Comparator<Entity> comparator, int max_per_line) {
         this.editorElementsRenderer = editorElementsRenderer;
         this.renderDataProvider = renderDataProvider;
+        this.comparator = comparator;
         MAX_PER_LINE = max_per_line;
     }
 
@@ -40,7 +41,7 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
 
         List<Entity> entitiesOnCurrentLineSorted = list.stream()
                 .filter(entity -> entity.initialLine == currentLine)
-                .sorted()
+                .sorted(comparator)
                 .collect(Collectors.toList());
 
         entitiesOnCurrentLineSorted.forEach(System.out::println);
@@ -50,7 +51,9 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
             entity.renderElements = null;
         });
 
-        List<Entity> top = entitiesOnCurrentLineSorted.stream().sorted().limit(MAX_PER_LINE).collect(Collectors.toList());
+        List<Entity> top = entitiesOnCurrentLineSorted.stream()
+                .limit(MAX_PER_LINE)
+                .collect(Collectors.toList());
 
         for (final var entity : top) {
             RenderData data = renderDataProvider.provide(entity.rangeHighlighter);
@@ -74,7 +77,7 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
 
         List<Entity> entitiesOnCurrentLineSorted = list.stream()
                 .filter(myEntity -> myEntity.initialLine == currentLine)
-                .sorted()
+                .sorted(comparator)
                 .collect(Collectors.toList());
 
         entitiesOnCurrentLineSorted.forEach(System.out::println);
@@ -90,41 +93,6 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
             RenderData data = renderDataProvider.provide(myEntity.rangeHighlighter);
             if (data == null) continue; // TODO WHY
             myEntity.renderElements = editorElementsRenderer.render(data, myEntity.rangeHighlighter.getStartOffset());
-        }
-    }
-
-    private static class Entity implements Comparable<Entity> {
-        public final @NotNull RangeHighlighter rangeHighlighter;
-        public final int initialLine;
-
-        public @Nullable RenderElements renderElements;
-
-        private Entity(@NotNull RangeHighlighter rangeHighlighter, int initialLine, @Nullable RenderElements renderElements) {
-            this.rangeHighlighter = rangeHighlighter;
-            this.initialLine = initialLine;
-            this.renderElements = renderElements;
-        }
-
-        @Override
-        public String toString() {
-            return "Entity{" +
-                    "initialLine=" + initialLine +
-                    ", renderElements=" + renderElements +
-                    '}';
-        }
-
-        @Override
-        public int compareTo(@NotNull CouplePerLineWithHighestPriorityMode.Entity o) {
-            HighlightInfo thisInfo = ((HighlightInfo) rangeHighlighter.getErrorStripeTooltip());
-            HighlightInfo otherInfo = ((HighlightInfo) o.rangeHighlighter.getErrorStripeTooltip());
-
-            int thisVal = thisInfo.getSeverity().myVal;
-            int otherVal = otherInfo.getSeverity().myVal;
-
-            int thisValPlus = thisVal * 10000000 + thisInfo.getDescription().hashCode() / 10000;
-            int otherValPlus = otherVal * 10000000 + otherInfo.getDescription().hashCode() / 10000;
-
-            return thisValPlus - otherValPlus;
         }
     }
 }

@@ -4,6 +4,7 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.Inlay;
 import com.intellij.openapi.editor.markup.RangeHighlighter;
+import com.intellij.openapi.util.Disposer;
 import com.ioannuwu.inline.domain.render.RenderData;
 import com.ioannuwu.inline.domain.utils.MyTextAttributes;
 import com.ioannuwu.inline.domain.render.RenderElements;
@@ -46,7 +47,7 @@ public class EditorElementsRendererImpl implements EditorElementsRenderer {
     @Override
     public void unRender(@Nullable RenderElements elements) {
         if (elements == null) return;
-        if (elements.inlay != null) elements.inlay.dispose();
+        if (elements.inlay != null) Disposer.dispose(elements.inlay);
         if (elements.lineHighlighter != null) elements.lineHighlighter.dispose();
     }
 }

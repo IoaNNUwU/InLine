@@ -20,6 +20,7 @@ import com.ioannuwu.inline.domain.utils.modes.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class EditorOpenedListener implements FileEditorManagerListener {
 
@@ -39,7 +40,12 @@ public class EditorOpenedListener implements FileEditorManagerListener {
 
             RenderDataProvider renderDataProvider = new RenderDataProviderBySettings(MySettingsService.getInstance());
             EditorElementsRenderer editorElementsRenderer = new EditorElementsRendererImpl(textEditor.getEditor());
-            Mode mode = new CouplePerLineWithHighestPriorityMode(renderDataProvider, editorElementsRenderer, 2);
+
+            Comparator<Entity> comparator = new EntityComparator.BySeverity()
+                    .thenComparing(new EntityComparator.ByOffset().reversed());
+
+            Mode mode = new CouplePerLineWithHighestPriorityMode(
+                    renderDataProvider, editorElementsRenderer, comparator, 2);
 
             ElementsRendererMarkupModelListener markupModelListener = new ElementsRendererMarkupModelListener(mode);
 
