@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 @State(
   name = "com.ioannuwu.intellijerrors.data.SettingsState",
-  storages = @Storage("com.ioannuwu.intellijerrors.data.Settings.xml")
+  storages = @Storage("com.ioannuwu.intellijerrors.Settings.xml")
 )
 public class MySettingsService implements PersistentStateComponent<SettingsState> {
 

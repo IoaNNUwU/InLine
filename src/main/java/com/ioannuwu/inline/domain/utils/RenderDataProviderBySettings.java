@@ -74,6 +74,7 @@ public class RenderDataProviderBySettings implements RenderDataProvider {
 
         return new RenderData(levelState.showGutterIcon, levelState.showText, levelState.showBackground,
                 levelState.showEffect, levelState.textColor, newBackgroundColor, levelState.effectColor,
-                settingsState.numberOfWhitespaces, settingsState.effectType, info.getDescription(), icon);
+                settingsState.numberOfWhitespaces, settingsState.maxErrorsPerLine, settingsState.effectType,
+                info.getDescription(), icon);
     }
 }

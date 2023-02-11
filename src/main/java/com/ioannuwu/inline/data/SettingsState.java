@@ -6,9 +6,11 @@ import java.util.Objects;
 
 public class SettingsState implements Serializable {
 
-    public int numberOfWhitespaces = DefaultSettings.NUMBER_OF_WHITESPACES; // 0 .. 10
+    public int numberOfWhitespaces = DefaultSettings.NUMBER_OF_WHITESPACES;
 
     public EffectType effectType = DefaultSettings.EFFECT_TYPE;
+
+    public int maxErrorsPerLine = DefaultSettings.MAX_ERRORS_PER_LINE;
 
     public SeverityLevelState error = DefaultSettings.ERROR;
     public SeverityLevelState warning = DefaultSettings.WARNING;
@@ -24,16 +26,17 @@ public class SettingsState implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SettingsState that = (SettingsState) o;
-        return numberOfWhitespaces == that.numberOfWhitespaces && Objects.equals(error, that.error) &&
-                Objects.equals(warning, that.warning) && Objects.equals(weakWarning, that.weakWarning) &&
-                Objects.equals(information, that.information) && Objects.equals(serverError, that.serverError) &&
-                Objects.equals(otherError, that.otherError) && Arrays.equals(ignoreList, that.ignoreList) &&
-                Objects.equals(effectType, that.effectType);
+        return numberOfWhitespaces == that.numberOfWhitespaces && maxErrorsPerLine == that.maxErrorsPerLine &&
+                Objects.equals(error, that.error) && Objects.equals(warning, that.warning) &&
+                Objects.equals(weakWarning, that.weakWarning) && Objects.equals(information, that.information) &&
+                Objects.equals(serverError, that.serverError) && Objects.equals(otherError, that.otherError) &&
+                Arrays.equals(ignoreList, that.ignoreList) && Objects.equals(effectType, that.effectType);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(numberOfWhitespaces, error, warning, weakWarning, information, serverError, otherError, effectType);
+        int result = Objects.hash(numberOfWhitespaces, maxErrorsPerLine, error, warning, weakWarning,
+                information, serverError, otherError, effectType);
         result = 31 * result + Arrays.hashCode(ignoreList);
         return result;
     }
@@ -43,6 +46,7 @@ public class SettingsState implements Serializable {
         return "\nSettingsState{" +
                 "\nnumberOfWhitespaces=" + numberOfWhitespaces +
                 "\neffectType=" + effectType +
+                "\nmaxErrorsPerLine=" + maxErrorsPerLine +
                 "\nerror=" + error +
                 "\nwarning=" + warning +
                 "\nweakWarning=" + weakWarning +

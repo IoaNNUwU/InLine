@@ -1,7 +1,6 @@
 package com.ioannuwu.inline.ui.settingscomponent;
 
 import com.intellij.util.ui.FormBuilder;
-import com.ioannuwu.inline.data.EffectType;
 import com.ioannuwu.inline.data.SettingsState;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +21,9 @@ public interface SettingsComponentProvider extends State<SettingsState> {
             this.settingsState = settingsState;
         }
 
-        private Component.NumberOfWhitespaces numberOfWhitespacesComponent;
+        private Component.NumberOfWhitespacesComponent numberOfWhitespacesComponent;
+
+        private Component.MaxErrorsPerLineComponent maxErrorsPerLineComponent;
 
         private Component.EffectTypeComponent effectTypeComponent;
 
@@ -37,18 +38,20 @@ public interface SettingsComponentProvider extends State<SettingsState> {
 
         @Override
         public JComponent createComponent() {
-            numberOfWhitespacesComponent = new Component.NumberOfWhitespaces(settingsState.numberOfWhitespaces);
+            numberOfWhitespacesComponent = new Component.NumberOfWhitespacesComponent(settingsState.numberOfWhitespaces);
 
             effectTypeComponent = new Component.EffectTypeComponent(settingsState.effectType);
+
+            maxErrorsPerLineComponent = new Component.MaxErrorsPerLineComponent(settingsState.maxErrorsPerLine);
 
             errorComponent = new Component.SeverityLevel(settingsState.error,
                     "Error", "Compilation errors");
             warningComponent = new Component.SeverityLevel(settingsState.warning,
-                    "Warning", "Warning description");
+                    "Warning", "Logic errors and big improvements");
             weakWarningComponent = new Component.SeverityLevel(settingsState.weakWarning,
-                    "Weak warning", "Weak warning description");
+                    "Weak warning", "Small improvements");
             informationComponent = new Component.SeverityLevel(settingsState.information,
-                    "Information", "Information description");
+                    "Information", "Small information messages");
             serverErrorComponent = new Component.SeverityLevel(settingsState.serverError,
                     "Server error", "Connection error");
             otherErrorComponent = new Component.SeverityLevel(settingsState.otherError,
@@ -61,6 +64,8 @@ public interface SettingsComponentProvider extends State<SettingsState> {
             numberOfWhitespacesComponent.addToBuilder(formBuilder);
 
             effectTypeComponent.addToBuilder(formBuilder);
+
+            maxErrorsPerLineComponent.addToBuilder(formBuilder);
 
             errorComponent.addToBuilder(formBuilder);
             formBuilder.addComponent(new JPanel());
@@ -84,7 +89,10 @@ public interface SettingsComponentProvider extends State<SettingsState> {
             SettingsState state = new SettingsState();
 
             state.numberOfWhitespaces = numberOfWhitespacesComponent.getState();
+
             state.effectType = effectTypeComponent.getState();
+
+            state.maxErrorsPerLine = maxErrorsPerLineComponent.getState();
 
             state.error = errorComponent.getState();
             state.warning = warningComponent.getState();

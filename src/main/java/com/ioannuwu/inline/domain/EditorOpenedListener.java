@@ -45,7 +45,7 @@ public class EditorOpenedListener implements FileEditorManagerListener {
                     .thenComparing(new EntityComparator.ByOffset().reversed());
 
             Mode mode = new CouplePerLineWithHighestPriorityMode(
-                    renderDataProvider, editorElementsRenderer, comparator, 2);
+                    renderDataProvider, editorElementsRenderer, comparator);
 
             ElementsRendererMarkupModelListener markupModelListener = new ElementsRendererMarkupModelListener(mode);
 

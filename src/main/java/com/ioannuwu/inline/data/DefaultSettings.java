@@ -10,6 +10,8 @@ public class DefaultSettings {
 
     public static final EffectType EFFECT_TYPE = EffectType.NONE;
 
+    public static final int MAX_ERRORS_PER_LINE = 3;
+
     public static final SeverityLevelState ERROR = defaultSeverityLevelState(new Color(183, 43, 43));
     public static final SeverityLevelState WARNING = defaultSeverityLevelState(new Color(189, 115, 37));
     public static final SeverityLevelState WEAK_WARNING = defaultSeverityLevelState(new Color(183, 155, 41));
