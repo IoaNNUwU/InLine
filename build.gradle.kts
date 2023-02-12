@@ -29,10 +29,8 @@ tasks {
         untilBuild.set(properties("pluginUntilBuild"))
 
         val myReadMe = file("README.md").readText()
-                .replace("<kbd>", " ")
-                .replace("</kbd>", " ")
-                .replace("<!-- Plugin path -->", "```")
-                .replace("<!-- Plugin path end -->", "```")
+                .replace("<kbd>", " `")
+                .replace("</kbd>", "` ")
 
         // Extract the <!-- Plugin description --> section from README.md and provide for the plugin's manifest
         pluginDescription.set(
