@@ -20,11 +20,9 @@ In plugin settings you can:
 * Apply additional effect
 * Ignore some errors by description
 
-![Example](https://raw.githubusercontent.com/IoaNNUwU/InLine/main/media/CodeExample.png)
-
+![Example](https://raw.githubusercontent.com/IoaNNUwU/InLine/dev/CodeExample.png)
 <!-- Plugin description end -->
 Change notes:
-
 <!-- Change notes -->
 * __V 1.0__ - InLine release
 <!-- Change notes end -->
