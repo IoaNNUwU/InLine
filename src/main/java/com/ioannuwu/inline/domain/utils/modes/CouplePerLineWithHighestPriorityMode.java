@@ -53,8 +53,10 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
 
         for (final var entity : top) {
             RenderData data = renderDataProvider.provide(entity.rangeHighlighter);
-            if (data == null) continue; // TODO WHY
-            entity.renderElements = editorElementsRenderer.render(data, entity.rangeHighlighter.getStartOffset());
+            if (data == null) continue; // WHY
+            int startOffset = entity.rangeHighlighter.getStartOffset();
+            if (startOffset > highlighter.getDocument().getTextLength()) return;
+            entity.renderElements = editorElementsRenderer.render(data, startOffset);
         }
     }
 
@@ -65,7 +67,7 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
         Entity entity = opEntity.get();
 
         RenderData myData = renderDataProvider.provide(highlighter);
-        assert myData != null;
+        if (myData== null) return; // WHY
 
         int currentLine = entity.initialLine;
         RenderElements elements = entity.renderElements;
@@ -90,7 +92,7 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
 
         for (final var myEntity : top) {
             RenderData data = renderDataProvider.provide(myEntity.rangeHighlighter);
-            if (data == null) continue; // TODO WHY
+            if (data == null) continue; // WHY
             myEntity.renderElements = editorElementsRenderer.render(data, myEntity.rangeHighlighter.getStartOffset());
         }
     }

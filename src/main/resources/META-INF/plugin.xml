@@ -1,15 +1,15 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.ioannuwu.intellijerrors</id>
-    <name>Among Us</name>
-    <vendor>ioannuwu</vendor>
+    <id>com.github.ioannuwu.inline</id>
+    <name>InLine</name>
+    <vendor>IoaNN UwU</vendor>
 
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationConfigurable parentId="appearance"
                                  instance="com.ioannuwu.inline.ui.MyConfigurable"
-                                 displayName="Among Us"/>
+                                 displayName="⚙  InLine"/>
         <applicationService serviceImplementation="com.ioannuwu.inline.data.MySettingsService"/>
     </extensions>
 

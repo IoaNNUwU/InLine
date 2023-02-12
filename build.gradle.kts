@@ -18,11 +18,6 @@ intellij {
     type.set(properties("platformType"))
 }
 
-changelog {
-    groups.set(emptyList())
-    repositoryUrl.set(properties("pluginRepositoryUrl"))
-}
-
 tasks {
     wrapper {
         gradleVersion = properties("gradleVersion")
@@ -33,9 +28,15 @@ tasks {
         sinceBuild.set(properties("pluginSinceBuild"))
         untilBuild.set(properties("pluginUntilBuild"))
 
+        val myReadMe = file("README.md").readText()
+                .replace("<kbd>", " ")
+                .replace("</kbd>", " ")
+                .replace("<!-- Plugin path -->", "```")
+                .replace("<!-- Plugin path end -->", "```")
+
         // Extract the <!-- Plugin description --> section from README.md and provide for the plugin's manifest
         pluginDescription.set(
-                file("README.md").readText().lines().run {
+                myReadMe.lines().run {
                     val start = "<!-- Plugin description -->"
                     val end = "<!-- Plugin description end -->"
 
@@ -46,15 +47,17 @@ tasks {
                 }.joinToString("\n").let { org.jetbrains.changelog.markdownToHTML(it) }
         )
 
-        // Get the latest available change notes from the changelog file
-        changeNotes.set(provider {
-            with(changelog) {
-                renderItem(
-                        getOrNull(properties("pluginVersion"))
-                                ?: runCatching { getLatest() }.getOrElse { getUnreleased() },
-                        org.jetbrains.changelog.Changelog.OutputType.HTML,
-                )
-            }
-        })
+        changeNotes.set(
+                myReadMe.lines().run {
+                    val start = "<!-- Change notes -->"
+                    val end = "<!-- Change notes end -->"
+
+                    if (!containsAll(listOf(start, end))) {
+                        throw GradleException("Change notes section not found in README.md:\n$start ... $end")
+                    }
+                    subList(indexOf(start) + 1, indexOf(end))
+                }.joinToString("\n") { it.replace("* ", "\n") }
+                        .let { org.jetbrains.changelog.markdownToHTML(it) }
+        )
     }
 }

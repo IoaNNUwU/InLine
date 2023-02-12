@@ -5,4 +5,5 @@ import java.io.Serializable;
 public enum EffectType implements Serializable {
     NONE,
     BOX,
+    SHADOW,
 }

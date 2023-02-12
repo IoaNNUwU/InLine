@@ -1,1 +1,1 @@
-rootProject.name = "IntelliJ-errors"
+rootProject.name = "InLine"
