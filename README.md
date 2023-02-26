@@ -1,12 +1,15 @@
 # InLine
-![Build](https://github.com/IoaNNUwU/IntelliJ-errors/workflows/Build/badge.svg)
-[![Version](https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
-[![Downloads](https://img.shields.io/jetbrains/plugin/d/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
+[![Version](https://img.shields.io/jetbrains/plugin/v/21051-inline.svg?color=aa3030)](https://plugins.jetbrains.com/plugin/21051-inline)
+[![Downloads](https://img.shields.io/jetbrains/plugin/d/21051-inline.svg?color=aa3090)](https://plugins.jetbrains.com/plugin/21051-inline)
+[![Rating](https://img.shields.io/jetbrains/plugin/r/rating/21051-inline?color=30aa30)](https://plugins.jetbrains.com/plugin/21051-inline)
 <!-- Plugin description -->
  __InLine is highly customizable plugin that shows errors and hints inline.__\
  __It also can show gutter icons, colorful background and special effects.__
 
-Errors are filtered on the line by priority
+* Errors are filtered on the line by priority
+* Supports different fonts for languages compatibility 
+  * If you have Chinese symbols shown incorrectly, select compatible font in plugin settings
+
 <kbd>Settings</kbd> > <kbd>Appearance & Behaviour</kbd> > <kbd>⚙ InLine</kbd>
 ### In plugin settings you can:
 * Show or hide specific __level of errors__
@@ -14,6 +17,7 @@ Errors are filtered on the line by priority
 * Change __background colors & background visibility__ for each error level
 * Change __gutter icons visibility__ for each error level
 * Apply additional effect
+* Change font of the hints
 * Ignore some errors by description
 
 ![](https://raw.githubusercontent.com/IoaNNUwU/InLine/main/media/example.png)
@@ -45,5 +49,6 @@ This plugin is open source. You can report bugs and contribute at [GitHub](https
 <!-- Plugin description end -->
 ### Change notes:
 <!-- Change notes -->
+* __1.0.1__ - Bug fixes & Chinese characters support
 * __1.0__ - Release
 <!-- Change notes end -->

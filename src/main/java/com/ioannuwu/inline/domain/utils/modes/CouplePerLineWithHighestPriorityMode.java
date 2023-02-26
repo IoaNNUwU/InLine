@@ -1,6 +1,5 @@
 package com.ioannuwu.inline.domain.utils.modes;
 
-import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.openapi.editor.markup.RangeHighlighter;
 import com.ioannuwu.inline.domain.render.RenderData;
 import com.ioannuwu.inline.domain.render.RenderElements;
@@ -38,7 +37,7 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
         Entity currentEntity = new Entity(highlighter, currentLine, null);
         list.add(currentEntity);
 
-        List<Entity> entitiesOnCurrentLineSorted = list.stream()
+        List<Entity> entitiesOnCurrentLineSorted = ((ArrayList<Entity>) list.clone()).stream()
                 .filter(entity -> entity.initialLine == currentLine)
                 .filter(myEntity -> myEntity.rangeHighlighter.getStartOffset() > 0)
                 .sorted(comparator)
@@ -69,7 +68,7 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
         Entity entity = opEntity.get();
 
         RenderData myData = renderDataProvider.provide(highlighter);
-        if (myData== null) return; // WHY
+        if (myData == null) return; // WHY
 
         int currentLine = entity.initialLine;
         RenderElements elements = entity.renderElements;

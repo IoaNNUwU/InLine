@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.Inlay;
 import com.intellij.openapi.editor.markup.RangeHighlighter;
 import com.intellij.openapi.util.Disposer;
 import com.ioannuwu.inline.domain.render.RenderData;
+import com.ioannuwu.inline.domain.utils.FontProvider;
 import com.ioannuwu.inline.domain.utils.MyTextAttributes;
 import com.ioannuwu.inline.domain.render.RenderElements;
 import org.jetbrains.annotations.NotNull;
@@ -14,9 +15,11 @@ import org.jetbrains.annotations.Nullable;
 public class EditorElementsRendererImpl implements EditorElementsRenderer {
 
     private final Editor editor;
+    private final FontProvider fontProvider;
 
-    public EditorElementsRendererImpl(Editor editor) {
+    public EditorElementsRendererImpl(Editor editor, FontProvider fontProvider) {
         this.editor = editor;
+        this.fontProvider = fontProvider;
     }
 
     @Override
@@ -39,7 +42,7 @@ public class EditorElementsRendererImpl implements EditorElementsRenderer {
         if (renderData.showText || renderData.showEffect) {
             inlay = editor.getInlayModel().addAfterLineEndElement(
                     startOffset, false,
-                    new MyElementRenderer(renderData));
+                    new MyElementRenderer(renderData, fontProvider));
         }
         return new RenderElements(inlay, lineHighlighterWithGutterIcon);
     }

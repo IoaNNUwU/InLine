@@ -12,17 +12,32 @@ import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.ioannuwu.inline.data.MySettingsService;
-import com.ioannuwu.inline.ui.render.EditorElementsRenderer;
-import com.ioannuwu.inline.ui.render.EditorElementsRendererImpl;
+import com.ioannuwu.inline.domain.utils.FontProvider;
+import com.ioannuwu.inline.domain.utils.FontProviderBySettings;
 import com.ioannuwu.inline.domain.utils.RenderDataProvider;
 import com.ioannuwu.inline.domain.utils.RenderDataProviderBySettings;
-import com.ioannuwu.inline.domain.utils.modes.*;
+import com.ioannuwu.inline.domain.utils.modes.CouplePerLineWithHighestPriorityMode;
+import com.ioannuwu.inline.domain.utils.modes.Entity;
+import com.ioannuwu.inline.domain.utils.modes.EntityComparator;
+import com.ioannuwu.inline.domain.utils.modes.Mode;
+import com.ioannuwu.inline.ui.render.EditorElementsRenderer;
+import com.ioannuwu.inline.ui.render.EditorElementsRendererImpl;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 
 public class EditorOpenedListener implements FileEditorManagerListener {
+
+    private final RenderDataProvider renderDataProvider =
+            new RenderDataProviderBySettings(MySettingsService.getInstance());
+
+    private final Comparator<Entity> comparator = new EntityComparator.BySeverity()
+            .thenComparing(new EntityComparator.ByOffset().reversed());
+
+    private final FontProvider fontProvider = new FontProviderBySettings(MySettingsService.getInstance(),
+            GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts());
 
     @Override
     public void fileOpenedSync(@NotNull FileEditorManager source, @NotNull VirtualFile file,
@@ -38,11 +53,8 @@ public class EditorOpenedListener implements FileEditorManagerListener {
             if (!(markupModel instanceof MarkupModelEx)) continue;
             MarkupModelEx markupModelEx = (MarkupModelEx) markupModel;
 
-            RenderDataProvider renderDataProvider = new RenderDataProviderBySettings(MySettingsService.getInstance());
-            EditorElementsRenderer editorElementsRenderer = new EditorElementsRendererImpl(textEditor.getEditor());
-
-            Comparator<Entity> comparator = new EntityComparator.BySeverity()
-                    .thenComparing(new EntityComparator.ByOffset().reversed());
+            EditorElementsRenderer editorElementsRenderer =
+                    new EditorElementsRendererImpl(textEditor.getEditor(), fontProvider);
 
             Mode mode = new CouplePerLineWithHighestPriorityMode(
                     renderDataProvider, editorElementsRenderer, comparator);

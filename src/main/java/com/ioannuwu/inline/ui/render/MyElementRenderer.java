@@ -3,10 +3,10 @@ package com.ioannuwu.inline.ui.render;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorCustomElementRenderer;
 import com.intellij.openapi.editor.Inlay;
-import com.intellij.openapi.editor.colors.EditorFontType;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.util.ui.UIUtilities;
 import com.ioannuwu.inline.domain.render.RenderData;
+import com.ioannuwu.inline.domain.utils.FontProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -15,18 +15,23 @@ public class MyElementRenderer implements EditorCustomElementRenderer {
 
     private final @NotNull RenderData renderData;
 
-    private final @NotNull EditorFontType fontType = EditorFontType.PLAIN;
+    private final FontProvider fontProvider;
 
-    public MyElementRenderer(@NotNull RenderData renderData) {
+    public MyElementRenderer(@NotNull RenderData renderData, FontProvider fontProvider) {
         this.renderData = renderData;
+        this.fontProvider = fontProvider;
     }
 
     @Override
     public int calcWidthInPixels(@NotNull Inlay inlay) {
         Editor editor = inlay.getEditor();
-        FontMetrics fontMetrics = UIUtilities.getFontMetrics(editor.getComponent(), editor.getColorsScheme().getFont(fontType));
+
+        Font deriveFont = fontProvider.provide().deriveFont((float) editor.getColorsScheme().getEditorFontSize());
+
+        FontMetrics fontMetrics = UIUtilities.getFontMetrics(editor.getComponent(), deriveFont);
+
         if (!renderData.showText) return fontMetrics.stringWidth("     ");
-        return fontMetrics.stringWidth(renderData.description) + fontMetrics.charWidth(' ') * 3 / 2;
+        return fontMetrics.stringWidth(renderData.description) + fontMetrics.charWidth('a') * 3 / 2;
     }
 
     @Override
@@ -38,8 +43,10 @@ public class MyElementRenderer implements EditorCustomElementRenderer {
         targetRegion.height = targetRegion.height - 2 * borderMagicNumberToFixBoxBlinking;
 
         Editor editor = inlay.getEditor();
-        Font font = editor.getColorsScheme().getFont(fontType);
-        FontMetrics fontMetrics = UIUtilities.getFontMetrics(editor.getComponent(), font);
+
+        Font deriveFont = fontProvider.provide().deriveFont((float) editor.getColorsScheme().getEditorFontSize());
+
+        FontMetrics fontMetrics = UIUtilities.getFontMetrics(editor.getComponent(), deriveFont);
 
         int arc = fontMetrics.getHeight() * 4 / 10;
         int charWidth = fontMetrics.charWidth('a');
@@ -48,6 +55,8 @@ public class MyElementRenderer implements EditorCustomElementRenderer {
 
         String description = renderData.description;
 
+        g.setFont(deriveFont);
+
         if (renderData.showEffect) {
             switch (renderData.effectType) {
                 case BOX:
@@ -55,7 +64,6 @@ public class MyElementRenderer implements EditorCustomElementRenderer {
                     g.drawRoundRect(targetRegion.x, targetRegion.y, targetRegion.width, targetRegion.height, arc, arc);
                     break;
                 case SHADOW:
-                    g.setFont(font);
                     description = description + ".";
 
                     Color color = renderData.effectColor;
@@ -74,7 +82,6 @@ public class MyElementRenderer implements EditorCustomElementRenderer {
             }
         }
         if (renderData.showText) {
-            g.setFont(font);
             g.setColor(renderData.textColor);
             g.drawString(description, targetRegion.x + charWidth * 2 / 3,
                     targetRegion.y + editor.getLineHeight() * 3 / 4 - borderMagicNumberToFixBoxBlinking);

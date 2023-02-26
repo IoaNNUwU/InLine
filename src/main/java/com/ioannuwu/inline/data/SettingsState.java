@@ -12,6 +12,8 @@ public class SettingsState implements Serializable {
 
     public int maxErrorsPerLine = DefaultSettings.MAX_ERRORS_PER_LINE;
 
+    public FontSettingsState font = DefaultSettings.FONT;
+
     public SeverityLevelState error = DefaultSettings.ERROR;
     public SeverityLevelState warning = DefaultSettings.WARNING;
     public SeverityLevelState weakWarning = DefaultSettings.WEAK_WARNING;
@@ -30,13 +32,14 @@ public class SettingsState implements Serializable {
                 Objects.equals(error, that.error) && Objects.equals(warning, that.warning) &&
                 Objects.equals(weakWarning, that.weakWarning) && Objects.equals(information, that.information) &&
                 Objects.equals(serverError, that.serverError) && Objects.equals(otherError, that.otherError) &&
-                Arrays.equals(ignoreList, that.ignoreList) && Objects.equals(effectType, that.effectType);
+                Arrays.equals(ignoreList, that.ignoreList) && Objects.equals(effectType, that.effectType) &&
+                Objects.equals(font, that.font);
     }
 
     @Override
     public int hashCode() {
         int result = Objects.hash(numberOfWhitespaces, maxErrorsPerLine, error, warning, weakWarning,
-                information, serverError, otherError, effectType);
+                information, serverError, otherError, effectType, font);
         result = 31 * result + Arrays.hashCode(ignoreList);
         return result;
     }
@@ -47,6 +50,7 @@ public class SettingsState implements Serializable {
                 "\nnumberOfWhitespaces=" + numberOfWhitespaces +
                 "\neffectType=" + effectType +
                 "\nmaxErrorsPerLine=" + maxErrorsPerLine +
+                "\nfont=" + font +
                 "\nerror=" + error +
                 "\nwarning=" + warning +
                 "\nweakWarning=" + weakWarning +

@@ -2,9 +2,12 @@ package com.ioannuwu.inline.ui.settingscomponent;
 
 import com.intellij.util.ui.FormBuilder;
 import com.ioannuwu.inline.data.SettingsState;
+import com.ioannuwu.inline.ui.settingscomponent.components.*;
+import com.ioannuwu.inline.ui.settingscomponent.components.fontselectioncomponent.FontSelectionComponent;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.awt.*;
 
 public interface SettingsComponentProvider extends State<SettingsState> {
 
@@ -21,43 +24,50 @@ public interface SettingsComponentProvider extends State<SettingsState> {
             this.settingsState = settingsState;
         }
 
-        private Component.NumberOfWhitespacesComponent numberOfWhitespacesComponent;
+        private NumberOfWhitespacesComponent numberOfWhitespacesComponent;
 
-        private Component.MaxErrorsPerLineComponent maxErrorsPerLineComponent;
+        private MaxErrorsPerLineComponent maxErrorsPerLineComponent;
 
-        private Component.EffectTypeComponent effectTypeComponent;
+        private EffectTypeComponent effectTypeComponent;
 
-        private Component.SeverityLevel errorComponent;
-        private Component.SeverityLevel warningComponent;
-        private Component.SeverityLevel weakWarningComponent;
-        private Component.SeverityLevel informationComponent;
-        private Component.SeverityLevel serverErrorComponent;
-        private Component.SeverityLevel otherErrorComponent;
+        private FontSelectionComponent fontSelectionComponent;
 
-        private Component.IgnoreListComponent ignoreListComponent;
+        private SeverityLevel errorComponent;
+        private SeverityLevel warningComponent;
+        private SeverityLevel weakWarningComponent;
+        private SeverityLevel informationComponent;
+        private SeverityLevel serverErrorComponent;
+        private SeverityLevel otherErrorComponent;
+
+        private IgnoreListComponent ignoreListComponent;
 
         @Override
         public JComponent createComponent() {
-            numberOfWhitespacesComponent = new Component.NumberOfWhitespacesComponent(settingsState.numberOfWhitespaces);
+            numberOfWhitespacesComponent = new NumberOfWhitespacesComponent(settingsState.numberOfWhitespaces);
 
-            effectTypeComponent = new Component.EffectTypeComponent(settingsState.effectType);
+            effectTypeComponent = new EffectTypeComponent(settingsState.effectType);
 
-            maxErrorsPerLineComponent = new Component.MaxErrorsPerLineComponent(settingsState.maxErrorsPerLine);
+            maxErrorsPerLineComponent = new MaxErrorsPerLineComponent(settingsState.maxErrorsPerLine);
 
-            errorComponent = new Component.SeverityLevel(settingsState.error,
+            fontSelectionComponent = new FontSelectionComponent(
+                    settingsState.font.textSample,
+                    settingsState.font.fontName,
+                    GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts());
+
+            errorComponent = new SeverityLevel(settingsState.error,
                     "Error", "Compilation errors");
-            warningComponent = new Component.SeverityLevel(settingsState.warning,
+            warningComponent = new SeverityLevel(settingsState.warning,
                     "Warning", "Logic errors and big improvements");
-            weakWarningComponent = new Component.SeverityLevel(settingsState.weakWarning,
+            weakWarningComponent = new SeverityLevel(settingsState.weakWarning,
                     "Weak warning", "Small improvements");
-            informationComponent = new Component.SeverityLevel(settingsState.information,
+            informationComponent = new SeverityLevel(settingsState.information,
                     "Information", "Small information messages");
-            serverErrorComponent = new Component.SeverityLevel(settingsState.serverError,
+            serverErrorComponent = new SeverityLevel(settingsState.serverError,
                     "Server error", "Connection error");
-            otherErrorComponent = new Component.SeverityLevel(settingsState.otherError,
+            otherErrorComponent = new SeverityLevel(settingsState.otherError,
                     "Other error", "Small hints");
 
-            ignoreListComponent = new Component.IgnoreListComponent(settingsState.ignoreList);
+            ignoreListComponent = new IgnoreListComponent(settingsState.ignoreList);
 
             final FormBuilder formBuilder = FormBuilder.createFormBuilder();
 
@@ -65,6 +75,8 @@ public interface SettingsComponentProvider extends State<SettingsState> {
             maxErrorsPerLineComponent.addToBuilder(formBuilder);
 
             effectTypeComponent.addToBuilder(formBuilder);
+
+            fontSelectionComponent.addToBuilder(formBuilder);
 
             formBuilder.addComponent(new JPanel());
 
@@ -95,6 +107,8 @@ public interface SettingsComponentProvider extends State<SettingsState> {
 
             state.maxErrorsPerLine = maxErrorsPerLineComponent.getState();
 
+            state.font = fontSelectionComponent.getState();
+
             state.error = errorComponent.getState();
             state.warning = warningComponent.getState();
             state.weakWarning = weakWarningComponent.getState();
@@ -107,5 +121,4 @@ public interface SettingsComponentProvider extends State<SettingsState> {
             return state;
         }
     }
-
 }

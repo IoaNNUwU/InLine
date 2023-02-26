@@ -57,7 +57,7 @@ public class OnePerLineWithHighestPriorityMode implements Mode {
         // Render highest and put proper render elements in the highest entity
         RenderData highestRenderData = renderDataProvider.provide(highestEntity.rangeHighlighter);
         if (highestRenderData == null) {
-            // TODO render data should never be null because it filtered at the start of the method
+            // render data should never be null because it filtered at the start of the method
             // but for some reason that works
             return;
         }
@@ -101,7 +101,7 @@ public class OnePerLineWithHighestPriorityMode implements Mode {
         RenderData renderData = renderDataProvider.provide(highestEntity.rangeHighlighter);
 
         if (renderData == null) {
-            // TODO render data should never be null because it filtered at the start of afterAdded method
+            // render data should never be null because it filtered at the start of afterAdded method
             // but for some reason that works
             return;
         }
