@@ -8,8 +8,8 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 
 @State(
-  name = "com.ioannuwu.intellijerrors.data.SettingsState",
-  storages = @Storage("com.ioannuwu.intellijerrors.Settings.xml")
+  name = "com.ioannuwu.inline.data.SettingsState",
+  storages = @Storage("com.ioannuwu.inline.Settings.xml")
 )
 public class MySettingsService implements PersistentStateComponent<SettingsState> {
 

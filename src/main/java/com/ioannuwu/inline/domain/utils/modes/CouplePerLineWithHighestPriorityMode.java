@@ -27,6 +27,7 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
         this.comparator = comparator;
     }
 
+    @SuppressWarnings("unchecked cast")
     @Override
     public void afterAdded(RangeHighlighter highlighter) {
         RenderData myData = renderDataProvider.provide(highlighter);
