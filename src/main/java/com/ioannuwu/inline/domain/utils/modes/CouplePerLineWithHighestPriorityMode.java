@@ -95,6 +95,7 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
         for (final var myEntity : top) {
             RenderData data = renderDataProvider.provide(myEntity.rangeHighlighter);
             if (data == null) continue; // WHY
+            if (myEntity.rangeHighlighter.getStartOffset() <= 0) continue;
             myEntity.renderElements = editorElementsRenderer.render(data, myEntity.rangeHighlighter.getStartOffset());
         }
     }
