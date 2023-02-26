@@ -3,6 +3,7 @@ package com.ioannuwu.inline.ui.render;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorCustomElementRenderer;
 import com.intellij.openapi.editor.Inlay;
+import com.intellij.openapi.editor.colors.EditorFontType;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.util.ui.UIUtilities;
 import com.ioannuwu.inline.domain.render.RenderData;
@@ -26,7 +27,10 @@ public class MyElementRenderer implements EditorCustomElementRenderer {
     public int calcWidthInPixels(@NotNull Inlay inlay) {
         Editor editor = inlay.getEditor();
 
-        Font deriveFont = fontProvider.provide().deriveFont((float) editor.getColorsScheme().getEditorFontSize());
+        Font font = fontProvider.provide();
+        if (font == null) font = inlay.getEditor().getColorsScheme().getFont(EditorFontType.PLAIN);
+
+        Font deriveFont = deriveFont(font, (float) editor.getColorsScheme().getEditorFontSize());
 
         FontMetrics fontMetrics = UIUtilities.getFontMetrics(editor.getComponent(), deriveFont);
 
@@ -44,7 +48,10 @@ public class MyElementRenderer implements EditorCustomElementRenderer {
 
         Editor editor = inlay.getEditor();
 
-        Font deriveFont = fontProvider.provide().deriveFont((float) editor.getColorsScheme().getEditorFontSize());
+        Font font = fontProvider.provide();
+        if (font == null) font = inlay.getEditor().getColorsScheme().getFont(EditorFontType.PLAIN);
+
+        Font deriveFont = deriveFont(font, (float) editor.getColorsScheme().getEditorFontSize());
 
         FontMetrics fontMetrics = UIUtilities.getFontMetrics(editor.getComponent(), deriveFont);
 
@@ -86,5 +93,9 @@ public class MyElementRenderer implements EditorCustomElementRenderer {
             g.drawString(description, targetRegion.x + charWidth * 2 / 3,
                     targetRegion.y + editor.getLineHeight() * 3 / 4 - borderMagicNumberToFixBoxBlinking);
         }
+    }
+
+    private static Font deriveFont(Font font, float size) {
+        return font.deriveFont(size + 1);
     }
 }

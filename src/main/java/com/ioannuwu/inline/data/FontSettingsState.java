@@ -1,8 +1,9 @@
 package com.ioannuwu.inline.data;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class FontSettingsState {
+public class FontSettingsState implements Serializable {
 
     public FontSettingsState() {}
 

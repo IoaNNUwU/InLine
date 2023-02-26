@@ -1,9 +1,9 @@
 package com.ioannuwu.inline.domain.utils;
 
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
 public interface FontProvider {
-    @NotNull Font provide();
+    @Nullable Font provide();
 }
