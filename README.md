@@ -8,7 +8,7 @@
 
 * Errors are filtered on the line by priority
 * Supports different fonts for languages compatibility 
-  * If you have Chinese symbols shown incorrectly, select compatible font in plugin settings
+* If you have Chinese symbols shown incorrectly, select compatible font in plugin settings
 
 <kbd>Settings</kbd> > <kbd>Appearance & Behaviour</kbd> > <kbd>⚙ InLine</kbd>
 ### In plugin settings you can:
