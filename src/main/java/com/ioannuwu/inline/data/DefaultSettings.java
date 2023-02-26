@@ -12,7 +12,7 @@ public class DefaultSettings {
 
     public static final int MAX_ERRORS_PER_LINE = 2;
 
-    public static final FontSettingsState FONT = new FontSettingsState("JetBrains Mono", "world");
+    public static final FontSettingsState FONT = new FontSettingsState("Dialog.plain", "hello");
 
     public static final SeverityLevelState ERROR = defaultSeverityLevelState(new Color(183, 43, 43));
     public static final SeverityLevelState WARNING = defaultSeverityLevelState(new Color(189, 115, 37));

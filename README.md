@@ -20,7 +20,7 @@
 * Change font of the hints
 * Ignore some errors by description
 
-![](https://raw.githubusercontent.com/IoaNNUwU/InLine/main/media/example.png)
+![](https://raw.githubusercontent.com/IoaNNUwU/InLine/main/media/github_example.png)
 
 ### Inspired by
 * [Inspection Lens](https://plugins.jetbrains.com/plugin/19678-inspection-lens) - Plugin I've used before.
