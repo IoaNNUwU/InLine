@@ -1,9 +1,9 @@
 package com.ioannuwu.inline.domain.utils.modes;
 
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.editor.markup.RangeHighlighter;
 import com.ioannuwu.inline.domain.render.RenderData;
-import com.ioannuwu.inline.domain.render.RenderElements;
 import com.ioannuwu.inline.domain.utils.RenderDataProvider;
 import com.ioannuwu.inline.ui.render.EditorElementsRenderer;
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 
 public class OnePerLineWithHighestPriorityMode implements Mode {
 
@@ -74,7 +75,7 @@ public class OnePerLineWithHighestPriorityMode implements Mode {
         if (finalEntity == null) return; // if not in the list ignore - RETURN
         // RangeHighlighter highlighter is in the list
         int currentLine = finalEntity.initialLine;
-        RenderElements elements = finalEntity.renderElements;
+        Set<Disposable> elements = finalEntity.renderElements;
         // In any scenario should UNRENDER and REMOVE this highlighter
         editorElementsRenderer.unRender(elements);
         list.remove(finalEntity);
@@ -119,9 +120,9 @@ public class OnePerLineWithHighestPriorityMode implements Mode {
         public final @NotNull RangeHighlighter rangeHighlighter;
         public final int initialLine;
 
-        public @Nullable RenderElements renderElements;
+        public @Nullable Set<Disposable> renderElements;
 
-        private Entity(@NotNull RangeHighlighter rangeHighlighter, int initialLine, @Nullable RenderElements renderElements) {
+        private Entity(@NotNull RangeHighlighter rangeHighlighter, int initialLine, @Nullable Set<Disposable> renderElements) {
             this.rangeHighlighter = rangeHighlighter;
             this.initialLine = initialLine;
             this.renderElements = renderElements;

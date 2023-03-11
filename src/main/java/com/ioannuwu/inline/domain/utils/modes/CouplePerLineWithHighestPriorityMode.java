@@ -1,15 +1,12 @@
 package com.ioannuwu.inline.domain.utils.modes;
 
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.editor.markup.RangeHighlighter;
 import com.ioannuwu.inline.domain.render.RenderData;
-import com.ioannuwu.inline.domain.render.RenderElements;
 import com.ioannuwu.inline.domain.utils.RenderDataProvider;
 import com.ioannuwu.inline.ui.render.EditorElementsRenderer;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CouplePerLineWithHighestPriorityMode implements Mode {
@@ -72,7 +69,7 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
         if (myData == null) return; // WHY
 
         int currentLine = entity.initialLine;
-        RenderElements elements = entity.renderElements;
+        Set<Disposable> elements = entity.renderElements;
         editorElementsRenderer.unRender(elements);
         list.remove(entity);
 

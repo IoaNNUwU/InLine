@@ -1,16 +1,19 @@
 package com.ioannuwu.inline.ui.render;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.Inlay;
-import com.intellij.openapi.editor.markup.RangeHighlighter;
 import com.intellij.openapi.util.Disposer;
+import com.ioannuwu.inline.domain.render.RangeHighlighterAdapter;
 import com.ioannuwu.inline.domain.render.RenderData;
 import com.ioannuwu.inline.domain.utils.FontProvider;
 import com.ioannuwu.inline.domain.utils.MyTextAttributes;
-import com.ioannuwu.inline.domain.render.RenderElements;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class EditorElementsRendererImpl implements EditorElementsRenderer {
 
@@ -23,34 +26,43 @@ public class EditorElementsRendererImpl implements EditorElementsRenderer {
     }
 
     @Override
-    public @NotNull RenderElements render(@NotNull RenderData renderData, int startOffset) {
+    public @NotNull Set<Disposable> render(@NotNull RenderData renderData, int startOffset) {
 
         int lineNumber = editor.getDocument().getLineNumber(startOffset);
 
-        RangeHighlighter lineHighlighterWithGutterIcon = null;
-        Inlay<MyElementRenderer> inlay = null;
+        int lineEndOffset = editor.getDocument().getLineEndOffset(lineNumber);
+        int lineStartOffset = editor.getDocument().getLineStartOffset(lineNumber);
+
+        Set<Disposable> renderElements = new HashSet<>();
 
         if (renderData.showBackground || renderData.showGutterIcon) {
-            lineHighlighterWithGutterIcon = editor.getMarkupModel()
-                    .addLineHighlighter(lineNumber, 0,
-                            new MyTextAttributes(renderData.showBackground ? renderData.backgroundColor : null));
+            var lineHighlighter = editor.getMarkupModel().addLineHighlighter(lineNumber, 0,
+                    new MyTextAttributes(renderData.showBackground ? renderData.backgroundColor : null));
 
-            if (renderData.showGutterIcon)
-                lineHighlighterWithGutterIcon.setGutterIconRenderer(
+            renderElements.add(new RangeHighlighterAdapter(lineHighlighter));
+
+            if (renderData.showGutterIcon) // TODO adds icon to existing highlighter
+                lineHighlighter.setGutterIconRenderer(
                         new MyGutterRenderer(renderData.icon != null ? renderData.icon : AllIcons.General.Gear));
         }
         if (renderData.showText || renderData.showEffect) {
-            inlay = editor.getInlayModel().addAfterLineEndElement(
+            var inlay = editor.getInlayModel().addAfterLineEndElement(
                     startOffset, false,
                     new MyElementRenderer(renderData, fontProvider));
+            // TODO change inlay style to multiline
+
+            renderElements.add(inlay);
         }
-        return new RenderElements(inlay, lineHighlighterWithGutterIcon);
+        return renderElements;
     }
 
     @Override
-    public void unRender(@Nullable RenderElements elements) {
+    public void unRender(@Nullable Collection<Disposable> elements) {
         if (elements == null) return;
-        if (elements.inlay != null) Disposer.dispose(elements.inlay);
-        if (elements.lineHighlighter != null) elements.lineHighlighter.dispose();
+        if (elements.isEmpty()) return;
+
+        for (var elem : elements) {
+            Disposer.dispose(elem);
+        }
     }
 }

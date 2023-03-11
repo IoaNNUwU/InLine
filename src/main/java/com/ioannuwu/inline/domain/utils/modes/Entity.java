@@ -1,19 +1,20 @@
 package com.ioannuwu.inline.domain.utils.modes;
 
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.editor.markup.RangeHighlighter;
-import com.ioannuwu.inline.domain.render.RenderElements;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.Set;
 
 public class Entity {
     public final @NotNull RangeHighlighter rangeHighlighter;
     public final int initialLine;
 
-    public @Nullable RenderElements renderElements;
+    public @Nullable Set<Disposable> renderElements;
 
-    public Entity(@NotNull RangeHighlighter rangeHighlighter, int initialLine, @Nullable RenderElements renderElements) {
+    public Entity(@NotNull RangeHighlighter rangeHighlighter, int initialLine, @Nullable Set<Disposable> renderElements) {
         this.rangeHighlighter = rangeHighlighter;
         this.initialLine = initialLine;
         this.renderElements = renderElements;
