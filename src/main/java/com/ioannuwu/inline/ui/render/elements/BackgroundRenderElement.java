@@ -21,8 +21,8 @@ public class BackgroundRenderElement implements RenderElement {
 
     @Override
     public Disposable render() {
-        var lineHighlighter = markupModel.addLineHighlighter(lineNumber, 0,
-                new MyTextAttributes(color));
+        var lineHighlighter = markupModel.addLineHighlighter(lineNumber,
+                0, new MyTextAttributes(color));
 
         return new RangeHighlighterAdapter(lineHighlighter);
     }

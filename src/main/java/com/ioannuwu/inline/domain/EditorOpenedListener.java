@@ -12,13 +12,15 @@ import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.ioannuwu.inline.data.MySettingsService;
-import com.ioannuwu.inline.domain.utils.*;
+import com.ioannuwu.inline.domain.utils.FontProvider;
+import com.ioannuwu.inline.domain.utils.MaxPerLine;
+import com.ioannuwu.inline.domain.utils.RenderDataProvider;
+import com.ioannuwu.inline.domain.utils.RenderElementsProvider;
 import com.ioannuwu.inline.domain.utils.modes.CouplePerLineWithHighestPriorityMode;
 import com.ioannuwu.inline.domain.utils.modes.Entity;
 import com.ioannuwu.inline.domain.utils.modes.EntityComparator;
 import com.ioannuwu.inline.domain.utils.modes.Mode;
 import com.ioannuwu.inline.ui.render.EditorElementsRenderer;
-import com.ioannuwu.inline.ui.render.EditorElementsRendererImpl;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -29,10 +31,10 @@ public class EditorOpenedListener implements FileEditorManagerListener {
 
     private static final MySettingsService settingsService = MySettingsService.getInstance();
 
-    private static final FontProvider fontProvider = new FontProviderBySettings(settingsService,
+    private static final FontProvider fontProvider = new FontProvider.BySettings(settingsService,
             GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts());
 
-    private static final RenderDataProvider renderDataProvider = new RenderDataProviderBySettings(settingsService);
+    private static final RenderDataProvider renderDataProvider = new RenderDataProvider.BySettings(settingsService);
 
     private static final Comparator<Entity> comparator = new EntityComparator.BySeverity()
             .thenComparing(new EntityComparator.ByOffset().reversed());
@@ -52,8 +54,8 @@ public class EditorOpenedListener implements FileEditorManagerListener {
             MarkupModelEx markupModelEx = (MarkupModelEx) markupModel;
 
             Mode mode = new CouplePerLineWithHighestPriorityMode(
-                    new RenderElementsProviderBySettings(renderDataProvider, fontProvider, textEditor.getEditor()),
-                    new EditorElementsRendererImpl(), new MaxPerLineImpl(settingsService), comparator);
+                    new RenderElementsProvider.BySettings(renderDataProvider, fontProvider, textEditor.getEditor()),
+                    new EditorElementsRenderer.Impl(), new MaxPerLine.BySettings(settingsService), comparator);
 
             ElementsRendererMarkupModelListener markupModelListener = new ElementsRendererMarkupModelListener(mode);
 

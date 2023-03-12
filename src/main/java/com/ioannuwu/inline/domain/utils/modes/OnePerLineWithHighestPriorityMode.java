@@ -3,8 +3,7 @@ package com.ioannuwu.inline.domain.utils.modes;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.editor.markup.RangeHighlighter;
-import com.ioannuwu.inline.domain.utils.RenderDataProvider;
-import com.ioannuwu.inline.domain.utils.RenderElementsProviderBySettings;
+import com.ioannuwu.inline.domain.utils.RenderElementsProvider;
 import com.ioannuwu.inline.ui.render.EditorElementsRenderer;
 import com.ioannuwu.inline.ui.render.elements.RenderElement;
 import org.jetbrains.annotations.NotNull;
@@ -18,11 +17,11 @@ import java.util.Set;
 public class OnePerLineWithHighestPriorityMode implements Mode {
 
     private final EditorElementsRenderer editorElementsRenderer;
-    private final RenderElementsProviderBySettings renderDataProvider;
+    private final RenderElementsProvider renderDataProvider;
 
     private final ArrayList<Entity> list = new ArrayList<>();
 
-    public OnePerLineWithHighestPriorityMode(RenderElementsProviderBySettings renderDataProvider,
+    public OnePerLineWithHighestPriorityMode(RenderElementsProvider renderDataProvider,
                                              EditorElementsRenderer editorElementsRenderer) {
         this.editorElementsRenderer = editorElementsRenderer;
         this.renderDataProvider = renderDataProvider;

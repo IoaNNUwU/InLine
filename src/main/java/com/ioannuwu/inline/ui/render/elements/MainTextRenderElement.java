@@ -3,8 +3,8 @@ package com.ioannuwu.inline.ui.render.elements;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.editor.InlayModel;
 import com.ioannuwu.inline.ui.render.MyElementRenderer;
-import com.ioannuwu.inline.ui.render.elements.components.GraphicsComponent;
-import com.ioannuwu.inline.ui.render.elements.components.TextComponent;
+import com.ioannuwu.inline.ui.render.elements.graphiccomponents.GraphicsComponent;
+import com.ioannuwu.inline.ui.render.elements.graphiccomponents.TextComponent;
 
 import java.util.Collection;
 

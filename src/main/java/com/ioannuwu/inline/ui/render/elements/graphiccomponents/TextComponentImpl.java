@@ -1,4 +1,4 @@
-package com.ioannuwu.inline.ui.render.elements.components;
+package com.ioannuwu.inline.ui.render.elements.graphiccomponents;
 
 import com.intellij.openapi.editor.Inlay;
 import com.intellij.openapi.editor.markup.TextAttributes;

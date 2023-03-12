@@ -1,4 +1,4 @@
-package com.ioannuwu.inline.ui.render.elements.components;
+package com.ioannuwu.inline.ui.render.elements.graphiccomponents;
 
 public interface PrettyWidth {
     /**
