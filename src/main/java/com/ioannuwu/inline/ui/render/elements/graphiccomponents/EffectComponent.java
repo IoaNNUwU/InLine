@@ -23,8 +23,15 @@ public interface EffectComponent extends GraphicsComponent {
 
         @Override
         public void draw(@NotNull Inlay inlay, @NotNull Graphics g, @NotNull Rectangle targetRegion, @NotNull TextAttributes textAttributes) {
+            int magicNumberToFixBoxBlinking = 1;
+
             g.setColor(color);
-            g.drawRoundRect(targetRegion.x, targetRegion.y, targetRegion.width, targetRegion.height, arc, arc);
+            g.drawRoundRect(
+                    targetRegion.x + targetRegion.width / 30, // TODO
+                    targetRegion.y + magicNumberToFixBoxBlinking,
+                    targetRegion.width - 2 * magicNumberToFixBoxBlinking,
+                    targetRegion.height - 2 * magicNumberToFixBoxBlinking,
+                    arc, arc);
         }
     }
 
@@ -61,6 +68,8 @@ public interface EffectComponent extends GraphicsComponent {
             String tempText = text + '.';
 
             int borderMagicNumberToFixBoxBlinking = 2;
+
+            g.setFont(deriveFont);
 
             int charWidth = fontMetrics.charWidth('a');
             // Right shadow

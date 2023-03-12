@@ -4,6 +4,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.colors.EditorFontType;
 import com.intellij.openapi.editor.markup.RangeHighlighter;
 import com.intellij.util.ui.UIUtilities;
+import com.ioannuwu.inline.data.EffectType;
 import com.ioannuwu.inline.ui.render.elements.BackgroundRenderElement;
 import com.ioannuwu.inline.ui.render.elements.GutterRenderElement;
 import com.ioannuwu.inline.ui.render.elements.MainTextRenderElement;
@@ -11,7 +12,7 @@ import com.ioannuwu.inline.ui.render.elements.RenderElement;
 import com.ioannuwu.inline.ui.render.elements.graphiccomponents.EffectComponent;
 import com.ioannuwu.inline.ui.render.elements.graphiccomponents.FontData;
 import com.ioannuwu.inline.ui.render.elements.graphiccomponents.GraphicsComponent;
-import com.ioannuwu.inline.ui.render.elements.graphiccomponents.TextComponentImpl;
+import com.ioannuwu.inline.ui.render.elements.graphiccomponents.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -56,7 +57,7 @@ public interface RenderElementsProvider {
                 Font font = fontProvider.provide();
                 float fontSize = (float) editor.getColorsScheme().getEditorFontSize() + 1;
                 Font deriveFont = (font == null) ? editor.getColorsScheme().getFont(EditorFontType.PLAIN) :
-                        font.deriveFont((float) editor.getColorsScheme().getEditorFontSize() + 1);
+                        font.deriveFont((float) editor.getColorsScheme().getEditorFontSize());
                 FontMetrics fontMetrics = UIUtilities.getFontMetrics(editor.getComponent(), deriveFont);
 
                 FontData fontData = new FontData(deriveFont, fontSize, fontMetrics, editor.getLineHeight());
@@ -70,10 +71,12 @@ public interface RenderElementsProvider {
                     }
                 }
 
+                TextComponent textComponent = (renderData.showEffect && renderData.effectType == EffectType.BOX) ?
+                        new TextComponent.Base(fontData, renderData.textColor, renderData.description) :
+                        new TextComponent.WithDotAtTheEnd(fontData, renderData.textColor, renderData.description);
+
                 RenderElement mainRenderElement = new MainTextRenderElement(
-                        set, new TextComponentImpl(
-                        fontData, renderData.textColor, renderData.description
-                ), editor.getInlayModel(), rangeHighlighter.getStartOffset());
+                        set, textComponent, editor.getInlayModel(), rangeHighlighter.getStartOffset());
 
                 list.add(mainRenderElement);
             }

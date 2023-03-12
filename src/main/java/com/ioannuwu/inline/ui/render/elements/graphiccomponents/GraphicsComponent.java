@@ -13,6 +13,9 @@ public interface GraphicsComponent {
 
     GraphicsComponent EMPTY = new GraphicsComponent() { };
 
+    /**
+     * @param targetRegion should not be modified
+     */
     default void draw(@NotNull Inlay inlay, @NotNull Graphics g, @NotNull Rectangle targetRegion,
                       @NotNull TextAttributes textAttributes) { }
 }
