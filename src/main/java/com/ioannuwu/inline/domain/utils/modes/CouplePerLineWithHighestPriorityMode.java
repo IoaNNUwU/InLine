@@ -1,37 +1,40 @@
 package com.ioannuwu.inline.domain.utils.modes;
 
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.editor.markup.RangeHighlighter;
-import com.ioannuwu.inline.domain.render.RenderData;
-import com.ioannuwu.inline.domain.render.RenderElements;
-import com.ioannuwu.inline.domain.utils.RenderDataProvider;
+import com.ioannuwu.inline.domain.utils.MaxPerLine;
+import com.ioannuwu.inline.domain.utils.RenderElementsProvider;
 import com.ioannuwu.inline.ui.render.EditorElementsRenderer;
+import com.ioannuwu.inline.ui.render.elements.RenderElement;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CouplePerLineWithHighestPriorityMode implements Mode {
 
     private final EditorElementsRenderer editorElementsRenderer;
-    private final RenderDataProvider renderDataProvider;
+    private final RenderElementsProvider renderElementsProvider;
+
+    private final MaxPerLine maxPerLine;
 
     private final Comparator<Entity> comparator;
 
     private final ArrayList<Entity> list = new ArrayList<>();
 
-    public CouplePerLineWithHighestPriorityMode(RenderDataProvider renderDataProvider, EditorElementsRenderer editorElementsRenderer, Comparator<Entity> comparator) {
+    public CouplePerLineWithHighestPriorityMode(RenderElementsProvider renderElementsProvider,
+                                                EditorElementsRenderer editorElementsRenderer,
+                                                MaxPerLine maxPerLine, Comparator<Entity> comparator) {
         this.editorElementsRenderer = editorElementsRenderer;
-        this.renderDataProvider = renderDataProvider;
+        this.renderElementsProvider = renderElementsProvider;
+        this.maxPerLine = maxPerLine;
         this.comparator = comparator;
     }
 
     @SuppressWarnings("unchecked cast")
     @Override
     public void afterAdded(RangeHighlighter highlighter) {
-        RenderData myData = renderDataProvider.provide(highlighter);
-        if (myData == null) return; // Ignore redundant
+        Collection<RenderElement> renderElements = renderElementsProvider.provide(highlighter);
+        if (renderElements.isEmpty()) return; // Ignore redundant
 
         int currentLine = highlighter.getDocument().getLineNumber(highlighter.getStartOffset());
 
@@ -50,15 +53,15 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
         });
 
         List<Entity> top = entitiesOnCurrentLineSorted.stream()
-                .limit(myData.maxErrorsPerLine)
+                .limit(maxPerLine.maxPerLine())
                 .collect(Collectors.toList());
 
         for (final var entity : top) {
-            RenderData data = renderDataProvider.provide(entity.rangeHighlighter);
-            if (data == null) continue; // WHY
+            Collection<RenderElement> elements = renderElementsProvider.provide(entity.rangeHighlighter);
+            if (elements.isEmpty()) continue; // WHY
             int startOffset = entity.rangeHighlighter.getStartOffset();
             if (startOffset > highlighter.getDocument().getTextLength()) return;
-            entity.renderElements = editorElementsRenderer.render(data, startOffset);
+            entity.renderElements = editorElementsRenderer.render(elements, startOffset);
         }
     }
 
@@ -68,11 +71,11 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
         if (opEntity.isEmpty()) return;
         Entity entity = opEntity.get();
 
-        RenderData myData = renderDataProvider.provide(highlighter);
-        if (myData == null) return; // WHY
+        Collection<RenderElement> renderElements = renderElementsProvider.provide(highlighter);
+        if (renderElements.isEmpty()) return; // WHY
 
         int currentLine = entity.initialLine;
-        RenderElements elements = entity.renderElements;
+        Set<Disposable> elements = entity.renderElements;
         editorElementsRenderer.unRender(elements);
         list.remove(entity);
 
@@ -90,14 +93,14 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
         });
 
         List<Entity> top = entitiesOnCurrentLineSorted.stream()
-                .limit(myData.maxErrorsPerLine)
+                .limit(maxPerLine.maxPerLine())
                 .collect(Collectors.toList());
 
         for (final var myEntity : top) {
-            RenderData data = renderDataProvider.provide(myEntity.rangeHighlighter);
-            if (data == null) continue; // WHY
+            Collection<RenderElement> elementCollection = renderElementsProvider.provide(myEntity.rangeHighlighter);
+            if (elementCollection.isEmpty()) continue; // WHY
             if (myEntity.rangeHighlighter.getStartOffset() <= 0) continue;
-            myEntity.renderElements = editorElementsRenderer.render(data, myEntity.rangeHighlighter.getStartOffset());
+            myEntity.renderElements = editorElementsRenderer.render(elementCollection, myEntity.rangeHighlighter.getStartOffset());
         }
     }
 }

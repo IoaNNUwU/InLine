@@ -1,33 +1,36 @@
 package com.ioannuwu.inline.domain.utils.modes;
 
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.editor.markup.RangeHighlighter;
-import com.ioannuwu.inline.domain.render.RenderData;
-import com.ioannuwu.inline.domain.render.RenderElements;
-import com.ioannuwu.inline.domain.utils.RenderDataProvider;
+import com.ioannuwu.inline.domain.utils.RenderElementsProvider;
 import com.ioannuwu.inline.ui.render.EditorElementsRenderer;
+import com.ioannuwu.inline.ui.render.elements.RenderElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 public class OnePerLineWithHighestPriorityMode implements Mode {
 
     private final EditorElementsRenderer editorElementsRenderer;
-    private final RenderDataProvider renderDataProvider;
+    private final RenderElementsProvider renderDataProvider;
 
     private final ArrayList<Entity> list = new ArrayList<>();
 
-    public OnePerLineWithHighestPriorityMode(RenderDataProvider renderDataProvider, EditorElementsRenderer editorElementsRenderer) {
+    public OnePerLineWithHighestPriorityMode(RenderElementsProvider renderDataProvider,
+                                             EditorElementsRenderer editorElementsRenderer) {
         this.editorElementsRenderer = editorElementsRenderer;
         this.renderDataProvider = renderDataProvider;
     }
 
     @Override
     public void afterAdded(RangeHighlighter highlighter) {
-        RenderData renderData = renderDataProvider.provide(highlighter);
-        if (renderData == null) return; // Ignore redundant
+        Collection<RenderElement> renderElements = renderDataProvider.provide(highlighter);
+        if (renderElements.isEmpty()) return; // Ignore redundant
 
         int currentLine = highlighter.getDocument().getLineNumber(highlighter.getStartOffset());
         // Add current entity to the list
@@ -55,13 +58,11 @@ public class OnePerLineWithHighestPriorityMode implements Mode {
             editorElementsRenderer.unRender(entity.renderElements);
         }
         // Render highest and put proper render elements in the highest entity
-        RenderData highestRenderData = renderDataProvider.provide(highestEntity.rangeHighlighter);
-        if (highestRenderData == null) {
-            // render data should never be null because it filtered at the start of the method
-            // but for some reason that works
+        Collection<RenderElement> highestRenderElements = renderDataProvider.provide(highestEntity.rangeHighlighter);
+        if (highestRenderElements.isEmpty()) {
             return;
         }
-        highestEntity.renderElements = editorElementsRenderer.render(highestRenderData, highestEntity.rangeHighlighter.getStartOffset());
+        highestEntity.renderElements = editorElementsRenderer.render(highestRenderElements, highestEntity.rangeHighlighter.getStartOffset());
     }
 
     @Override
@@ -74,7 +75,7 @@ public class OnePerLineWithHighestPriorityMode implements Mode {
         if (finalEntity == null) return; // if not in the list ignore - RETURN
         // RangeHighlighter highlighter is in the list
         int currentLine = finalEntity.initialLine;
-        RenderElements elements = finalEntity.renderElements;
+        Set<Disposable> elements = finalEntity.renderElements;
         // In any scenario should UNRENDER and REMOVE this highlighter
         editorElementsRenderer.unRender(elements);
         list.remove(finalEntity);
@@ -98,11 +99,9 @@ public class OnePerLineWithHighestPriorityMode implements Mode {
             }
         }
         assert highestEntity != null; // because set was NOT EMPTY
-        RenderData renderData = renderDataProvider.provide(highestEntity.rangeHighlighter);
+        Collection<RenderElement> renderElements = renderDataProvider.provide(highestEntity.rangeHighlighter);
 
-        if (renderData == null) {
-            // render data should never be null because it filtered at the start of afterAdded method
-            // but for some reason that works
+        if (renderElements.isEmpty()) {
             return;
         }
 
@@ -112,16 +111,17 @@ public class OnePerLineWithHighestPriorityMode implements Mode {
             entity.renderElements = null;
         }
         // Render the highest highlighter and put in the highest entity
-        highestEntity.renderElements = editorElementsRenderer.render(renderData, highestEntity.rangeHighlighter.getStartOffset());
+        highestEntity.renderElements = editorElementsRenderer.render(renderElements,
+                highestEntity.rangeHighlighter.getStartOffset());
     }
 
     private static class Entity {
         public final @NotNull RangeHighlighter rangeHighlighter;
         public final int initialLine;
 
-        public @Nullable RenderElements renderElements;
+        public @Nullable Set<Disposable> renderElements;
 
-        private Entity(@NotNull RangeHighlighter rangeHighlighter, int initialLine, @Nullable RenderElements renderElements) {
+        private Entity(@NotNull RangeHighlighter rangeHighlighter, int initialLine, @Nullable Set<Disposable> renderElements) {
             this.rangeHighlighter = rangeHighlighter;
             this.initialLine = initialLine;
             this.renderElements = renderElements;
