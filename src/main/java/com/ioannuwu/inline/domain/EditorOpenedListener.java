@@ -12,7 +12,6 @@ import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.ioannuwu.inline.data.MySettingsService;
-import com.ioannuwu.inline.domain.utils.FontProvider;
 import com.ioannuwu.inline.domain.utils.MaxPerLine;
 import com.ioannuwu.inline.domain.utils.RenderDataProvider;
 import com.ioannuwu.inline.domain.utils.RenderElementsProvider;
@@ -31,8 +30,7 @@ public class EditorOpenedListener implements FileEditorManagerListener {
 
     private static final MySettingsService settingsService = MySettingsService.getInstance();
 
-    private static final FontProvider fontProvider = new FontProvider.BySettings(settingsService,
-            GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts());
+    private static final GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 
     private static final RenderDataProvider renderDataProvider = new RenderDataProvider.BySettings(settingsService);
 
@@ -54,7 +52,8 @@ public class EditorOpenedListener implements FileEditorManagerListener {
             MarkupModelEx markupModelEx = (MarkupModelEx) markupModel;
 
             Mode mode = new CouplePerLineWithHighestPriorityMode(
-                    new RenderElementsProvider.BySettings(renderDataProvider, fontProvider, textEditor.getEditor()),
+                    new RenderElementsProvider.BySettings(renderDataProvider, textEditor.getEditor(),
+                            settingsService, graphicsEnvironment),
                     new EditorElementsRenderer.Impl(), new MaxPerLine.BySettings(settingsService), comparator);
 
             ElementsRendererMarkupModelListener markupModelListener = new ElementsRendererMarkupModelListener(mode);

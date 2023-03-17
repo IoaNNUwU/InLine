@@ -27,9 +27,10 @@ public class MyElementRenderer implements EditorCustomElementRenderer {
 
     @Override
     public void paint(@NotNull Inlay inlay, @NotNull Graphics g, @NotNull Rectangle targetRegion, @NotNull TextAttributes textAttributes) {
-        textComponent.draw(inlay, g, targetRegion, textAttributes);
         for (var comp : graphicComponents) {
             comp.draw(inlay, g, targetRegion, textAttributes);
         }
+        // text component should be rendered last
+        textComponent.draw(inlay, g, targetRegion, textAttributes);
     }
 }

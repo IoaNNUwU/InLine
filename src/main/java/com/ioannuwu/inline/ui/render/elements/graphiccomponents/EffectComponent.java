@@ -3,7 +3,6 @@ package com.ioannuwu.inline.ui.render.elements.graphiccomponents;
 import com.intellij.openapi.editor.Inlay;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
@@ -13,12 +12,15 @@ public interface EffectComponent extends GraphicsComponent {
 
     class Box implements EffectComponent {
 
+        private final FontData fontData;
+
         private final Color color;
         private final int arc;
 
-        public Box(Color color, FontMetrics fontMetrics) {
+        public Box(Color color, FontData fontData) {
             this.color = color;
-            this.arc = fontMetrics.getHeight() * 4 / 10;
+            this.arc = fontData.lineHeight() * 4 / 10;
+            this.fontData = fontData;
         }
 
         @Override
@@ -27,9 +29,9 @@ public interface EffectComponent extends GraphicsComponent {
 
             g.setColor(color);
             g.drawRoundRect(
-                    targetRegion.x + targetRegion.width / 30, // TODO
+                    targetRegion.x + fontData.fontMetrics().charWidth('a'),
                     targetRegion.y + magicNumberToFixBoxBlinking,
-                    targetRegion.width - 2 * magicNumberToFixBoxBlinking,
+                    targetRegion.width,
                     targetRegion.height - 2 * magicNumberToFixBoxBlinking,
                     arc, arc);
         }
@@ -37,49 +39,35 @@ public interface EffectComponent extends GraphicsComponent {
 
     class Shadow implements EffectComponent {
 
-        private final Font deriveFont;
-        private final FontMetrics fontMetrics;
+        protected final FontData fontData;
 
-        private final Color color;
-        private final String text;
+        protected final Color color;
+        protected final String text;
 
-        private final int lineHeight;
+        protected final PrettyWidth widthProvider;
 
-        public Shadow(@NotNull Font font, float editorFontSize, @NotNull FontMetrics fontMetrics, int lineHeight,
-                                 @Nullable Color color, @Nullable String text) {
-            this.deriveFont = font.deriveFont(editorFontSize + 1);
-            this.fontMetrics = fontMetrics;
+        public Shadow(@NotNull FontData fontData, @NotNull Color color, @NotNull String text, PrettyWidth widthProvider) {
+            this.fontData = fontData;
             this.color = color;
             this.text = text;
-            this.lineHeight = lineHeight;
-        }
-
-        public Shadow(@NotNull FontData fontData,
-                       @Nullable Color color, @Nullable String text) {
-            this.deriveFont = fontData.font.deriveFont(fontData.editorFontSize + 1);
-            this.fontMetrics = fontData.fontMetrics;
-            this.color = color;
-            this.text = text;
-            this.lineHeight = fontData.lineHeight;
+            this.widthProvider = widthProvider;
         }
 
         @Override
-        public void draw(@NotNull Inlay inlay, @NotNull Graphics g, @NotNull Rectangle targetRegion, @NotNull TextAttributes textAttributes) {
-            String tempText = text + '.';
+        public void draw(@NotNull Inlay inlay, @NotNull Graphics g, @NotNull Rectangle targetRegion,
+                         @NotNull TextAttributes textAttributes) {
 
-            int borderMagicNumberToFixBoxBlinking = 2;
+            g.setFont(fontData.font());
+            g.setColor(color);
 
-            g.setFont(deriveFont);
+            double centerX = widthProvider.width() / 2f + targetRegion.x;
 
-            int charWidth = fontMetrics.charWidth('a');
-            // Right shadow
-            g.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 200).darker());
-            g.drawString(tempText, targetRegion.x + charWidth * 2 / 3 + charWidth * 2 / 10,
-                    targetRegion.y + charWidth * 2 / 10 + lineHeight * 3 / 4 - borderMagicNumberToFixBoxBlinking);
-            // Left shadow
-            g.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 130));
-            g.drawString(text, targetRegion.x + charWidth * 2 / 3 - charWidth * 1 / 10,
-                    targetRegion.y - charWidth * 1 / 10 + lineHeight * 3 / 4 - borderMagicNumberToFixBoxBlinking);
+            var fontMetrics = fontData.fontMetrics();
+            var charWidth = fontMetrics.charWidth('a');
+
+            g.drawString(text,
+                    (int) (centerX - fontMetrics.stringWidth(text) / 2 + charWidth + charWidth * 2 / 10),
+                    targetRegion.y + fontData.lineHeight() * 3 / 4 + charWidth * 1 / 10);
         }
     }
 }
