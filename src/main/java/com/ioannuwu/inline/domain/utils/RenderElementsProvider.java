@@ -1,17 +1,14 @@
 package com.ioannuwu.inline.domain.utils;
 
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.editor.colors.EditorFontType;
 import com.intellij.openapi.editor.markup.RangeHighlighter;
-import com.intellij.util.ui.UIUtilities;
 import com.ioannuwu.inline.data.EffectType;
+import com.ioannuwu.inline.data.MySettingsService;
 import com.ioannuwu.inline.ui.render.elements.BackgroundRenderElement;
 import com.ioannuwu.inline.ui.render.elements.GutterRenderElement;
 import com.ioannuwu.inline.ui.render.elements.MainTextRenderElement;
 import com.ioannuwu.inline.ui.render.elements.RenderElement;
-import com.ioannuwu.inline.ui.render.elements.graphiccomponents.EffectComponent;
-import com.ioannuwu.inline.ui.render.elements.graphiccomponents.FontData;
-import com.ioannuwu.inline.ui.render.elements.graphiccomponents.GraphicsComponent;
+import com.ioannuwu.inline.ui.render.elements.graphiccomponents.*;
 import com.ioannuwu.inline.ui.render.elements.graphiccomponents.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,15 +23,16 @@ public interface RenderElementsProvider {
     class BySettings implements RenderElementsProvider {
 
         private final RenderDataProvider renderDataProvider;
-        private final FontProvider fontProvider;
-
         private final Editor editor;
 
-        public BySettings(RenderDataProvider renderDataProvider,
-                                                FontProvider fontProvider, Editor editor) {
+        private final MySettingsService settingsService;
+        private final GraphicsEnvironment graphicsEnvironment;
+
+        public BySettings(RenderDataProvider renderDataProvider, Editor editor, MySettingsService settingsService, GraphicsEnvironment graphicsEnvironment) {
             this.renderDataProvider = renderDataProvider;
-            this.fontProvider = fontProvider;
             this.editor = editor;
+            this.settingsService = settingsService;
+            this.graphicsEnvironment = graphicsEnvironment;
         }
 
         @Override
@@ -54,33 +52,30 @@ public interface RenderElementsProvider {
 
             if (renderData.showText || renderData.showEffect) {
 
-                Font font = fontProvider.provide();
-                float fontSize = (float) editor.getColorsScheme().getEditorFontSize() + 1;
-                Font deriveFont = (font == null) ? editor.getColorsScheme().getFont(EditorFontType.PLAIN) :
-                        font.deriveFont((float) editor.getColorsScheme().getEditorFontSize());
-                FontMetrics fontMetrics = UIUtilities.getFontMetrics(editor.getComponent(), deriveFont);
-
-                FontData fontData = new FontData(deriveFont, fontSize, fontMetrics, editor.getLineHeight());
-
-                Set<GraphicsComponent> set = new HashSet<>();
-                if (renderData.showEffect) {
-                    switch (renderData.effectType) {
-                        case NONE:                                                                                                  break;
-                        case BOX: set.add(new EffectComponent.Box(renderData.effectColor, fontMetrics));                            break;
-                        case SHADOW: set.add(new EffectComponent.Shadow(fontData, renderData.effectColor, renderData.description)); break;
-                    }
-                }
+                FontData fontData = new FontData.BySettings(settingsService, editor, graphicsEnvironment);
 
                 TextComponent textComponent = (renderData.showEffect && renderData.effectType == EffectType.BOX) ?
                         new TextComponent.Base(fontData, renderData.textColor, renderData.description) :
                         new TextComponent.WithDotAtTheEnd(fontData, renderData.textColor, renderData.description);
 
+                Set<GraphicsComponent> set = new HashSet<>();
+                if (renderData.showEffect) {
+                    switch (renderData.effectType) {
+                        case NONE:
+                            break;
+                        case BOX:
+                            set.add(new EffectComponent.Box(renderData.effectColor, fontData));
+                            break;
+                        case SHADOW:
+                            set.add(new EffectComponent.Shadow(fontData, renderData.effectColor, renderData.description + ".", textComponent));
+                            break;
+                    }
+                }
                 RenderElement mainRenderElement = new MainTextRenderElement(
                         set, textComponent, editor.getInlayModel(), rangeHighlighter.getStartOffset());
 
                 list.add(mainRenderElement);
             }
-
             return list;
         }
     }
