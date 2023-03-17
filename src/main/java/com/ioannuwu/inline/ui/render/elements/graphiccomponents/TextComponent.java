@@ -7,8 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
-public interface TextComponent extends GraphicsComponent, PrettyWidth {
-
+public interface TextComponent extends GraphicsComponent {
 
     class Base implements TextComponent {
 

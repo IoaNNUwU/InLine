@@ -9,7 +9,7 @@ import java.awt.*;
 /**
  * Represents part of EditorCustomElementRenderer
  */
-public interface GraphicsComponent {
+public interface GraphicsComponent extends PrettyWidth {
 
     GraphicsComponent EMPTY = new GraphicsComponent() { };
 
