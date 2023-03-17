@@ -61,7 +61,7 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
             if (elements.isEmpty()) continue; // WHY
             int startOffset = entity.rangeHighlighter.getStartOffset();
             if (startOffset > highlighter.getDocument().getTextLength()) return;
-            entity.renderElements = editorElementsRenderer.render(elements, startOffset);
+            entity.renderElements = editorElementsRenderer.render(elements);
         }
     }
 
@@ -100,7 +100,7 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
             Collection<RenderElement> elementCollection = renderElementsProvider.provide(myEntity.rangeHighlighter);
             if (elementCollection.isEmpty()) continue; // WHY
             if (myEntity.rangeHighlighter.getStartOffset() <= 0) continue;
-            myEntity.renderElements = editorElementsRenderer.render(elementCollection, myEntity.rangeHighlighter.getStartOffset());
+            myEntity.renderElements = editorElementsRenderer.render(elementCollection);
         }
     }
 }

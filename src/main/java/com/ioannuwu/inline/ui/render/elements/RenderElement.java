@@ -13,7 +13,6 @@ import com.ioannuwu.inline.utils.DisposableUtils;
  */
 public interface RenderElement {
     /**
-     * renders element in provided editor
      * @return Disposable associated with that render element. It should be
      * removed when associated error is removed
      */

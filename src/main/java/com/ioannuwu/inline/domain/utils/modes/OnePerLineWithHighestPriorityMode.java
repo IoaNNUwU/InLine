@@ -62,7 +62,7 @@ public class OnePerLineWithHighestPriorityMode implements Mode {
         if (highestRenderElements.isEmpty()) {
             return;
         }
-        highestEntity.renderElements = editorElementsRenderer.render(highestRenderElements, highestEntity.rangeHighlighter.getStartOffset());
+        highestEntity.renderElements = editorElementsRenderer.render(highestRenderElements);
     }
 
     @Override
@@ -111,8 +111,7 @@ public class OnePerLineWithHighestPriorityMode implements Mode {
             entity.renderElements = null;
         }
         // Render the highest highlighter and put in the highest entity
-        highestEntity.renderElements = editorElementsRenderer.render(renderElements,
-                highestEntity.rangeHighlighter.getStartOffset());
+        highestEntity.renderElements = editorElementsRenderer.render(renderElements);
     }
 
     private static class Entity {

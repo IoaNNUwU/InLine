@@ -16,7 +16,7 @@ public interface EditorElementsRenderer {
      * @return Set of Disposables associated with that elements which should
      * be removed when error is removed
      */
-    @NotNull Set<Disposable> render(@NotNull Collection<RenderElement> renderElements, int startOffset);
+    @NotNull Set<Disposable> render(@NotNull Collection<RenderElement> renderElements);
 
     void unRender(@Nullable Collection<Disposable> highlighters);
 
@@ -24,7 +24,7 @@ public interface EditorElementsRenderer {
     class Impl implements EditorElementsRenderer {
 
         @Override
-        public @NotNull Set<Disposable> render(@NotNull Collection<RenderElement> renderElements, int startOffset) {
+        public @NotNull Set<Disposable> render(@NotNull Collection<RenderElement> renderElements) {
             Set<Disposable> set = new HashSet<>();
             for (var elem : renderElements) {
                 set.add(elem.render());

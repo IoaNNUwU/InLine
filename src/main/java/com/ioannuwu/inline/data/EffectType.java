@@ -6,4 +6,5 @@ public enum EffectType implements Serializable {
     NONE,
     BOX,
     SHADOW,
+    UNDER_TEXT,
 }
