@@ -4,7 +4,9 @@ import com.intellij.openapi.editor.EditorCustomElementRenderer;
 import com.intellij.openapi.editor.Inlay;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.ioannuwu.inline.ui.render.elements.graphiccomponents.GraphicsComponent;
+import com.ioannuwu.inline.ui.render.elements.graphiccomponents.PrettyWidth;
 import com.ioannuwu.inline.ui.render.elements.graphiccomponents.TextComponent;
+import com.jayway.jsonpath.internal.function.numeric.Sum;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -12,25 +14,28 @@ import java.util.Collection;
 
 public class MyElementRenderer implements EditorCustomElementRenderer {
 
-    private final TextComponent textComponent;
     private final Collection<GraphicsComponent> graphicComponents;
 
-    public MyElementRenderer(TextComponent textComponent, Collection<GraphicsComponent> graphicComponents) {
-        this.textComponent = textComponent;
+    public MyElementRenderer(Collection<GraphicsComponent> graphicComponents) {
         this.graphicComponents = graphicComponents;
     }
 
     @Override
     public int calcWidthInPixels(@NotNull Inlay inlay) {
-        return textComponent.width();
+        int sum = 0;
+        for (var comp : graphicComponents)
+            sum += comp.width();
+
+        return (sum == 0) ? 1 : sum;
     }
 
     @Override
     public void paint(@NotNull Inlay inlay, @NotNull Graphics g, @NotNull Rectangle targetRegion, @NotNull TextAttributes textAttributes) {
         for (var comp : graphicComponents) {
-            comp.draw(inlay, g, targetRegion, textAttributes);
+            if (comp.width() == 0) comp.draw(inlay, g, targetRegion, textAttributes);
         }
-        // text component should be rendered last
-        textComponent.draw(inlay, g, targetRegion, textAttributes);
+        for (var comp : graphicComponents) {
+            if (comp.width() != 0) comp.draw(inlay, g, targetRegion, textAttributes);
+        }
     }
 }

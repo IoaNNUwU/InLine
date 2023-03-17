@@ -17,14 +17,12 @@ import java.util.Collection;
 public class MainTextRenderElement implements RenderElement {
 
     private final Collection<GraphicsComponent> graphicsComponents;
-    private final TextComponent textComponent;
 
     private final InlayModel inlayModel;
     private final int offset;
 
-    public MainTextRenderElement(Collection<GraphicsComponent> graphicsComponents, TextComponent textComponent, InlayModel inlayModel, int offset) {
+    public MainTextRenderElement(Collection<GraphicsComponent> graphicsComponents, InlayModel inlayModel, int offset) {
         this.graphicsComponents = graphicsComponents;
-        this.textComponent = textComponent;
         this.inlayModel = inlayModel;
         this.offset = offset;
     }
@@ -32,6 +30,6 @@ public class MainTextRenderElement implements RenderElement {
     @Override
     public Disposable render() {
         return inlayModel.addAfterLineEndElement(offset, false,
-                new MyElementRenderer(textComponent, graphicsComponents));
+                new MyElementRenderer(graphicsComponents));
     }
 }

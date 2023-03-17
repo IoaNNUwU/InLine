@@ -71,8 +71,9 @@ public interface RenderElementsProvider {
                             break;
                     }
                 }
+                set.add(textComponent);
                 RenderElement mainRenderElement = new MainTextRenderElement(
-                        set, textComponent, editor.getInlayModel(), rangeHighlighter.getStartOffset());
+                        set, editor.getInlayModel(), rangeHighlighter.getStartOffset());
 
                 list.add(mainRenderElement);
             }
