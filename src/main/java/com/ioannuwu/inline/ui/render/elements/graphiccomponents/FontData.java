@@ -8,12 +8,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
-public interface FontData {
+public interface FontData extends FontMetricsProvider, FontProvider {
 
+    @Override
     @NotNull Font font();
 
     float editorFontSize();
 
+    @Override
     @NotNull FontMetrics fontMetrics();
 
     int lineHeight();

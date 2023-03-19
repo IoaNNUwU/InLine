@@ -13,7 +13,7 @@ public interface EntityComparator extends Comparator<Entity> {
             HighlightInfo o1Info = ((HighlightInfo) o1.rangeHighlighter.getErrorStripeTooltip());
             HighlightInfo o2Info = ((HighlightInfo) o2.rangeHighlighter.getErrorStripeTooltip());
 
-            return o2Info.getSeverity().compareTo(o1Info.getSeverity());
+            return -o1Info.getSeverity().compareTo(o2Info.getSeverity());
         }
     }
 
@@ -21,7 +21,20 @@ public interface EntityComparator extends Comparator<Entity> {
 
         @Override
         public int compare(Entity o1, Entity o2) {
-            return o1.rangeHighlighter.getStartOffset() - o2.rangeHighlighter.getStartOffset();
+            return Integer.compare(
+                    o1.rangeHighlighter.getStartOffset(),
+                    o2.rangeHighlighter.getStartOffset());
+        }
+    }
+
+    class ByDescription implements EntityComparator {
+
+        @Override
+        public int compare(Entity o1, Entity o2) {
+            HighlightInfo o1Info = ((HighlightInfo) o1.rangeHighlighter.getErrorStripeTooltip());
+            HighlightInfo o2Info = ((HighlightInfo) o2.rangeHighlighter.getErrorStripeTooltip());
+
+            return o2Info.getDescription().compareTo(o1Info.getDescription());
         }
     }
 }

@@ -1,13 +1,11 @@
 package com.ioannuwu.inline.domain.utils;
 
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.editor.colors.EditorFontType;
 import com.intellij.openapi.editor.markup.RangeHighlighter;
-import com.ioannuwu.inline.data.EffectType;
+import com.intellij.util.ui.UIUtilities;
 import com.ioannuwu.inline.data.MySettingsService;
-import com.ioannuwu.inline.ui.render.elements.BackgroundRenderElement;
-import com.ioannuwu.inline.ui.render.elements.GutterRenderElement;
-import com.ioannuwu.inline.ui.render.elements.MainTextRenderElement;
-import com.ioannuwu.inline.ui.render.elements.RenderElement;
+import com.ioannuwu.inline.ui.render.elements.*;
 import com.ioannuwu.inline.ui.render.elements.graphiccomponents.*;
 import com.ioannuwu.inline.ui.render.elements.graphiccomponents.TextComponent;
 import org.jetbrains.annotations.NotNull;
@@ -17,8 +15,7 @@ import java.util.*;
 
 public interface RenderElementsProvider {
 
-    @NotNull Collection<RenderElement> provide(@NotNull RangeHighlighter rangeHighlighter);
-
+    Collection<RenderElement> provide(@NotNull RangeHighlighter rangeHighlighter, int indentationLevel);
 
     class BySettings implements RenderElementsProvider {
 
@@ -37,10 +34,12 @@ public interface RenderElementsProvider {
 
         @Override
         @SuppressWarnings("unchecked")
-        public @NotNull Collection<RenderElement> provide(@NotNull RangeHighlighter rangeHighlighter) {
+        public @NotNull Collection<RenderElement> provide(@NotNull RangeHighlighter rangeHighlighter, int indentationLevel) {
 
             var renderData = renderDataProvider.provide(rangeHighlighter);
             if (renderData == null) return Collections.EMPTY_LIST;
+
+            if (rangeHighlighter.getDocument().getTextLength() <= rangeHighlighter.getStartOffset()) return Collections.EMPTY_LIST;
 
             Collection<RenderElement> list = new ArrayList<>();
             int lineNumber = editor.getDocument().getLineNumber(rangeHighlighter.getStartOffset());
@@ -54,9 +53,8 @@ public interface RenderElementsProvider {
 
                 FontData fontData = new FontData.BySettings(settingsService, editor, graphicsEnvironment);
 
-                TextComponent textComponent = (renderData.showEffect && renderData.effectType == EffectType.BOX) ?
-                        new TextComponent.Base(fontData, renderData.textColor, renderData.description) :
-                        new TextComponent.WithDotAtTheEnd(fontData, renderData.textColor, renderData.description);
+                TextComponent textComponent = new TextComponent.RustStyleTextComponent(
+                        fontData, () -> editor.getColorsScheme().getFont(EditorFontType.PLAIN), renderData.textColor, renderData.description, indentationLevel);
 
                 Set<GraphicsComponent> set = new HashSet<>();
                 if (renderData.showEffect) {
@@ -72,8 +70,10 @@ public interface RenderElementsProvider {
                     }
                 }
                 set.add(textComponent);
-                RenderElement mainRenderElement = new MainTextRenderElement(
-                        set, editor.getInlayModel(), rangeHighlighter.getStartOffset());
+                RenderElement mainRenderElement = new RustStyleTextRenderElement(
+                        set, editor.getInlayModel(), rangeHighlighter.getStartOffset(), editor.getDocument(),
+                        () -> UIUtilities.getFontMetrics(editor.getComponent(), editor.getColorsScheme().getFont(EditorFontType.PLAIN)),
+                        () -> editor.getColorsScheme().getFont(EditorFontType.PLAIN));
 
                 list.add(mainRenderElement);
             }

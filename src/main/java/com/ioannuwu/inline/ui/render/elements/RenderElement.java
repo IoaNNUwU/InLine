@@ -1,7 +1,7 @@
 package com.ioannuwu.inline.ui.render.elements;
 
 import com.intellij.openapi.Disposable;
-import com.ioannuwu.inline.utils.DisposableUtils;
+import com.ioannuwu.inline.utils.Utils;
 
 /**
  * This interface represents PART of all that rendered in editor for
@@ -17,7 +17,7 @@ public interface RenderElement {
      * removed when associated error is removed
      */
     default Disposable render() {
-        return DisposableUtils.EMPTY;
+        return Utils.EMPTY_DISPOSABLE;
     }
 
     RenderElement EMPTY = new RenderElement() { };

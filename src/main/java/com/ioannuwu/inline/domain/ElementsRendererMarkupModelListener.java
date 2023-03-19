@@ -1,5 +1,6 @@
 package com.ioannuwu.inline.domain;
 
+import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.openapi.editor.ex.RangeHighlighterEx;
 import com.intellij.openapi.editor.impl.event.MarkupModelListener;
 import com.ioannuwu.inline.domain.utils.modes.Mode;
@@ -20,8 +21,11 @@ public class ElementsRendererMarkupModelListener implements MarkupModelListener 
 
     @Override
     public void attributesChanged(@NotNull RangeHighlighterEx highlighter, boolean renderersChanged, boolean fontStyleOrColorChanged) {
-        beforeRemoved(highlighter);
-        afterAdded(highlighter);
+
+        HighlightInfo info = ((HighlightInfo) highlighter.getErrorStripeTooltip());
+        if (info != null) System.out.println("CHA: " + info.getDescription());
+
+        mode.attributesChanged(highlighter);
     }
 
     @Override

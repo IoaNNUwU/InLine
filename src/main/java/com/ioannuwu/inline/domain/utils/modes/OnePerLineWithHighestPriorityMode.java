@@ -29,7 +29,7 @@ public class OnePerLineWithHighestPriorityMode implements Mode {
 
     @Override
     public void afterAdded(RangeHighlighter highlighter) {
-        Collection<RenderElement> renderElements = renderDataProvider.provide(highlighter);
+        Collection<RenderElement> renderElements = renderDataProvider.provide(highlighter, 0);
         if (renderElements.isEmpty()) return; // Ignore redundant
 
         int currentLine = highlighter.getDocument().getLineNumber(highlighter.getStartOffset());
@@ -58,7 +58,7 @@ public class OnePerLineWithHighestPriorityMode implements Mode {
             editorElementsRenderer.unRender(entity.renderElements);
         }
         // Render highest and put proper render elements in the highest entity
-        Collection<RenderElement> highestRenderElements = renderDataProvider.provide(highestEntity.rangeHighlighter);
+        Collection<RenderElement> highestRenderElements = renderDataProvider.provide(highestEntity.rangeHighlighter, 1);
         if (highestRenderElements.isEmpty()) {
             return;
         }
@@ -99,7 +99,7 @@ public class OnePerLineWithHighestPriorityMode implements Mode {
             }
         }
         assert highestEntity != null; // because set was NOT EMPTY
-        Collection<RenderElement> renderElements = renderDataProvider.provide(highestEntity.rangeHighlighter);
+        Collection<RenderElement> renderElements = renderDataProvider.provide(highestEntity.rangeHighlighter, 0);
 
         if (renderElements.isEmpty()) {
             return;

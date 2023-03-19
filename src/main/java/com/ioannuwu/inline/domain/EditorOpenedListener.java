@@ -16,26 +16,19 @@ import com.ioannuwu.inline.domain.utils.MaxPerLine;
 import com.ioannuwu.inline.domain.utils.RenderDataProvider;
 import com.ioannuwu.inline.domain.utils.RenderElementsProvider;
 import com.ioannuwu.inline.domain.utils.modes.CouplePerLineWithHighestPriorityMode;
-import com.ioannuwu.inline.domain.utils.modes.Entity;
-import com.ioannuwu.inline.domain.utils.modes.EntityComparator;
 import com.ioannuwu.inline.domain.utils.modes.Mode;
 import com.ioannuwu.inline.ui.render.EditorElementsRenderer;
+import com.ioannuwu.inline.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Comparator;
 
 public class EditorOpenedListener implements FileEditorManagerListener {
 
     private static final MySettingsService settingsService = MySettingsService.getInstance();
 
-    private static final GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-
     private static final RenderDataProvider renderDataProvider = new RenderDataProvider.BySettings(settingsService);
-
-    private static final Comparator<Entity> comparator = new EntityComparator.BySeverity()
-            .thenComparing(new EntityComparator.ByOffset().reversed());
 
     @Override
     public void fileOpenedSync(@NotNull FileEditorManager source, @NotNull VirtualFile file,
@@ -53,8 +46,8 @@ public class EditorOpenedListener implements FileEditorManagerListener {
 
             Mode mode = new CouplePerLineWithHighestPriorityMode(
                     new RenderElementsProvider.BySettings(renderDataProvider, textEditor.getEditor(),
-                            settingsService, graphicsEnvironment),
-                    new EditorElementsRenderer.Impl(), new MaxPerLine.BySettings(settingsService), comparator);
+                            settingsService, Utils.GRAPHICS_ENVIRONMENT),
+                    new EditorElementsRenderer.Impl(), new MaxPerLine.BySettings(settingsService));
 
             ElementsRendererMarkupModelListener markupModelListener = new ElementsRendererMarkupModelListener(mode);
 

@@ -1,11 +1,13 @@
 package com.ioannuwu.inline.domain.utils.modes;
 
+import com.intellij.codeInsight.daemon.impl.HighlightInfo;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.editor.markup.RangeHighlighter;
 import com.ioannuwu.inline.domain.utils.MaxPerLine;
 import com.ioannuwu.inline.domain.utils.RenderElementsProvider;
 import com.ioannuwu.inline.ui.render.EditorElementsRenderer;
 import com.ioannuwu.inline.ui.render.elements.RenderElement;
+import com.ioannuwu.inline.utils.Utils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,25 +19,23 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
 
     private final MaxPerLine maxPerLine;
 
-    private final Comparator<Entity> comparator;
-
     private final ArrayList<Entity> list = new ArrayList<>();
 
     public CouplePerLineWithHighestPriorityMode(RenderElementsProvider renderElementsProvider,
                                                 EditorElementsRenderer editorElementsRenderer,
-                                                MaxPerLine maxPerLine, Comparator<Entity> comparator) {
+                                                MaxPerLine maxPerLine) {
         this.editorElementsRenderer = editorElementsRenderer;
         this.renderElementsProvider = renderElementsProvider;
         this.maxPerLine = maxPerLine;
-        this.comparator = comparator;
     }
 
     @SuppressWarnings("unchecked cast")
     @Override
     public void afterAdded(RangeHighlighter highlighter) {
-        Collection<RenderElement> renderElements = renderElementsProvider.provide(highlighter);
+        Collection<RenderElement> renderElements = renderElementsProvider.provide(highlighter, 0);
         if (renderElements.isEmpty()) return; // Ignore redundant
 
+        System.out.println("ADD: " + ((HighlightInfo) highlighter.getErrorStripeTooltip()).getDescription());
         int currentLine = highlighter.getDocument().getLineNumber(highlighter.getStartOffset());
 
         Entity currentEntity = new Entity(highlighter, currentLine, null);
@@ -44,7 +44,7 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
         List<Entity> entitiesOnCurrentLineSorted = ((ArrayList<Entity>) list.clone()).stream()
                 .filter(entity -> entity.initialLine == currentLine)
                 .filter(myEntity -> myEntity.rangeHighlighter.getStartOffset() > 0)
-                .sorted(comparator)
+                .sorted(Utils.ENTITY_COMPARATOR)
                 .collect(Collectors.toList());
 
         entitiesOnCurrentLineSorted.forEach(entity -> {
@@ -54,10 +54,21 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
 
         List<Entity> top = entitiesOnCurrentLineSorted.stream()
                 .limit(maxPerLine.maxPerLine())
+                .sorted(Utils.ENTITY_COMPARATOR_BY_OFFSET)
                 .collect(Collectors.toList());
 
-        for (final var entity : top) {
-            Collection<RenderElement> elements = renderElementsProvider.provide(entity.rangeHighlighter);
+        int topSize = top.size();
+
+        System.out.println("   top: " + top.stream()
+                .map(ent -> ((HighlightInfo) ent.rangeHighlighter.getErrorStripeTooltip()).getDescription()).collect(Collectors.toList()));
+
+        System.out.println("   all" + entitiesOnCurrentLineSorted.stream()
+                .map(ent -> ((HighlightInfo) ent.rangeHighlighter.getErrorStripeTooltip()).getDescription()).collect(Collectors.toList()));
+
+
+        for (int i = 0; i < topSize; i++) {
+            Entity entity = top.get(i);
+            Collection<RenderElement> elements = renderElementsProvider.provide(entity.rangeHighlighter, i);
             if (elements.isEmpty()) continue; // WHY
             int startOffset = entity.rangeHighlighter.getStartOffset();
             if (startOffset > highlighter.getDocument().getTextLength()) return;
@@ -70,9 +81,7 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
         Optional<Entity> opEntity = list.stream().filter((myEntity -> myEntity.rangeHighlighter == highlighter)).findAny();
         if (opEntity.isEmpty()) return;
         Entity entity = opEntity.get();
-
-        Collection<RenderElement> renderElements = renderElementsProvider.provide(highlighter);
-        if (renderElements.isEmpty()) return; // WHY
+        System.out.println("REM: " + ((HighlightInfo) highlighter.getErrorStripeTooltip()).getDescription());
 
         int currentLine = entity.initialLine;
         Set<Disposable> elements = entity.renderElements;
@@ -84,7 +93,7 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
         List<Entity> entitiesOnCurrentLineSorted = list.stream()
                 .filter(myEntity -> myEntity.initialLine == currentLine)
                 .filter(myEntity -> myEntity.rangeHighlighter.getStartOffset() > 0)
-                .sorted(comparator)
+                .sorted(Utils.ENTITY_COMPARATOR)
                 .collect(Collectors.toList());
 
         entitiesOnCurrentLineSorted.forEach(myEntity -> {
@@ -94,10 +103,19 @@ public class CouplePerLineWithHighestPriorityMode implements Mode {
 
         List<Entity> top = entitiesOnCurrentLineSorted.stream()
                 .limit(maxPerLine.maxPerLine())
+                .sorted(Utils.ENTITY_COMPARATOR_BY_OFFSET)
                 .collect(Collectors.toList());
 
-        for (final var myEntity : top) {
-            Collection<RenderElement> elementCollection = renderElementsProvider.provide(myEntity.rangeHighlighter);
+        System.out.println("   top: " + top.stream()
+                .map(ent -> ((HighlightInfo) ent.rangeHighlighter.getErrorStripeTooltip()).getDescription()).collect(Collectors.toList()));
+        System.out.println("   all" + entitiesOnCurrentLineSorted.stream()
+                .map(ent -> ((HighlightInfo) ent.rangeHighlighter.getErrorStripeTooltip()).getDescription()).collect(Collectors.toList()));
+
+        int topSize = top.size();
+
+        for (int i = 0; i < topSize; i++) {
+            Entity myEntity = top.get(i);
+            Collection<RenderElement> elementCollection = renderElementsProvider.provide(myEntity.rangeHighlighter, i);
             if (elementCollection.isEmpty()) continue; // WHY
             if (myEntity.rangeHighlighter.getStartOffset() <= 0) continue;
             myEntity.renderElements = editorElementsRenderer.render(elementCollection);

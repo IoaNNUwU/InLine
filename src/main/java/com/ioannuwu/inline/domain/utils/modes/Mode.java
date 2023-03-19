@@ -7,4 +7,9 @@ public interface Mode {
     void afterAdded(RangeHighlighter highlighter);
 
     void beforeRemoved(RangeHighlighter highlighter);
+
+    default void attributesChanged(RangeHighlighter highlighter) {
+        beforeRemoved(highlighter);
+        afterAdded(highlighter);
+    }
 }
