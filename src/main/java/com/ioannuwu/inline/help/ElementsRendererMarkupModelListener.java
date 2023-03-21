@@ -1,4 +1,4 @@
-package com.ioannuwu.inline.domain;
+package com.ioannuwu.inline.help;
 
 import com.intellij.openapi.editor.ex.RangeHighlighterEx;
 import com.intellij.openapi.editor.impl.event.MarkupModelListener;

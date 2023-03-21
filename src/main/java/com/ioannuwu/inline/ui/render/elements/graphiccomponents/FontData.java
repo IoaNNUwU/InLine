@@ -34,7 +34,7 @@ public interface FontData extends FontMetricsProvider, FontProvider {
         }
 
         @Override
-        public @NotNull Font font() { // TODO should use font cache
+        public @NotNull Font font() { // should use font cache if performance needed
             String fontName = settingsService.getState().font.fontName;
             var allFonts = graphicsEnvironment.getAllFonts();
             for (final var font : allFonts) {

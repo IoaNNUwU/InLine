@@ -5,8 +5,13 @@ import com.intellij.openapi.editor.colors.EditorFontType;
 import com.intellij.openapi.editor.markup.RangeHighlighter;
 import com.intellij.util.ui.UIUtilities;
 import com.ioannuwu.inline.data.MySettingsService;
-import com.ioannuwu.inline.ui.render.elements.*;
-import com.ioannuwu.inline.ui.render.elements.graphiccomponents.*;
+import com.ioannuwu.inline.ui.render.elements.BackgroundRenderElement;
+import com.ioannuwu.inline.ui.render.elements.GutterRenderElement;
+import com.ioannuwu.inline.ui.render.elements.RenderElement;
+import com.ioannuwu.inline.ui.render.elements.RustStyleTextRenderElement;
+import com.ioannuwu.inline.ui.render.elements.graphiccomponents.EffectComponent;
+import com.ioannuwu.inline.ui.render.elements.graphiccomponents.FontData;
+import com.ioannuwu.inline.ui.render.elements.graphiccomponents.GraphicsComponent;
 import com.ioannuwu.inline.ui.render.elements.graphiccomponents.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
@@ -55,6 +60,8 @@ public interface RenderElementsProvider {
 
                 TextComponent textComponent = new TextComponent.RustStyleTextComponent(
                         fontData, () -> editor.getColorsScheme().getFont(EditorFontType.PLAIN), renderData.textColor, renderData.description, indentationLevel);
+                // TODO among us
+                textComponent = new TextComponent.Base(fontData, renderData.textColor, renderData.description);
 
                 Set<GraphicsComponent> set = new HashSet<>();
                 if (renderData.showEffect) {
@@ -72,8 +79,9 @@ public interface RenderElementsProvider {
                 set.add(textComponent);
                 RenderElement mainRenderElement = new RustStyleTextRenderElement(
                         set, editor.getInlayModel(), rangeHighlighter.getStartOffset(), editor.getDocument(),
-                        () -> UIUtilities.getFontMetrics(editor.getComponent(), editor.getColorsScheme().getFont(EditorFontType.PLAIN)),
-                        () -> editor.getColorsScheme().getFont(EditorFontType.PLAIN));
+                        () -> UIUtilities.getFontMetrics(editor.getComponent(), editor.getColorsScheme().getFont(EditorFontType.PLAIN))
+                );
+                // mainRenderElement = new TextOnSameLineRenderElement(set, editor.getInlayModel(), rangeHighlighter.getStartOffset());
 
                 list.add(mainRenderElement);
             }

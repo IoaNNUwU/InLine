@@ -2,7 +2,7 @@ package com.ioannuwu.inline.ui;
 
 import com.intellij.openapi.options.Configurable;
 import com.ioannuwu.inline.data.MySettingsService;
-import com.ioannuwu.inline.domain.EditorOpenedListener;
+import com.ioannuwu.inline.EditorOpenedListenerKt;
 import com.ioannuwu.inline.ui.settingscomponent.SettingsComponentProvider;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
@@ -38,6 +38,8 @@ public class MyConfigurable implements Configurable {
     @Override
     public void apply() {
         settingsService.loadState(settingsComponentProvider.getState());
-        EditorOpenedListener.updateActiveListeners();
+        EditorOpenedListenerKt
+
+                .updateActiveListeners();
     }
 }

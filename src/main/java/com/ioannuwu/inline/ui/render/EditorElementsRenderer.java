@@ -35,7 +35,6 @@ public interface EditorElementsRenderer {
         @Override
         public void unRender(@Nullable Collection<Disposable> elements) {
             if (elements == null) return;
-            if (elements.isEmpty()) return;
 
             for (var elem : elements) {
                 Disposer.dispose(elem);

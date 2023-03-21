@@ -1,4 +1,4 @@
-package com.ioannuwu.inline.domain;
+package com.ioannuwu.inline.help;
 
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
@@ -21,14 +21,15 @@ import com.ioannuwu.inline.ui.render.EditorElementsRenderer;
 import com.ioannuwu.inline.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
-import java.util.ArrayList;
+import java.util.HashMap;
 
-public class EditorOpenedListener implements FileEditorManagerListener {
+public class HelpEditorOpenedListener implements FileEditorManagerListener {
 
     private static final MySettingsService settingsService = MySettingsService.getInstance();
 
     private static final RenderDataProvider renderDataProvider = new RenderDataProvider.BySettings(settingsService);
+
+    private static final HashMap<TextEditor, MarkupModelListener> map = new HashMap<>();
 
     @Override
     public void fileOpenedSync(@NotNull FileEditorManager source, @NotNull VirtualFile file,
@@ -52,17 +53,15 @@ public class EditorOpenedListener implements FileEditorManagerListener {
             ElementsRendererMarkupModelListener markupModelListener = new ElementsRendererMarkupModelListener(mode);
 
             markupModelEx.addMarkupModelListener(textEditor, markupModelListener);
-            list.add(new Pair<>(textEditor, markupModelListener));
+            map.put(textEditor, markupModelListener);
         }
     }
 
-    private static final ArrayList<Pair<TextEditor, MarkupModelListener>> list = new ArrayList<>();
-
     public static void updateActiveListeners() {
-        for (Pair<TextEditor, MarkupModelListener> pair : list) {
-            Editor editor = pair.first.getEditor();
+        for (var entry : map.entrySet()) {
+            Editor editor = entry.getKey().getEditor();
             Document document = editor.getDocument();
-            MarkupModelListener listener = pair.second;
+            MarkupModelListener listener = entry.getValue();
 
             MarkupModel markupModel = DocumentMarkupModel.forDocument(document, editor.getProject(), false);
 
