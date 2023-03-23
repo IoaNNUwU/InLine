@@ -8,14 +8,7 @@ import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.vfs.VirtualFile
 import com.ioannuwu.inline.data.MySettingsService
-import com.ioannuwu.inline.domain.utils.MaxPerLine
 import com.ioannuwu.inline.domain.utils.RenderDataProvider
-import com.ioannuwu.inline.domain.utils.RenderElementsProvider
-import com.ioannuwu.inline.domain.utils.modes.CouplePerLineWithHighestPriorityMode
-import com.ioannuwu.inline.domain.utils.modes.Mode
-import com.ioannuwu.inline.help.ElementsRendererMarkupModelListener
-import com.ioannuwu.inline.ui.render.EditorElementsRenderer
-import com.ioannuwu.inline.utils.Utils
 
 class EditorOpenedListenerKt : FileEditorManagerListener {
     override fun fileOpenedSync(
@@ -33,14 +26,11 @@ class EditorOpenedListenerKt : FileEditorManagerListener {
 
             markupModel as? MarkupModelEx ?: continue
 
-            val mode: Mode = CouplePerLineWithHighestPriorityMode(
-                RenderElementsProvider.BySettings(
-                    renderDataProvider, fileEditor.editor,
-                    settingsService, Utils.GRAPHICS_ENVIRONMENT
-                ),
-                EditorElementsRenderer.Impl(), MaxPerLine.BySettings(settingsService)
+            val markupModelListener = MarkupModelListenerKt(
+                EditorCallback.ViewModelEditorCallback(
+                    ViewModel.Impl(View.EditorView(fileEditor.editor))
+                )
             )
-            val markupModelListener = ElementsRendererMarkupModelListener(mode)
 
             markupModel.addMarkupModelListener(fileEditor, markupModelListener)
             map[fileEditor] = markupModelListener

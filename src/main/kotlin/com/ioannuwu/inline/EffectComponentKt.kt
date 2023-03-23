@@ -16,11 +16,11 @@ interface EffectComponentKt : PrettyWidth {
     class Box(
         private val fontMetricsProvider: FontMetricsProvider,
         private val color: Color,
-        private val arc: Int
+        private val arc: Int,
     ) : EffectComponentKt {
 
         override fun draw(inlay: Inlay<*>, g: Graphics, targetRegion: Rectangle, textAttributes: TextAttributes) {
-            val magicNumberToFixBoxBlinking = 1;
+            val magicNumberToFixBoxBlinking = 1
 
             g.color = color
             g.drawRoundRect(
@@ -28,14 +28,14 @@ interface EffectComponentKt : PrettyWidth {
                 targetRegion.y + magicNumberToFixBoxBlinking,
                 targetRegion.width,
                 targetRegion.height - 2 * magicNumberToFixBoxBlinking,
-                arc, arc
+                arc, arc,
             )
         }
     }
 
     class Shadow(
         private val color: Color,
-        private val parent:
+        private val parent: EffectComponentKt,
     ) : EffectComponentKt {
 
         override fun draw(inlay: Inlay<*>, g: Graphics, targetRegion: Rectangle, textAttributes: TextAttributes) {

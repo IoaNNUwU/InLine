@@ -1,23 +1,37 @@
 package com.ioannuwu.inline
 
-import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.Document
+import com.intellij.openapi.editor.markup.RangeHighlighter
 
-interface ViewModel {
+interface ViewModel { // TODO just like mode but better
 
-    fun add(renderElements: RenderElementsKt)
+    // Wrapper gives proper information about error so they are unique, but simplifies things
+    // View Model improves appearance of And uses render Elements provider to generate additional
+    // Nodes if needed
 
-    fun remove(renderElements: RenderElementsKt)
+    fun add(highlighter: RangeHighlighterWrapper)
+
+    fun remove(highlighter: RangeHighlighterWrapper)
 
 
-    class Impl(private val editor: Editor) : ViewModel {
+    class Impl(
+        private val view: View,
+        private val document: Document,
+        private val renderElementsProvider,
+    ) : ViewModel {
 
-        override fun add(renderElements: RenderElementsKt) {
-            renderElements.render(editor)
+        private val map = HashMap<RangeHighlighterWrapper, Set<RenderElementKt>>()
+
+        override fun add(highlighter: RangeHighlighterWrapper) {
+
         }
 
-        override fun remove(renderElements: RenderElementsKt) {
-            renderElements.unrender()
+        override fun remove(highlighter: RangeHighlighterWrapper) {
+            TODO("Not yet implemented")
         }
+
+        private fun RangeHighlighter.myIsValid() =
+            startOffset > 0 && startOffset < document.textLength
 
     }
 }

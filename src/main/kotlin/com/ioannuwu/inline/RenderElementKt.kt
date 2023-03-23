@@ -4,6 +4,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorCustomElementRenderer
 import com.intellij.openapi.editor.Inlay
 import com.intellij.openapi.editor.markup.RangeHighlighter
+import com.intellij.openapi.util.Disposer
 import com.ioannuwu.inline.domain.utils.MyTextAttributes
 import com.ioannuwu.inline.ui.render.MyGutterRenderer
 import java.awt.Color
@@ -75,7 +76,7 @@ interface RenderElementKt {
 
         override fun unrender() {
             if (currentInlay == null) return
-            currentInlay!!.dispose()
+            Disposer.dispose(currentInlay!!)
             currentInlay = null
         }
     }
