@@ -1,17 +1,17 @@
-package com.ioannuwu.inline
+package com.ioannuwu.inline.elements
 
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.editor.EditorCustomElementRenderer
 import com.intellij.openapi.editor.Inlay
 import com.intellij.openapi.editor.markup.RangeHighlighter
-import com.intellij.openapi.util.Disposer
 import com.ioannuwu.inline.domain.utils.MyTextAttributes
+import com.ioannuwu.inline.graphics.GraphicsComponentKt
 import com.ioannuwu.inline.ui.render.MyGutterRenderer
 import java.awt.Color
 import javax.swing.Icon
 
 /**
- * Manages state of part of error representation in editor
+ * this interface assumes that the render() and render() methods
+ * will be called 1 time each one after the other
  */
 interface RenderElementKt {
 
@@ -19,66 +19,57 @@ interface RenderElementKt {
 
     fun unrender()
 
-    class Background(
-        private val backgroundColor: Color,
-        private val lineNumber: Int,
-    ) : RenderElementKt {
+
+    class Background(private val backgroundColor: Color, private val offset: Int) : RenderElementKt {
 
         private var currentHighlighter: RangeHighlighter? = null
 
         override fun render(editor: Editor) {
             if (currentHighlighter != null) return
+            val lineNumber = editor.document.getLineNumber(offset)
             currentHighlighter = editor.markupModel
                 .addLineHighlighter(lineNumber, 0, MyTextAttributes(backgroundColor))
         }
 
         override fun unrender() {
-            if (currentHighlighter == null) return
-            currentHighlighter!!.dispose()
-            currentHighlighter = null
+            currentHighlighter?.dispose()
         }
-
     }
 
-    class Gutter(
-        private val icon: Icon,
-        private val lineNumber: Int,
-    ) : RenderElementKt {
+    class Gutter(private val icon: Icon, private val offset: Int) : RenderElementKt {
 
         private var currentHighlighter: RangeHighlighter? = null
 
         override fun render(editor: Editor) {
             if (currentHighlighter != null) return
+            val lineNumber = editor.document.getLineNumber(offset)
             val highlighter = editor.markupModel
-                .addLineHighlighter(lineNumber, 0, MyTextAttributes(null))
+                .addLineHighlighter(lineNumber, 0, MyTextAttributes.EMPTY)
             highlighter.gutterIconRenderer = MyGutterRenderer(icon)
             currentHighlighter = highlighter
         }
 
         override fun unrender() {
-            if (currentHighlighter == null) return
-            currentHighlighter!!.dispose()
-            currentHighlighter = null
+            currentHighlighter?.dispose()
         }
     }
 
     class Text(
+        private val effects: List<GraphicsComponentKt>,
         private val offset: Int,
-        private val elementRenderer: EditorCustomElementRenderer,
     ) : RenderElementKt {
 
         private var currentInlay: Inlay<*>? = null
 
         override fun render(editor: Editor) {
             if (currentInlay != null) return
-            currentInlay = editor.inlayModel.addAfterLineEndElement(offset, false, elementRenderer)
+            currentInlay = editor.inlayModel.addAfterLineEndElement(
+                offset, false, MyElementRendererKt(effects)
+            )
         }
 
         override fun unrender() {
-            if (currentInlay == null) return
-            Disposer.dispose(currentInlay!!)
-            currentInlay = null
+            currentInlay?.dispose()
         }
     }
-
 }

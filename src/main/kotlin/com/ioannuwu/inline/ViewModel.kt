@@ -1,37 +1,95 @@
 package com.ioannuwu.inline
 
 import com.intellij.openapi.editor.Document
-import com.intellij.openapi.editor.markup.RangeHighlighter
+import com.ioannuwu.inline.elements.RenderElementKt
+import com.ioannuwu.inline.wrapper.RangeHighlighterWrapper
+import com.ioannuwu.inline.wrapper.WrapperComparator
 
-interface ViewModel { // TODO just like mode but better
-
-    // Wrapper gives proper information about error so they are unique, but simplifies things
-    // View Model improves appearance of And uses render Elements provider to generate additional
-    // Nodes if needed
+interface ViewModel {
 
     fun add(highlighter: RangeHighlighterWrapper)
 
     fun remove(highlighter: RangeHighlighterWrapper)
 
-
     class Impl(
-        private val view: View,
+        private val view: View, // TODO ZDEC
+        private val renderElementsProvider: RenderElementsProviderKt,
         private val document: Document,
-        private val renderElementsProvider,
+        private val maxPerLine: MaxPerLineKt,
     ) : ViewModel {
 
-        private val map = HashMap<RangeHighlighterWrapper, Set<RenderElementKt>>()
+        private val map = HashMap<RangeHighlighterWrapper, List<RenderElementKt>>()
 
         override fun add(highlighter: RangeHighlighterWrapper) {
 
+            assert(highlighter.isValidInDocument()) // new highlighters should be valid
+
+            map[highlighter] = emptyList()
+
+            map.keys
+                .filter { !it.isValidInDocument() }
+                .forEach { view.hide(map.remove(it) ?: emptyList()) }
+
+            val highlightersOnCurrentLineSorted = map.keys.asSequence()
+                .filter { it.lineNumber == highlighter.lineNumber }
+                .sortedWith(WrapperComparator.BySeverityThenOffsetThenDescription)
+                .toList()
+
+            highlightersOnCurrentLineSorted.forEach {
+                view.hide(map[it] ?: emptyList())
+                map[it] = emptyList()
+            }
+
+            val top = highlightersOnCurrentLineSorted.asSequence()
+                .take(maxPerLine.maxPerLine)
+                .sortedWith(WrapperComparator.ByOffsetReversed)
+                .toList()
+
+            val list = mutableListOf<Collection<RenderElementKt>>()
+            for (i in 0 until top.count()) {
+                val wrapper = top[i]
+                val elements = renderElementsProvider.provide(wrapper, RenderAttributes.Impl(i))
+                map[wrapper] = elements
+                list.add(i, elements)
+            }
+            view.showLine(list)
         }
 
         override fun remove(highlighter: RangeHighlighterWrapper) {
-            TODO("Not yet implemented")
+
+            val elem = map.remove(highlighter) ?: return
+            view.hide(elem)
+
+            map.keys
+                .filter { !it.isValidInDocument() }
+                .forEach { view.hide(map.remove(it) ?: emptyList()) }
+
+            val lineNumber = if (highlighter.isValidInDocument()) highlighter.lineNumber else document.lineCount
+
+            val highlightersOnCurrentLineSorted = map.keys.asSequence()
+                .filter { it.lineNumber == lineNumber }
+                .sortedWith(WrapperComparator.BySeverityThenOffsetThenDescription)
+                .toList()
+
+            highlightersOnCurrentLineSorted.forEach {
+                view.hide(map[it] ?: emptyList())
+                map[it] = emptyList()
+            }
+
+            val top = highlightersOnCurrentLineSorted.asSequence()
+                .take(maxPerLine.maxPerLine)
+                .sortedWith(WrapperComparator.ByOffsetReversed)
+                .toList()
+
+            val list = mutableListOf<Collection<RenderElementKt>>()
+            for (i in 0 until top.count()) {
+                val wrapper = top[i]
+                val elements = renderElementsProvider.provide(wrapper, RenderAttributes.Impl(i))
+                map[wrapper] = elements
+                list.add(i, elements)
+            }
+            view.showLine(list)
+
         }
-
-        private fun RangeHighlighter.myIsValid() =
-            startOffset > 0 && startOffset < document.textLength
-
     }
 }

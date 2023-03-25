@@ -6,9 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
-public interface TextComponent extends GraphicsComponent {
+public interface TextCompone111nt extends GraphicsComponent {
 
-    class Base implements TextComponent {
+    class Base implements TextCompone111nt {
 
         protected final FontData fontData;
 
@@ -51,7 +51,7 @@ public interface TextComponent extends GraphicsComponent {
         }
     }
 
-    class RustStyleTextComponent implements TextComponent {
+    class RustStyleTextComponent implements TextCompone111nt {
 
         protected final FontData fontData;
         protected final FontProvider editorFont;

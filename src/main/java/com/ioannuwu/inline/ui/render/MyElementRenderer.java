@@ -4,9 +4,6 @@ import com.intellij.openapi.editor.EditorCustomElementRenderer;
 import com.intellij.openapi.editor.Inlay;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.ioannuwu.inline.ui.render.elements.graphiccomponents.GraphicsComponent;
-import com.ioannuwu.inline.ui.render.elements.graphiccomponents.PrettyWidth;
-import com.ioannuwu.inline.ui.render.elements.graphiccomponents.TextComponent;
-import com.jayway.jsonpath.internal.function.numeric.Sum;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;

@@ -1,6 +1,7 @@
 package com.ioannuwu.inline
 
 import com.intellij.openapi.editor.Editor
+import com.ioannuwu.inline.elements.RenderElementKt
 
 interface View {
 
@@ -8,26 +9,25 @@ interface View {
      * ordered list contains collections of render elements ordered from left to right
      * where 0 is first (left) element on a line
      */
-    fun renderLine(orderedList: List<Collection<RenderElementKt>>)
+    fun showLine(orderedList: List<Collection<RenderElementKt>>)
 
-    fun unrender(renderElement: RenderElementKt)
+    fun hide(renderElements: Collection<RenderElementKt>)
 
-    fun unrender(renderElements: Collection<RenderElementKt>) =
-        renderElements.forEach(::unrender)
-
-    fun unrender(renderElements: Collection<Collection<RenderElementKt>>) =
-        renderElements.forEach(::unrender)
+    fun hideLine(renderElements: Collection<Collection<RenderElementKt>>)
 
     class EditorView(private val editor: Editor) : View {
 
-        override fun renderLine(orderedList: List<Collection<RenderElementKt>>) {
+        override fun showLine(orderedList: List<Collection<RenderElementKt>>) {
             for (renderElementList in orderedList) {
                 for (renderElement in renderElementList) renderElement.render(editor)
             }
         }
 
-        override fun unrender(renderElement: RenderElementKt) {
-            renderElement.unrender()
+        override fun hide(renderElements: Collection<RenderElementKt>) =
+            renderElements.forEach(RenderElementKt::unrender)
+
+        override fun hideLine(renderElements: Collection<Collection<RenderElementKt>>) {
+            renderElements.forEach { it.forEach(RenderElementKt::unrender) }
         }
     }
 }

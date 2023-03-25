@@ -13,8 +13,6 @@ public interface FontData extends FontMetricsProvider, FontProvider {
     @Override
     @NotNull Font font();
 
-    float editorFontSize();
-
     @Override
     @NotNull FontMetrics fontMetrics();
 
@@ -48,11 +46,6 @@ public interface FontData extends FontMetricsProvider, FontProvider {
         private Font deriveFont(Font font) {
             return (font == null) ? editor.getColorsScheme().getFont(EditorFontType.PLAIN) :
                     font.deriveFont((float) editor.getColorsScheme().getEditorFontSize());
-        }
-
-        @Override
-        public float editorFontSize() {
-            return editor.getColorsScheme().getEditorFontSize();
         }
 
         @Override

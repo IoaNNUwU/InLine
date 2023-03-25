@@ -1,62 +1,67 @@
 package com.ioannuwu.inline
 
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.ioannuwu.inline.data.EffectType
 import com.ioannuwu.inline.data.MySettingsService
-import com.ioannuwu.inline.domain.utils.RenderDataProvider
-import com.ioannuwu.inline.domain.utils.RenderElementsProvider
+import com.ioannuwu.inline.elements.RenderElementKt
+import com.ioannuwu.inline.graphics.EffectComponentKt
+import com.ioannuwu.inline.graphics.GraphicsComponentKt
+import com.ioannuwu.inline.graphics.TextComponent
 import com.ioannuwu.inline.ui.render.elements.graphiccomponents.FontData
-import com.ioannuwu.inline.ui.render.elements.graphiccomponents.TextComponent
+import com.ioannuwu.inline.wrapper.RangeHighlighterWrapper
 import java.awt.GraphicsEnvironment
-import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashSet
 
 interface RenderElementsProviderKt {
 
-    fun provide(rangeHighlighter: RangeHighlighter, renderAttributes: RenderAttributes): Collection<RenderElementKt>
+    fun provide(
+        rangeHighlighter: RangeHighlighterWrapper,
+        renderAttributes: RenderAttributes
+    ): List<RenderElementKt>
 
 
     class BySettings(
-        private val renderDataProvider: RenderDataProvider,
+        private val renderDataProvider: RenderDataProviderKt,
         private val settingsService: MySettingsService,
         private val graphicsEnvironment: GraphicsEnvironment,
         private val editor: Editor,
     ) : RenderElementsProviderKt {
 
         override fun provide(
-            rangeHighlighter: RangeHighlighter,
+            rangeHighlighter: RangeHighlighterWrapper,
             renderAttributes: RenderAttributes
-        ): Collection<RenderElementKt> {
+        ): List<RenderElementKt> { // TODO ZDEC
 
-            val renderData = renderDataProvider.provide(rangeHighlighter) ?: return emptySet()
-            if (rangeHighlighter.document.textLength <= rangeHighlighter.startOffset) return emptySet()
+            val renderData = renderDataProvider.provide(rangeHighlighter) ?: return emptyList()
 
-            val lineNumber = editor.document.getLineNumber(rangeHighlighter.startOffset)
-            val list = ArrayList<RenderElementKt>()
+            val offset = rangeHighlighter.offset
 
-            if (renderData.showBackground) list.add(RenderElementKt.Background(renderData.backgroundColor, lineNumber))
-            if (renderData.showGutterIcon) list.add(RenderElementKt.Gutter(renderData.icon!!, lineNumber))
+            val renderElements = ArrayList<RenderElementKt>()
+
+            if (renderData.showBackground)
+                renderElements.add(RenderElementKt.Background(renderData.backgroundColor, offset))
+
+            if (renderData.showGutterIcon)
+                renderElements.add(RenderElementKt.Gutter(renderData.icon!!, offset))
 
             if (renderData.showText || renderData.showEffect) {
                 val fontData = FontData.BySettings(settingsService, editor, graphicsEnvironment)
 
-                val textComponent = TextComponent.Base(fontData, renderData.textColor, renderData.description)
+                val textComponent = TextComponent.AfterLineText(fontData, renderData.textColor, renderData.description)
 
-                val set = HashSet<EffectComponentKt>()
+                val graphicsComponents: MutableList<GraphicsComponentKt> = mutableListOf()
 
-                if (renderData.showEffect) {
-                    when (renderData.effectType) {
-                        EffectType.NONE -> {}
-                        EffectType.BOX -> set.add(EffectComponentKt.EMPTY)
-                        EffectType.SHADOW -> set.add(EffectComponentKt.EMPTY)
-                    }
+                if (renderData.showEffect) when (renderData.effectType) {
+                    EffectType.NONE -> {}
+                    EffectType.BOX -> graphicsComponents.add(EffectComponentKt.Box(fontData, renderData.effectColor))
+                    EffectType.SHADOW -> graphicsComponents.add(EffectComponentKt.Shadow(renderData.effectColor, textComponent))
                 }
+                graphicsComponents.add(textComponent)
+
+                renderElements.add(RenderElementKt.Text(graphicsComponents, offset))
             }
 
-        return emptySet()
+            return renderElements
         }
-
     }
 }

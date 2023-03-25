@@ -9,6 +9,7 @@ import com.intellij.openapi.util.Pair
 import com.intellij.openapi.vfs.VirtualFile
 import com.ioannuwu.inline.data.MySettingsService
 import com.ioannuwu.inline.domain.utils.RenderDataProvider
+import java.awt.GraphicsEnvironment
 
 class EditorOpenedListenerKt : FileEditorManagerListener {
     override fun fileOpenedSync(
@@ -20,17 +21,22 @@ class EditorOpenedListenerKt : FileEditorManagerListener {
 
             if (fileEditor !is TextEditor) continue
 
-            val markupModel = DocumentMarkupModel.forDocument(
-                fileEditor.editor.document, fileEditor.editor.project, false
-            )
+            val editor = fileEditor.editor
+            val document = editor.document
+            val markupModel = DocumentMarkupModel.forDocument(document, editor.project, false)
 
             markupModel as? MarkupModelEx ?: continue
 
-            val markupModelListener = MarkupModelListenerKt(
-                EditorCallback.ViewModelEditorCallback(
-                    ViewModel.Impl(View.EditorView(fileEditor.editor))
-                )
+            val view = View.EditorView(editor)
+            val renderElementsProvider = RenderElementsProviderKt.BySettings(
+                renderDataProvider, settingsService, GraphicsEnvironment.getLocalGraphicsEnvironment(), editor
             )
+
+            val viewModel = ViewModel.Impl(
+                view, renderElementsProvider, document, MaxPerLineKt.BySettings(settingsService)
+            )
+
+            val markupModelListener = MarkupModelListenerKt(EditorCallback.ViewModelEditorCallback(viewModel))
 
             markupModel.addMarkupModelListener(fileEditor, markupModelListener)
             map[fileEditor] = markupModelListener
@@ -42,7 +48,7 @@ class EditorOpenedListenerKt : FileEditorManagerListener {
         private val map: MutableMap<TextEditor, MarkupModelListener> = HashMap()
 
         private val settingsService = MySettingsService.getInstance()
-        private val renderDataProvider: RenderDataProvider = RenderDataProvider.BySettings(settingsService)
+        private val renderDataProvider: RenderDataProviderKt = RenderDataProviderKt.BySettings(settingsService)
 
         @JvmStatic
         fun updateActiveListeners() {

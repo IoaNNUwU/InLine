@@ -12,7 +12,6 @@ import com.ioannuwu.inline.ui.render.elements.RustStyleTextRenderElement;
 import com.ioannuwu.inline.ui.render.elements.graphiccomponents.EffectComponent;
 import com.ioannuwu.inline.ui.render.elements.graphiccomponents.FontData;
 import com.ioannuwu.inline.ui.render.elements.graphiccomponents.GraphicsComponent;
-import com.ioannuwu.inline.ui.render.elements.graphiccomponents.TextComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -58,11 +57,6 @@ public interface RenderElementsProvider {
 
                 FontData fontData = new FontData.BySettings(settingsService, editor, graphicsEnvironment);
 
-                TextComponent textComponent = new TextComponent.RustStyleTextComponent(
-                        fontData, () -> editor.getColorsScheme().getFont(EditorFontType.PLAIN), renderData.textColor, renderData.description, indentationLevel);
-                // TODO among us
-                textComponent = new TextComponent.Base(fontData, renderData.textColor, renderData.description);
-
                 Set<GraphicsComponent> set = new HashSet<>();
                 if (renderData.showEffect) {
                     switch (renderData.effectType) {
@@ -72,11 +66,10 @@ public interface RenderElementsProvider {
                             set.add(new EffectComponent.Box(renderData.effectColor, fontData));
                             break;
                         case SHADOW:
-                            set.add(new EffectComponent.Shadow(fontData, renderData.effectColor, renderData.description + ".", textComponent));
+                            set.add(new EffectComponent.Shadow(fontData, renderData.effectColor, renderData.description + ".", null));
                             break;
                     }
                 }
-                set.add(textComponent);
                 RenderElement mainRenderElement = new RustStyleTextRenderElement(
                         set, editor.getInlayModel(), rangeHighlighter.getStartOffset(), editor.getDocument(),
                         () -> UIUtilities.getFontMetrics(editor.getComponent(), editor.getColorsScheme().getFont(EditorFontType.PLAIN))
