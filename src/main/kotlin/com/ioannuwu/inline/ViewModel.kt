@@ -12,7 +12,7 @@ interface ViewModel {
     fun remove(highlighter: RangeHighlighterWrapper)
 
     class Impl(
-        private val view: View, // TODO ZDEC
+        private val view: View,
         private val renderElementsProvider: RenderElementsProviderKt,
         private val document: Document,
         private val maxPerLine: MaxPerLineKt,
@@ -21,10 +21,16 @@ interface ViewModel {
         private val map = HashMap<RangeHighlighterWrapper, List<RenderElementKt>>()
 
         override fun add(highlighter: RangeHighlighterWrapper) {
+            println()
+            println("-=+ ADD +=-")
 
-            assert(highlighter.isValidInDocument()) // new highlighters should be valid
+            println(highlighter)
+            map.printOnEachLine("MAP")
+            println("  FROMMAP: ${map[highlighter]}")
 
             map[highlighter] = emptyList()
+
+            // TODO add rust style
 
             map.keys
                 .filter { !it.isValidInDocument() }
@@ -32,7 +38,7 @@ interface ViewModel {
 
             val highlightersOnCurrentLineSorted = map.keys.asSequence()
                 .filter { it.lineNumber == highlighter.lineNumber }
-                .sortedWith(WrapperComparator.BySeverityThenOffsetThenDescription)
+                .sortedWith(WrapperComparator.ByPriority then WrapperComparator.ByOffsetLowestIsLast)
                 .toList()
 
             highlightersOnCurrentLineSorted.forEach {
@@ -40,10 +46,14 @@ interface ViewModel {
                 map[it] = emptyList()
             }
 
+            highlightersOnCurrentLineSorted.printOnEachLine("LINE")
+
             val top = highlightersOnCurrentLineSorted.asSequence()
                 .take(maxPerLine.maxPerLine)
-                .sortedWith(WrapperComparator.ByOffsetReversed)
+                .sortedWith(WrapperComparator.ByOffsetLowestIsFirstLikeOnTheLine)
                 .toList()
+
+            top.printOnEachLine("TOP")
 
             val list = mutableListOf<Collection<RenderElementKt>>()
             for (i in 0 until top.count()) {
@@ -56,6 +66,12 @@ interface ViewModel {
         }
 
         override fun remove(highlighter: RangeHighlighterWrapper) {
+            println()
+            println("-=+ REMOVE +=-")
+
+            println(highlighter)
+            map.printOnEachLine("MAP")
+            println("  FROMMAP: ${map[highlighter]}")
 
             val elem = map.remove(highlighter) ?: return
             view.hide(elem)
@@ -68,8 +84,10 @@ interface ViewModel {
 
             val highlightersOnCurrentLineSorted = map.keys.asSequence()
                 .filter { it.lineNumber == lineNumber }
-                .sortedWith(WrapperComparator.BySeverityThenOffsetThenDescription)
+                .sortedWith(WrapperComparator.ByPriority then WrapperComparator.ByOffsetLowestIsLast)
                 .toList()
+
+            highlightersOnCurrentLineSorted.printOnEachLine("LINE")
 
             highlightersOnCurrentLineSorted.forEach {
                 view.hide(map[it] ?: emptyList())
@@ -78,8 +96,10 @@ interface ViewModel {
 
             val top = highlightersOnCurrentLineSorted.asSequence()
                 .take(maxPerLine.maxPerLine)
-                .sortedWith(WrapperComparator.ByOffsetReversed)
+                .sortedWith(WrapperComparator.ByOffsetLowestIsFirstLikeOnTheLine)
                 .toList()
+
+            top.printOnEachLine("TOP")
 
             val list = mutableListOf<Collection<RenderElementKt>>()
             for (i in 0 until top.count()) {
@@ -89,7 +109,20 @@ interface ViewModel {
                 list.add(i, elements)
             }
             view.showLine(list)
-
         }
+    }
+}
+
+private fun <T> Collection<T>.printOnEachLine(prefix: String) {
+    println("  $prefix:")
+    this.forEach {
+        println("    $it")
+    }
+}
+
+private fun <K, V> Map<K, V>.printOnEachLine(prefix: String) {
+    println("  $prefix:")
+    this.forEach { (k, v) ->
+        println("    $k: $v;")
     }
 }

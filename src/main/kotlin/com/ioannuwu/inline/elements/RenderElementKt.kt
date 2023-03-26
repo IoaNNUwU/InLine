@@ -3,9 +3,9 @@ package com.ioannuwu.inline.elements
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.Inlay
 import com.intellij.openapi.editor.markup.RangeHighlighter
-import com.ioannuwu.inline.domain.utils.MyTextAttributes
+import com.ioannuwu.inline.domain.MyTextAttributes
 import com.ioannuwu.inline.graphics.GraphicsComponentKt
-import com.ioannuwu.inline.ui.render.MyGutterRenderer
+import com.ioannuwu.inline.ui.render.elements.MyGutterRenderer
 import java.awt.Color
 import javax.swing.Icon
 
@@ -28,7 +28,9 @@ interface RenderElementKt {
             if (currentHighlighter != null) return
             val lineNumber = editor.document.getLineNumber(offset)
             currentHighlighter = editor.markupModel
-                .addLineHighlighter(lineNumber, 0, MyTextAttributes(backgroundColor))
+                .addLineHighlighter(lineNumber, 0,
+                    MyTextAttributes(backgroundColor)
+                )
         }
 
         override fun unrender() {
@@ -45,7 +47,8 @@ interface RenderElementKt {
             val lineNumber = editor.document.getLineNumber(offset)
             val highlighter = editor.markupModel
                 .addLineHighlighter(lineNumber, 0, MyTextAttributes.EMPTY)
-            highlighter.gutterIconRenderer = MyGutterRenderer(icon)
+            highlighter.gutterIconRenderer =
+                MyGutterRenderer(icon)
             currentHighlighter = highlighter
         }
 

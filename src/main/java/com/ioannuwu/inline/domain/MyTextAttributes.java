@@ -1,4 +1,4 @@
-package com.ioannuwu.inline.domain.utils;
+package com.ioannuwu.inline.domain;
 
 import com.intellij.openapi.editor.markup.TextAttributes;
 

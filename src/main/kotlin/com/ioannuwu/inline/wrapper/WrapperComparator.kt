@@ -4,9 +4,9 @@ interface WrapperComparator : Comparator<RangeHighlighterWrapper> {
 
     override fun compare(h1: RangeHighlighterWrapper, h2: RangeHighlighterWrapper): Int
 
-    object BySeverity : WrapperComparator {
+    object ByPriority : WrapperComparator {
         override fun compare(h1: RangeHighlighterWrapper, h2: RangeHighlighterWrapper) =
-            h1.priority.compareTo(h2.priority)
+            -h1.priority.compareTo(h2.priority)
     }
 
     object ByDescription : WrapperComparator {
@@ -14,22 +14,21 @@ interface WrapperComparator : Comparator<RangeHighlighterWrapper> {
             h1.description.compareTo(h2.description)
     }
 
-    object ByOffset : WrapperComparator {
+    /**
+     * lowest offset is first in the list
+     */
+    object ByOffsetLowestIsFirstLikeOnTheLine : WrapperComparator {
+
         override fun compare(h1: RangeHighlighterWrapper, h2: RangeHighlighterWrapper) =
             h1.offset.compareTo(h2.offset)
     }
 
-    object ByOffsetReversed : WrapperComparator {
+    /**
+     * lowest offset is last in the list
+     */
+    object ByOffsetLowestIsLast : WrapperComparator {
 
-        private val comp = ByOffset.reversed()
-
-        override fun compare(h1: RangeHighlighterWrapper, h2: RangeHighlighterWrapper) =
-            comp.compare(h1, h2)
-    }
-
-    object BySeverityThenOffsetThenDescription : WrapperComparator {
-
-        private val comp = BySeverity then ByOffset then ByDescription
+        private val comp = ByOffsetLowestIsFirstLikeOnTheLine.reversed()
 
         override fun compare(h1: RangeHighlighterWrapper, h2: RangeHighlighterWrapper) =
             comp.compare(h1, h2)

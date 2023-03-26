@@ -1,6 +1,5 @@
 package com.ioannuwu.inline.graphics
 
-import com.ioannuwu.inline.ui.render.elements.graphiccomponents.FontData
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.Rectangle

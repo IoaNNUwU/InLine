@@ -4,10 +4,6 @@ import com.intellij.openapi.Disposable;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.EditorCustomElementRenderer;
 import com.intellij.openapi.editor.InlayModel;
-import com.ioannuwu.inline.ui.render.MyElementRenderer;
-import com.ioannuwu.inline.ui.render.RustStyleElementRenderer;
-import com.ioannuwu.inline.ui.render.elements.graphiccomponents.FontMetricsProvider;
-import com.ioannuwu.inline.ui.render.elements.graphiccomponents.GraphicsComponent;
 import com.ioannuwu.inline.utils.Utils;
 
 import java.util.Collection;

@@ -1,12 +1,9 @@
-package com.ioannuwu.inline.ui.render;
+package com.ioannuwu.inline.ui.render.elements;
 
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.EditorCustomElementRenderer;
 import com.intellij.openapi.editor.Inlay;
 import com.intellij.openapi.editor.markup.TextAttributes;
-import com.ioannuwu.inline.ui.render.elements.graphiccomponents.FontMetricsProvider;
-import com.ioannuwu.inline.ui.render.elements.graphiccomponents.FontProvider;
-import com.ioannuwu.inline.ui.render.elements.graphiccomponents.GraphicsComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;

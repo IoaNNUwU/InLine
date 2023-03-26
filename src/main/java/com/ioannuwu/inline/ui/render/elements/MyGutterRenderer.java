@@ -1,8 +1,7 @@
-package com.ioannuwu.inline.ui.render;
+package com.ioannuwu.inline.ui.render.elements;
 
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.util.Objects;

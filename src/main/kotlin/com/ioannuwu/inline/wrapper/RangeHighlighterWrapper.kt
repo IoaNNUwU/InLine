@@ -15,7 +15,7 @@ interface RangeHighlighterWrapper {
     fun isValidInDocument(): Boolean
 
 
-    class Impl(private val highlighter: RangeHighlighter): RangeHighlighterWrapper {
+    class Impl(private val highlighter: RangeHighlighter) : RangeHighlighterWrapper {
 
         private var markerIsSufficient = false
 
@@ -52,23 +52,15 @@ interface RangeHighlighterWrapper {
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (javaClass != other?.javaClass) return false
+            if (other !is RangeHighlighterWrapper) return false
 
-            other as RangeHighlighterWrapper
-
-            if (priority != other.priority) return false
-            if (offset != other.offset) return false
-            if (description != other.description) return false
-
-            return true
+            return hashCode() == other.hashCode()
         }
 
-        override fun hashCode(): Int {
-            var result = priority
-            result = 31 * result + offset
-            result = 31 * result + description.hashCode()
-            return result
-        }
+        override fun hashCode(): Int = highlighter.hashCode()
+
+        override fun toString(): String =
+            "RangeHighlighterWrapper($description) { line: $lineNumber, offset: $offset, priority: $priority }"
     }
 
 }

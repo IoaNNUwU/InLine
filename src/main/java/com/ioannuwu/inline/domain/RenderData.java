@@ -1,4 +1,4 @@
-package com.ioannuwu.inline.domain.render;
+package com.ioannuwu.inline.domain;
 
 import com.ioannuwu.inline.data.EffectType;
 import com.ioannuwu.inline.data.SeverityLevelState;

@@ -3,7 +3,7 @@ package com.ioannuwu.inline
 import com.intellij.lang.annotation.HighlightSeverity
 import com.ioannuwu.inline.data.DefaultSettings
 import com.ioannuwu.inline.data.MySettingsService
-import com.ioannuwu.inline.domain.render.RenderData
+import com.ioannuwu.inline.domain.RenderData
 import com.ioannuwu.inline.wrapper.RangeHighlighterWrapper
 import java.awt.Color
 
@@ -40,7 +40,8 @@ interface RenderDataProviderKt {
                 levelState.showGutterIcon, levelState.showText, levelState.showBackground, levelState.showEffect,
                 levelState.textColor, backGroundColor, levelState.effectColor,
                 state.numberOfWhitespaces, state.maxErrorsPerLine, state.effectType,
-                highlighter.description, icon)
+                highlighter.description, icon
+            )
         }
 
         override fun isValid(highlighter: RangeHighlighterWrapper): Boolean {

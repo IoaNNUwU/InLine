@@ -7,7 +7,6 @@ import com.ioannuwu.inline.elements.RenderElementKt
 import com.ioannuwu.inline.graphics.EffectComponentKt
 import com.ioannuwu.inline.graphics.GraphicsComponentKt
 import com.ioannuwu.inline.graphics.TextComponent
-import com.ioannuwu.inline.ui.render.elements.graphiccomponents.FontData
 import com.ioannuwu.inline.wrapper.RangeHighlighterWrapper
 import java.awt.GraphicsEnvironment
 import kotlin.collections.ArrayList

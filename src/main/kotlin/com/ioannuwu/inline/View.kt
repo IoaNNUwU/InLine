@@ -18,9 +18,8 @@ interface View {
     class EditorView(private val editor: Editor) : View {
 
         override fun showLine(orderedList: List<Collection<RenderElementKt>>) {
-            for (renderElementList in orderedList) {
+            for (renderElementList in orderedList)
                 for (renderElement in renderElementList) renderElement.render(editor)
-            }
         }
 
         override fun hide(renderElements: Collection<RenderElementKt>) =

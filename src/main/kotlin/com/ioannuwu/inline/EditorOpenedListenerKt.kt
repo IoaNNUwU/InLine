@@ -8,7 +8,6 @@ import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.vfs.VirtualFile
 import com.ioannuwu.inline.data.MySettingsService
-import com.ioannuwu.inline.domain.utils.RenderDataProvider
 import java.awt.GraphicsEnvironment
 
 class EditorOpenedListenerKt : FileEditorManagerListener {
