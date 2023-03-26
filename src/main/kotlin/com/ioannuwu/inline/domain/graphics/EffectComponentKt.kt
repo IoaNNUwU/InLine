@@ -1,5 +1,6 @@
-package com.ioannuwu.inline.graphics
+package com.ioannuwu.inline.domain.graphics
 
+import com.ioannuwu.inline.data.FontDataProvider
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.Rectangle
@@ -13,14 +14,14 @@ interface EffectComponentKt : GraphicsComponentKt {
         get() = -100
 
     class Box(
-        private val fontMetricsProvider: FontMetricsProvider,
+        private val fontMetricsProvider: FontDataProvider,
         private val color: Color,
     ) : EffectComponentKt {
 
         override fun draw(g: Graphics, targetRegion: Rectangle) {
             val magicNumberToFixBoxBlinking = 1
 
-            val fontMetrics = fontMetricsProvider.fontMetrics()
+            val fontMetrics = fontMetricsProvider.fontMetrics
 
             val arc = fontMetrics.height * 2 / 10
 
@@ -45,7 +46,7 @@ interface EffectComponentKt : GraphicsComponentKt {
         }
     }
 
-    object NONE : EffectComponentKt {
+    object EMPTY : EffectComponentKt {
         override fun draw(g: Graphics, targetRegion: Rectangle) {}
     }
 }

@@ -1,7 +1,7 @@
-package com.ioannuwu.inline
+package com.ioannuwu.inline.domain
 
 import com.intellij.openapi.editor.Editor
-import com.ioannuwu.inline.elements.RenderElementKt
+import com.ioannuwu.inline.domain.elements.RenderElementKt
 
 interface View {
 

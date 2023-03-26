@@ -6,6 +6,8 @@ import java.util.Objects;
 
 public class SettingsState implements Serializable {
 
+    public static final SettingsState NONE = new SettingsState();
+
     public int numberOfWhitespaces = DefaultSettings.NUMBER_OF_WHITESPACES;
 
     public EffectType effectType = DefaultSettings.EFFECT_TYPE;

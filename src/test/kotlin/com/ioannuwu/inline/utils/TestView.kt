@@ -1,7 +1,7 @@
 package com.ioannuwu.inline.utils
 
-import com.ioannuwu.inline.View
-import com.ioannuwu.inline.elements.RenderElementKt
+import com.ioannuwu.inline.domain.View
+import com.ioannuwu.inline.domain.elements.RenderElementKt
 
 object TestView : View {
 

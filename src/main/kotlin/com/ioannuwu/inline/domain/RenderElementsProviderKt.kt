@@ -1,15 +1,12 @@
-package com.ioannuwu.inline
+package com.ioannuwu.inline.domain
 
-import com.intellij.openapi.editor.Editor
 import com.ioannuwu.inline.data.EffectType
-import com.ioannuwu.inline.data.MySettingsService
-import com.ioannuwu.inline.elements.RenderElementKt
-import com.ioannuwu.inline.graphics.EffectComponentKt
-import com.ioannuwu.inline.graphics.GraphicsComponentKt
-import com.ioannuwu.inline.graphics.TextComponent
-import com.ioannuwu.inline.wrapper.RangeHighlighterWrapper
-import java.awt.GraphicsEnvironment
-import kotlin.collections.ArrayList
+import com.ioannuwu.inline.data.FontDataProvider
+import com.ioannuwu.inline.domain.elements.RenderElementKt
+import com.ioannuwu.inline.domain.graphics.EffectComponentKt
+import com.ioannuwu.inline.domain.graphics.GraphicsComponentKt
+import com.ioannuwu.inline.domain.graphics.TextComponent
+import com.ioannuwu.inline.domain.wrapper.RangeHighlighterWrapper
 
 interface RenderElementsProviderKt {
 
@@ -19,17 +16,15 @@ interface RenderElementsProviderKt {
     ): List<RenderElementKt>
 
 
-    class BySettings(
+    class Impl(
         private val renderDataProvider: RenderDataProviderKt,
-        private val settingsService: MySettingsService,
-        private val graphicsEnvironment: GraphicsEnvironment,
-        private val editor: Editor,
+        private val fontDataProvider: FontDataProvider,
     ) : RenderElementsProviderKt {
 
         override fun provide(
             rangeHighlighter: RangeHighlighterWrapper,
             renderAttributes: RenderAttributes
-        ): List<RenderElementKt> { // TODO ZDEC
+        ): List<RenderElementKt> {
 
             val renderData = renderDataProvider.provide(rangeHighlighter) ?: return emptyList()
 
@@ -44,16 +39,28 @@ interface RenderElementsProviderKt {
                 renderElements.add(RenderElementKt.Gutter(renderData.icon!!, offset))
 
             if (renderData.showText || renderData.showEffect) {
-                val fontData = FontData.BySettings(settingsService, editor, graphicsEnvironment)
 
-                val textComponent = TextComponent.AfterLineText(fontData, renderData.textColor, renderData.description)
+                val textComponent =
+                    TextComponent.AfterLineText(fontDataProvider, renderData.textColor, renderData.description)
 
                 val graphicsComponents: MutableList<GraphicsComponentKt> = mutableListOf()
 
                 if (renderData.showEffect) when (renderData.effectType) {
                     EffectType.NONE -> {}
-                    EffectType.BOX -> graphicsComponents.add(EffectComponentKt.Box(fontData, renderData.effectColor))
-                    EffectType.SHADOW -> graphicsComponents.add(EffectComponentKt.Shadow(renderData.effectColor, textComponent))
+
+                    EffectType.BOX -> graphicsComponents.add(
+                        EffectComponentKt.Box(
+                            fontDataProvider,
+                            renderData.effectColor
+                        )
+                    )
+
+                    EffectType.SHADOW -> graphicsComponents.add(
+                        EffectComponentKt.Shadow(
+                            renderData.effectColor,
+                            textComponent
+                        )
+                    )
                 }
                 graphicsComponents.add(textComponent)
 

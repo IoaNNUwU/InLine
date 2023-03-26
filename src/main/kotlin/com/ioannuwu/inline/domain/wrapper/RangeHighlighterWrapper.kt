@@ -1,4 +1,4 @@
-package com.ioannuwu.inline.wrapper
+package com.ioannuwu.inline.domain.wrapper
 
 import com.intellij.codeInsight.daemon.impl.HighlightInfo
 import com.intellij.openapi.editor.markup.RangeHighlighter

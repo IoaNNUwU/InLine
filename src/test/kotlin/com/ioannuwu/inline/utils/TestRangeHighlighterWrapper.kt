@@ -1,6 +1,6 @@
 package com.ioannuwu.inline.utils
 
-import com.ioannuwu.inline.wrapper.RangeHighlighterWrapper
+import com.ioannuwu.inline.domain.wrapper.RangeHighlighterWrapper
 
 class TestRangeHighlighterWrapper(
     override val priority: Int,

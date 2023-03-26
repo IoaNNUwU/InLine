@@ -1,7 +1,7 @@
-package com.ioannuwu.inline
+package com.ioannuwu.inline.domain
 
 import com.intellij.openapi.editor.markup.RangeHighlighter
-import com.ioannuwu.inline.wrapper.RangeHighlighterWrapper
+import com.ioannuwu.inline.domain.wrapper.RangeHighlighterWrapper
 
 interface EditorCallback {
 

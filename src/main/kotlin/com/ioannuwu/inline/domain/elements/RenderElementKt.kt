@@ -1,11 +1,10 @@
-package com.ioannuwu.inline.elements
+package com.ioannuwu.inline.domain.elements
 
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.Inlay
 import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.ioannuwu.inline.domain.MyTextAttributes
-import com.ioannuwu.inline.graphics.GraphicsComponentKt
-import com.ioannuwu.inline.ui.render.elements.MyGutterRenderer
+import com.ioannuwu.inline.domain.graphics.GraphicsComponentKt
 import java.awt.Color
 import javax.swing.Icon
 

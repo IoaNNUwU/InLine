@@ -1,4 +1,4 @@
-package com.ioannuwu.inline.wrapper
+package com.ioannuwu.inline.domain.wrapper
 
 interface WrapperComparator : Comparator<RangeHighlighterWrapper> {
 

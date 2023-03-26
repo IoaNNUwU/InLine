@@ -1,4 +1,4 @@
-package com.ioannuwu.inline
+package com.ioannuwu.inline.domain
 
 interface RenderAttributes {
 

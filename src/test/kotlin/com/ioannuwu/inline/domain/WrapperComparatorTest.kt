@@ -1,8 +1,8 @@
 package com.ioannuwu.inline.domain
 
 import com.ioannuwu.inline.utils.TEST
-import com.ioannuwu.inline.wrapper.RangeHighlighterWrapper
-import com.ioannuwu.inline.wrapper.WrapperComparator
+import com.ioannuwu.inline.domain.wrapper.RangeHighlighterWrapper
+import com.ioannuwu.inline.domain.wrapper.WrapperComparator
 import org.junit.Test
 
 class WrapperComparatorTest {

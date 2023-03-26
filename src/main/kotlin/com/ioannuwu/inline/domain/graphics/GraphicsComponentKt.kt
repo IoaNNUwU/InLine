@@ -1,4 +1,4 @@
-package com.ioannuwu.inline.graphics
+package com.ioannuwu.inline.domain.graphics
 
 import java.awt.Color
 import java.awt.Graphics
