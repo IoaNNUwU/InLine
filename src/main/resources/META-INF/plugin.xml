@@ -14,7 +14,7 @@
     </extensions>
 
     <projectListeners>
-        <listener class="com.ioannuwu.inline.domain.EditorOpenedListener"
+        <listener class="com.ioannuwu.inline.EditorOpenedListenerKt"
                   topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
     </projectListeners>
 </idea-plugin>

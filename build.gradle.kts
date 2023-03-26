@@ -3,6 +3,7 @@ fun properties(key: String) = project.findProperty(key).toString()
 plugins {
     id("org.jetbrains.intellij") version "1.12.0"
     id("org.jetbrains.changelog") version "2.0.0"
+    kotlin("jvm") version "1.7.10"
 }
 
 group = properties("pluginGroup")
@@ -10,6 +11,10 @@ version = properties("pluginVersion")
 
 repositories {
     mavenCentral()
+}
+
+kotlin {
+
 }
 
 intellij {
