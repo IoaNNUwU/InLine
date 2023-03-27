@@ -1,11 +1,9 @@
 name: Build
 on:
-
   push:
     branches:
       - main
       - dev
-
   pull_request:
 
 jobs:
