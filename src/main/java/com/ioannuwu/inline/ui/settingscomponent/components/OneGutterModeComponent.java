@@ -1,5 +1,6 @@
 package com.ioannuwu.inline.ui.settingscomponent.components;
 
+import com.intellij.ui.ContextHelpLabel;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.util.ui.FormBuilder;
 import com.ioannuwu.inline.ui.settingscomponent.Component;
@@ -18,8 +19,10 @@ public class OneGutterModeComponent implements Component, State<Boolean> {
 
     @Override
     public void addToBuilder(FormBuilder formBuilder) {
+        ContextHelpLabel contextHelpLabel = ContextHelpLabel.create("Show only one gutter icon per line");
         JPanel panel = new JPanel();
-        panel.add(new JLabel("Gutter destruction-free mode                                                           "));
+        panel.add(new JLabel("Gutter destruction-free mode"));
+        panel.add(contextHelpLabel);
         panel.add(checkBox);
         formBuilder.addLabeledComponent(panel, new JLabel());
     }

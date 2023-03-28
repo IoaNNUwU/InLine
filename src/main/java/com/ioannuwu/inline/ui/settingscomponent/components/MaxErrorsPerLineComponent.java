@@ -20,7 +20,7 @@ public class MaxErrorsPerLineComponent implements Component, State<Integer> {
     @Override
     public void addToBuilder(FormBuilder formBuilder) {
         JPanel panel = new JPanel();
-        panel.add(new JBLabel("Max number of errors per line                                   "));
+        panel.add(new JBLabel("Max number of errors per line"));
         panel.add(maxErrorsPerLineField);
         formBuilder.addLabeledComponent(panel, new JBLabel());
     }

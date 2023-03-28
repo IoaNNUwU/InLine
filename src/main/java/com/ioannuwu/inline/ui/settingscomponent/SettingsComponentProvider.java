@@ -77,31 +77,34 @@ public interface SettingsComponentProvider extends State<SettingsState> {
 
             final FormBuilder formBuilder = FormBuilder.createFormBuilder();
 
-            numberOfWhitespacesComponent.addToBuilder(formBuilder);
-            maxErrorsPerLineComponent.addToBuilder(formBuilder);
-
+            formBuilder.addSeparator();
+            fontSelectionComponent.addToBuilder(formBuilder);
+            formBuilder.addSeparator();
+            textStyleSelectionComponent.addToBuilder(formBuilder);
             effectTypeComponent.addToBuilder(formBuilder);
 
-            fontSelectionComponent.addToBuilder(formBuilder);
-
+            formBuilder.addSeparator();
             oneGutterModeComponent.addToBuilder(formBuilder);
-            textStyleSelectionComponent.addToBuilder(formBuilder);
+            formBuilder.addSeparator();
+            maxErrorsPerLineComponent.addToBuilder(formBuilder);
+            numberOfWhitespacesComponent.addToBuilder(formBuilder);
 
-            formBuilder.addComponent(new JPanel());
-
+            formBuilder.addSeparator();
             errorComponent.addToBuilder(formBuilder);
-            formBuilder.addComponent(new JPanel());
+            formBuilder.addSeparator();
             warningComponent.addToBuilder(formBuilder);
-            formBuilder.addComponent(new JPanel());
+            formBuilder.addSeparator();
             weakWarningComponent.addToBuilder(formBuilder);
-            formBuilder.addComponent(new JPanel());
+            formBuilder.addSeparator();
             informationComponent.addToBuilder(formBuilder);
-            formBuilder.addComponent(new JPanel());
+            formBuilder.addSeparator();
             serverErrorComponent.addToBuilder(formBuilder);
-            formBuilder.addComponent(new JPanel());
+            formBuilder.addSeparator();
             otherErrorComponent.addToBuilder(formBuilder);
+            formBuilder.addSeparator();
 
             ignoreListComponent.addToBuilder(formBuilder);
+            formBuilder.addSeparator();
 
             return formBuilder.getPanel();
         }
