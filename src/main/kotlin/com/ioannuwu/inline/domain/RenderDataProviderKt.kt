@@ -44,7 +44,7 @@ interface RenderDataProviderKt : HighlightersValidator {
                 levelState.showGutterIcon, levelState.showText, levelState.showBackground, levelState.showEffect,
                 levelState.textColor, backGroundColor, levelState.effectColor,
                 state.numberOfWhitespaces, state.maxErrorsPerLine, state.effectType,
-                highlighter.description, icon, TextStyle.RUST, true
+                highlighter.description, icon, state.textStyle, state.oneGutterMode
             )
         }
 

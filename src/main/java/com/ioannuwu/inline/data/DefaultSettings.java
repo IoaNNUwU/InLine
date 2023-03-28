@@ -1,6 +1,7 @@
 package com.ioannuwu.inline.data;
 
 import com.intellij.icons.AllIcons;
+import com.ioannuwu.inline.domain.TextStyle;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +13,10 @@ public class DefaultSettings {
 
     public static final int MAX_ERRORS_PER_LINE = 2;
 
-    public static final FontSettingsState FONT = new FontSettingsState("Dialog.plain", "hello");
+    public static final FontSettingsState FONT = new FontSettingsState("Dialog.plain", "sample");
+
+    public static final TextStyle TEXT_STYLE = TextStyle.RUST;
+    public static final boolean ONE_GUTTER_MODE = true;
 
     public static final SeverityLevelState ERROR = defaultSeverityLevelState(new Color(183, 43, 43));
     public static final SeverityLevelState WARNING = defaultSeverityLevelState(new Color(189, 115, 37));
@@ -21,7 +25,7 @@ public class DefaultSettings {
     public static final SeverityLevelState SERVER_ERROR = defaultSeverityLevelState(new Color(128, 29, 185));
     public static final SeverityLevelState OTHER_ERROR = defaultSeverityLevelState(new Color(141, 169, 169));
 
-    public static final String[] IGNORE_LIST = new String[]{"TYPO", "TODO"};
+    public static final String[] IGNORE_LIST = new String[]{"Typo", "TODO"};
 
     public static class Icons {
         public static final Icon ERROR = AllIcons.General.Error;
