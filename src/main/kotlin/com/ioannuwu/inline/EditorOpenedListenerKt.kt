@@ -1,6 +1,5 @@
 package com.ioannuwu.inline
 
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.editor.ex.MarkupModelEx
 import com.intellij.openapi.editor.ex.RangeHighlighterEx
 import com.intellij.openapi.editor.impl.DocumentMarkupModel
@@ -41,10 +40,10 @@ class EditorOpenedListenerKt : FileEditorManagerListener, SettingsChangeListener
             val graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment()!!
 
             val fontDataProvider = FontDataProvider.BySettings(editor, graphicsEnvironment, fileEditor)
-            val renderElementsProvider = RenderElementsProviderKt.Impl(renderDataProvider, fontDataProvider)
+            val renderElementsProvider =
+                RenderElementsProvider.Impl(renderDataProvider, fontDataProvider, FontDataProvider.ByEditor(editor))
 
-            val view = View.EditorView(editor)
-            val viewModel = ViewModel.Impl(view, renderElementsProvider, document, maxPerLine)
+            val viewModel = ViewModel.Impl(renderElementsProvider, editor, maxPerLine, renderDataProvider)
 
             val markupModelListener = MarkupModelListenerKt(EditorCallback.ViewModelEditorCallback(viewModel))
 

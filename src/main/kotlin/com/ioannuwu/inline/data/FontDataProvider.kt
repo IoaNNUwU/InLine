@@ -3,6 +3,7 @@ package com.ioannuwu.inline.data
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.colors.EditorFontType
 import com.intellij.openapi.util.Disposer
 import com.intellij.util.ui.UIUtilities
 import com.ioannuwu.inline.domain.settings.SettingsChangeEvent
@@ -68,5 +69,17 @@ interface FontDataProvider {
         override fun dispose() {
             MySettingsService.OBSERVABLE.unsubscribe(this)
         }
+    }
+
+    class ByEditor(
+        private val editor: Editor
+    ) : FontDataProvider {
+        override val font: Font
+            get() = editor.colorsScheme.getFont(EditorFontType.PLAIN)
+        override val fontMetrics: FontMetrics
+            get() = UIUtilities.getFontMetrics(editor.component, font)
+        override val lineHeight: Int
+            get() = editor.lineHeight
+
     }
 }

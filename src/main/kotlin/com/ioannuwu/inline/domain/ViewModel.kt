@@ -1,6 +1,8 @@
 package com.ioannuwu.inline.domain
 
-import com.intellij.openapi.editor.Document
+import com.intellij.openapi.Disposable
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.util.Disposer
 import com.ioannuwu.inline.domain.elements.RenderElementKt
 import com.ioannuwu.inline.domain.wrapper.RangeHighlighterWrapper
 import com.ioannuwu.inline.domain.wrapper.WrapperComparator
@@ -12,81 +14,84 @@ interface ViewModel {
     fun remove(highlighter: RangeHighlighterWrapper)
 
     class Impl(
-        private val view: View,
-        private val renderElementsProvider: RenderElementsProviderKt,
-        private val document: Document,
+        private val renderElementsProvider: RenderElementsProvider,
+        private val editor: Editor,
         private val maxPerLine: MaxErrorsPerLineProvider,
+        private val highlightersValidator: HighlightersValidator,
     ) : ViewModel {
 
-        private val map = HashMap<RangeHighlighterWrapper, List<RenderElementKt>>()
+        private val map = HashMap<RangeHighlighterWrapper, List<Disposable>>()
 
         override fun add(highlighter: RangeHighlighterWrapper) {
 
+            hideFromMapAndRemoveInvalid()
+
             map[highlighter] = emptyList()
 
-            map.keys
-                .filter { !it.isValidInDocument() }
-                .forEach { view.hide(map.remove(it) ?: emptyList()) }
-
-            val highlightersOnCurrentLineSorted = map.keys.asSequence()
-                .filter { it.lineNumber == highlighter.lineNumber }
-                .sortedWith(WrapperComparator.ByPriority then WrapperComparator.ByOffsetLowestIsLast)
-                .toList()
-
-            highlightersOnCurrentLineSorted.forEach {
-                view.hide(map[it] ?: emptyList())
-                map[it] = emptyList()
-            }
-
-            val top = highlightersOnCurrentLineSorted.asSequence()
-                .take(maxPerLine.maxPerLine)
-                .sortedWith(WrapperComparator.ByOffsetLowestIsFirstLikeOnTheLine)
-                .toList()
-
-            val list = mutableListOf<Collection<RenderElementKt>>()
-            for (i in 0 until top.count()) {
-                val wrapper = top[i]
-                val elements = renderElementsProvider.provide(wrapper, RenderAttributes.Impl(i))
-                map[wrapper] = elements
-                list.add(i, elements)
-            }
-            view.showLine(list)
+            displayHighlightersOnCurrentLineAndUpdateMap(highlighter.lineNumber)
         }
 
         override fun remove(highlighter: RangeHighlighterWrapper) {
+            val dis = map.remove(highlighter) ?: return
+            dis.forEach(Disposable::dispose)
 
-            val elem = map.remove(highlighter) ?: return
-            view.hide(elem)
+            hideFromMapAndRemoveInvalid()
 
-            map.keys
-                .filter { !it.isValidInDocument() }
-                .forEach { view.hide(map.remove(it) ?: emptyList()) }
+            val lineNumber = if (highlighter.isValidInDocument())
+                highlighter.lineNumber
+            else
+                editor.document.lineCount
 
-            val lineNumber = if (highlighter.isValidInDocument()) highlighter.lineNumber else document.lineCount
+            displayHighlightersOnCurrentLineAndUpdateMap(lineNumber)
+        }
+
+        private fun displayHighlightersOnCurrentLineAndUpdateMap(currentLine: Int) {
 
             val highlightersOnCurrentLineSorted = map.keys.asSequence()
-                .filter { it.lineNumber == lineNumber }
-                .sortedWith(WrapperComparator.ByPriority then WrapperComparator.ByOffsetLowestIsLast)
+                .filter { it.lineNumber == currentLine }
+                .sortedWith(WrapperComparator.ByPriority)
                 .toList()
 
             highlightersOnCurrentLineSorted.forEach {
-                view.hide(map[it] ?: emptyList())
+                val disposables = map[it] ?: emptyList()
+                disposables.forEach(Disposer::dispose)
                 map[it] = emptyList()
             }
 
-            val top = highlightersOnCurrentLineSorted.asSequence()
+            val topN = highlightersOnCurrentLineSorted.asSequence()
+                .filter { highlightersValidator.isValid(it) }
                 .take(maxPerLine.maxPerLine)
-                .sortedWith(WrapperComparator.ByOffsetLowestIsFirstLikeOnTheLine)
                 .toList()
 
-            val list = mutableListOf<Collection<RenderElementKt>>()
-            for (i in 0 until top.count()) {
-                val wrapper = top[i]
-                val elements = renderElementsProvider.provide(wrapper, RenderAttributes.Impl(i))
-                map[wrapper] = elements
-                list.add(i, elements)
+            val lineStartOffset = editor.document.getLineStartOffset(currentLine)
+
+            val lineRenderElements = renderElementsProvider.provide(lineStartOffset, topN)
+
+            val disposablesAfterRender = mutableListOf<List<Disposable>>()
+
+            for (renderElementCollection in lineRenderElements) {
+                val innerList = mutableListOf<Disposable>()
+                for (elem in renderElementCollection) {
+                    val dis = elem.render(editor)
+                    innerList.add(dis)
+                }
+                disposablesAfterRender.add(innerList)
             }
-            view.showLine(list)
+
+            for (i in disposablesAfterRender.indices) {
+                val fromTop: RangeHighlighterWrapper = topN[i]
+                map[fromTop] = disposablesAfterRender[i]
+            }
+        }
+
+        private fun hideFromMapAndRemoveInvalid() {
+
+            map.keys
+                .filter { !it.isValidInDocument() }
+                .forEach {
+                    val correspondingDisposables = map.remove(it) ?: emptyList()
+                    correspondingDisposables.forEach(Disposer::dispose)
+                }
         }
     }
 }

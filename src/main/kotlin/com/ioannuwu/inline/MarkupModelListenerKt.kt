@@ -11,7 +11,7 @@ class MarkupModelListenerKt(private val editorCallback: EditorCallback) : Markup
     }
 
     override fun beforeRemoved(highlighter: RangeHighlighterEx) {
-        editorCallback.onRemoved( highlighter)
+        editorCallback.onRemoved(highlighter)
     }
 
     override fun attributesChanged(

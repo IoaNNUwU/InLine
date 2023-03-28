@@ -34,6 +34,8 @@ interface EffectComponentKt : GraphicsComponentKt {
                 arc, arc,
             )
         }
+
+        override fun toString(): String = "Box( $color )"
     }
 
     class Shadow(
@@ -44,9 +46,13 @@ interface EffectComponentKt : GraphicsComponentKt {
         override fun draw(g: Graphics, targetRegion: Rectangle) {
             parent.drawFancy(g, targetRegion, color)
         }
+
+        override fun toString(): String = "Shadow( $color )"
     }
 
     object EMPTY : EffectComponentKt {
         override fun draw(g: Graphics, targetRegion: Rectangle) {}
+
+        override fun toString(): String = "Empty"
     }
 }

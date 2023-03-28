@@ -9,7 +9,7 @@ interface TextComponent : GraphicsComponentKt {
 
     override fun drawFancy(g: Graphics, targetRegion: Rectangle, color: Color)
 
-    class AfterLineText(
+    class Impl(
         private val fontData: FontDataProvider,
         private val textColor: Color,
         private val text: String,
@@ -36,7 +36,25 @@ interface TextComponent : GraphicsComponentKt {
                 val fontMetrics = fontData.fontMetrics
                 return fontMetrics.stringWidth(text) + fontMetrics.charWidth('a') * 2
             }
+
+        override fun toString(): String = "Text( $text )"
     }
 
+    class None(
+        private val fontData: FontDataProvider,
+        private val text: String,
+    ) : TextComponent {
 
+        override fun drawFancy(g: Graphics, targetRegion: Rectangle, color: Color) = Unit
+
+        override fun draw(g: Graphics, targetRegion: Rectangle) = Unit
+
+        override val width: Int
+            get() {
+                val fontMetrics = fontData.fontMetrics
+                return fontMetrics.stringWidth(text) + fontMetrics.charWidth('a') * 2
+            }
+
+        override fun toString(): String = "None"
+    }
 }

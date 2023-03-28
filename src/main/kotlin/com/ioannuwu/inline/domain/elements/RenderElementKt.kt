@@ -1,10 +1,11 @@
 package com.ioannuwu.inline.domain.elements
 
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.editor.Inlay
-import com.intellij.openapi.editor.markup.RangeHighlighter
+import com.ioannuwu.inline.data.FontDataProvider
 import com.ioannuwu.inline.domain.MyTextAttributes
 import com.ioannuwu.inline.domain.graphics.GraphicsComponentKt
+import com.ioannuwu.inline.domain.wrapper.RangeHighlighterAdapter
 import java.awt.Color
 import javax.swing.Icon
 
@@ -14,64 +15,71 @@ import javax.swing.Icon
  */
 interface RenderElementKt {
 
-    fun render(editor: Editor)
+    fun render(editor: Editor): Disposable
 
-    fun unrender()
+    override fun toString(): String
 
 
     class Background(private val backgroundColor: Color, private val offset: Int) : RenderElementKt {
 
-        private var currentHighlighter: RangeHighlighter? = null
-
-        override fun render(editor: Editor) {
-            if (currentHighlighter != null) return
+        override fun render(editor: Editor): Disposable {
             val lineNumber = editor.document.getLineNumber(offset)
-            currentHighlighter = editor.markupModel
-                .addLineHighlighter(lineNumber, 0,
-                    MyTextAttributes(backgroundColor)
+            return RangeHighlighterAdapter(
+                editor.markupModel.addLineHighlighter(
+                    lineNumber, 0, MyTextAttributes(backgroundColor)
                 )
+            )
         }
 
-        override fun unrender() {
-            currentHighlighter?.dispose()
-        }
+        override fun toString(): String = "Background( $offset )"
     }
 
     class Gutter(private val icon: Icon, private val offset: Int) : RenderElementKt {
 
-        private var currentHighlighter: RangeHighlighter? = null
-
-        override fun render(editor: Editor) {
-            if (currentHighlighter != null) return
+        override fun render(editor: Editor): Disposable {
             val lineNumber = editor.document.getLineNumber(offset)
             val highlighter = editor.markupModel
                 .addLineHighlighter(lineNumber, 0, MyTextAttributes.EMPTY)
-            highlighter.gutterIconRenderer =
-                MyGutterRenderer(icon)
-            currentHighlighter = highlighter
+            highlighter.gutterIconRenderer = MyGutterRenderer(icon)
+            return RangeHighlighterAdapter(highlighter)
         }
 
-        override fun unrender() {
-            currentHighlighter?.dispose()
-        }
+        override fun toString(): String = "Gutter( $offset )"
     }
 
-    class Text(
+    class DefaultText(
         private val effects: List<GraphicsComponentKt>,
         private val offset: Int,
     ) : RenderElementKt {
 
-        private var currentInlay: Inlay<*>? = null
-
-        override fun render(editor: Editor) {
-            if (currentInlay != null) return
-            currentInlay = editor.inlayModel.addAfterLineEndElement(
-                offset, false, MyElementRendererKt(effects)
-            )
+        override fun render(editor: Editor): Disposable {
+            return editor.inlayModel.addAfterLineEndElement(
+                offset, true, MyElementRendererKt(effects)
+            )!!
         }
 
-        override fun unrender() {
-            currentInlay?.dispose()
+        override fun toString(): String = "Default { offset:$offset, effects:$effects }"
+
+    }
+
+    class RustStyleText(
+        private val effects: List<GraphicsComponentKt>,
+        private val offset: Int,
+        private val lineStartOffset: Int,
+        private val editorFontDataProvider: FontDataProvider,
+    ) : RenderElementKt {
+
+        override fun render(editor: Editor): Disposable {
+
+            val offsetFromLineStart = offset - lineStartOffset
+
+            return editor.inlayModel.addBlockElement(
+                offset, true, false, 0,
+                RustStyleElementRenderer(effects, offsetFromLineStart, editorFontDataProvider)
+            )!!
         }
+
+        override fun toString(): String =
+            "RustStyletext { offset:$offset, fromLineStart:${offset - lineStartOffset}, effects:$effects }"
     }
 }

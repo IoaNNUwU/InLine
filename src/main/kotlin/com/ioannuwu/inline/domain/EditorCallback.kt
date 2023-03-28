@@ -12,22 +12,27 @@ interface EditorCallback {
 
     class ViewModelEditorCallback(private val viewModel: ViewModel) : EditorCallback {
 
-        private val map = HashMap<RangeHighlighter, RangeHighlighterWrapper>()
+        private val wrappers = HashMap<RangeHighlighter, RangeHighlighterWrapper>()
 
         override fun onAdded(highlighter: RangeHighlighter) {
 
-            val wrapper = RangeHighlighterWrapper.Impl(highlighter)
+            val fromMap = wrappers[highlighter]
 
-            if (!wrapper.isSufficient()) return
+            val wrapper: RangeHighlighterWrapper =
+                if (fromMap == null) {
+                    val temp = RangeHighlighterWrapper.Impl(highlighter)
+                    if (temp.isSufficient()) temp else return
+                } else
+                    fromMap
 
-            map[highlighter] = wrapper
-
+            wrappers[highlighter] = wrapper
             viewModel.add(wrapper)
         }
 
         override fun onRemoved(highlighter: RangeHighlighter) {
 
-            val wrapper = map.remove(highlighter) ?: return
+            val wrapper = wrappers[highlighter] ?: return
+
             viewModel.remove(wrapper)
         }
     }
