@@ -8,7 +8,6 @@ import com.ioannuwu.inline.domain.graphics.GraphicsComponentKt
 import com.ioannuwu.inline.domain.graphics.TextComponent
 import com.ioannuwu.inline.domain.wrapper.RangeHighlighterWrapper
 import com.ioannuwu.inline.domain.wrapper.WrapperComparator
-import java.util.*
 
 interface RenderElementsProvider {
 

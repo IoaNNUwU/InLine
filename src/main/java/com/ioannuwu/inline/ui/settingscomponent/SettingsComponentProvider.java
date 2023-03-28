@@ -32,6 +32,9 @@ public interface SettingsComponentProvider extends State<SettingsState> {
 
         private FontSelectionComponent fontSelectionComponent;
 
+        private OneGutterModeComponent oneGutterModeComponent;
+        private TextStyleSelectionComponent textStyleSelectionComponent;
+
         private SeverityLevel errorComponent;
         private SeverityLevel warningComponent;
         private SeverityLevel weakWarningComponent;
@@ -53,6 +56,9 @@ public interface SettingsComponentProvider extends State<SettingsState> {
                     settingsState.font.textSample,
                     settingsState.font.fontName,
                     GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts());
+
+            oneGutterModeComponent = new OneGutterModeComponent(settingsState.oneGutterMode);
+            textStyleSelectionComponent = new TextStyleSelectionComponent(settingsState.textStyle);
 
             errorComponent = new SeverityLevel(settingsState.error,
                     "Error", "Compilation errors");
@@ -77,6 +83,9 @@ public interface SettingsComponentProvider extends State<SettingsState> {
             effectTypeComponent.addToBuilder(formBuilder);
 
             fontSelectionComponent.addToBuilder(formBuilder);
+
+            oneGutterModeComponent.addToBuilder(formBuilder);
+            textStyleSelectionComponent.addToBuilder(formBuilder);
 
             formBuilder.addComponent(new JPanel());
 
@@ -108,6 +117,9 @@ public interface SettingsComponentProvider extends State<SettingsState> {
             state.maxErrorsPerLine = maxErrorsPerLineComponent.getState();
 
             state.font = fontSelectionComponent.getState();
+
+            state.textStyle = textStyleSelectionComponent.getState();
+            state.oneGutterMode = oneGutterModeComponent.getState();
 
             state.error = errorComponent.getState();
             state.warning = warningComponent.getState();
