@@ -95,7 +95,7 @@ interface RenderElementsProvider {
                             graphicsComponents, highlighter.offset, lineStartOffset, editorFontDataProvider
                         )
 
-                        TextStyle.DEFAULT -> RenderElementKt.DefaultText(graphicsComponents, highlighter.offset)
+                        TextStyle.AFTERLINE -> RenderElementKt.DefaultText(graphicsComponents, highlighter.offset)
                     }
 
                     renderElements[i].add(textElement)

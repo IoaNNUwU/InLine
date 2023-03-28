@@ -30,7 +30,7 @@ public class EffectTypeComponent implements Component, State<EffectType> {
     @Override
     public void addToBuilder(FormBuilder formBuilder) {
         JPanel panel = new JPanel();
-        panel.add(new JBLabel("Effect type                                                                    "));
+        panel.add(new JBLabel("Effect type"));
         panel.add(effectTypeComboBox);
         formBuilder.addLabeledComponent(panel, new JLabel());
     }

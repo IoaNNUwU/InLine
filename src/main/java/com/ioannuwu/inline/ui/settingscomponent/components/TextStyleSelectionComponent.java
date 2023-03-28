@@ -25,7 +25,7 @@ public class TextStyleSelectionComponent implements Component, State<TextStyle> 
     @Override
     public void addToBuilder(FormBuilder formBuilder) {
         JPanel panel = new JPanel();
-        panel.add(new JLabel("Text style                                                                    "));
+        panel.add(new JLabel("Text style"));
         panel.add(stylesComboBox);
         formBuilder.addLabeledComponent(panel, new JLabel());
 
