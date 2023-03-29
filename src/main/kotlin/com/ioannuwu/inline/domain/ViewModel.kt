@@ -3,6 +3,7 @@ package com.ioannuwu.inline.domain
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.util.Disposer
+import com.ioannuwu.inline.domain.elements.RenderElementKt
 import com.ioannuwu.inline.domain.wrapper.RangeHighlighterWrapper
 import com.ioannuwu.inline.domain.wrapper.WrapperComparator
 
@@ -46,29 +47,34 @@ interface ViewModel {
 
         private fun displayHighlightersOnCurrentLineAndUpdateMap(currentLine: Int) {
 
-            val highlightersOnCurrentLineSorted = map.keys.asSequence()
+            val highlightersOnCurrentLine = map.keys.asSequence()
                 .filter { it.lineNumber == currentLine }
-                .sortedWith(WrapperComparator.ByPriority)
                 .toList()
 
-            highlightersOnCurrentLineSorted.forEach {
+            highlightersOnCurrentLine.forEach {
                 val disposables = map[it] ?: emptyList()
                 disposables.forEach(Disposer::dispose)
                 map[it] = emptyList()
             }
 
-            val topN = highlightersOnCurrentLineSorted.asSequence()
+            val topN = highlightersOnCurrentLine.asSequence()
+                .sortedWith(PRIORITY_LAST_DESC)
                 .filter { highlightersValidator.isValid(it) }
                 .take(maxPerLine.maxPerLine)
                 .toList()
 
             val lineStartOffset = editor.document.getLineStartOffset(currentLine)
 
-            val lineRenderElements = renderElementsProvider.provide(lineStartOffset, topN)
+            val lineRenderElementsSortedByPriority: Map<RangeHighlighterWrapper, Collection<RenderElementKt>> =
+                renderElementsProvider.provide(lineStartOffset, topN)
+
+            val renderElementsFromLeftToRight = lineRenderElementsSortedByPriority.asSequence()
+                .sortedWith(OFFSET_FROM_LEFT_TO_RIGHT)
+                .map { it.value }
 
             val disposablesAfterRender = mutableListOf<List<Disposable>>()
 
-            for (renderElementCollection in lineRenderElements) {
+            for (renderElementCollection in renderElementsFromLeftToRight) {
                 val innerList = mutableListOf<Disposable>()
                 for (elem in renderElementCollection) {
                     val dis = elem.render(editor)
@@ -91,6 +97,18 @@ interface ViewModel {
                     val correspondingDisposables = map.remove(it) ?: emptyList()
                     correspondingDisposables.forEach(Disposer::dispose)
                 }
+        }
+
+        private companion object {
+
+            val PRIORITY_LAST_DESC =
+                WrapperComparator.ByPriority then
+                        WrapperComparator.ByOffsetTakeLastOnTheLine then
+                        WrapperComparator.ByDescription
+
+            val OFFSET_FROM_LEFT_TO_RIGHT = Comparator<Map.Entry<RangeHighlighterWrapper, *>> { h1, h2 ->
+                WrapperComparator.ByOffsetTakeLastOnTheLine.compare(h1.key, h2.key)
+            }
         }
     }
 }

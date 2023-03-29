@@ -14,7 +14,7 @@ interface RenderElementsProvider {
     fun provide(
         lineStartOffset: Int,
         highlightersToBeShownSortedByPriority: List<RangeHighlighterWrapper>,
-    ): List<Collection<RenderElementKt>>
+    ): Map<RangeHighlighterWrapper, Collection<RenderElementKt>>
 
 
     class Impl(
@@ -27,7 +27,7 @@ interface RenderElementsProvider {
         override fun provide(
             lineStartOffset: Int,
             highlightersToBeShownSortedByPriority: List<RangeHighlighterWrapper>,
-        ): List<Collection<RenderElementKt>> {
+        ): Map<RangeHighlighterWrapper,Collection<RenderElementKt>> {
 
             val indices = highlightersToBeShownSortedByPriority.indices
 
@@ -113,7 +113,14 @@ interface RenderElementsProvider {
                     renderElements[i].add(textElement)
                 }
             }
-            return renderElements
+            val map = HashMap<RangeHighlighterWrapper, List<RenderElementKt>>()
+            for (i in indices) {
+                val wrapper = highlightersToBeShownSortedByPriority[i]
+                val elements = renderElements[i]
+
+                map[wrapper] = elements
+            }
+            return map
         }
     }
 }

@@ -17,7 +17,7 @@ interface WrapperComparator : Comparator<RangeHighlighterWrapper> {
     /**
      * lowest offset is first in the list
      */
-    object ByOffsetLowestIsFirstLikeOnTheLine : WrapperComparator {
+    object ByOffsetTakeFirstOnTheLine : WrapperComparator {
 
         override fun compare(h1: RangeHighlighterWrapper, h2: RangeHighlighterWrapper) =
             h1.offset.compareTo(h2.offset)
@@ -26,9 +26,9 @@ interface WrapperComparator : Comparator<RangeHighlighterWrapper> {
     /**
      * lowest offset is last in the list
      */
-    object ByOffsetLowestIsLast : WrapperComparator {
+    object ByOffsetTakeLastOnTheLine : WrapperComparator {
 
-        private val comp = ByOffsetLowestIsFirstLikeOnTheLine.reversed()
+        private val comp = ByOffsetTakeFirstOnTheLine.reversed()
 
         override fun compare(h1: RangeHighlighterWrapper, h2: RangeHighlighterWrapper) =
             comp.compare(h1, h2)
