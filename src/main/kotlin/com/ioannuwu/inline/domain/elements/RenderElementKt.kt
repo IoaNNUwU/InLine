@@ -2,9 +2,9 @@ package com.ioannuwu.inline.domain.elements
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.editor.Editor
-import com.ioannuwu.inline.data.FontDataProvider
+import com.ioannuwu.inline.data.FontData
 import com.ioannuwu.inline.domain.MyTextAttributes
-import com.ioannuwu.inline.domain.NumberOfWhitespacesProvider
+import com.ioannuwu.inline.domain.NumberOfWhitespaces
 import com.ioannuwu.inline.domain.graphics.GraphicsComponentKt
 import com.ioannuwu.inline.domain.wrapper.RangeHighlighterAdapter
 import java.awt.Color
@@ -51,13 +51,13 @@ interface RenderElementKt {
     class DefaultText(
         private val effects: List<GraphicsComponentKt>,
         private val offset: Int,
-        private val numberOfWhitespacesProvider: NumberOfWhitespacesProvider,
-        private val editorFontMetricsProvider: FontDataProvider,
+        private val numberOfWhitespaces: NumberOfWhitespaces,
+        private val editorFontMetricsProvider: FontData,
     ) : RenderElementKt {
 
         override fun render(editor: Editor): Disposable {
             return editor.inlayModel.addAfterLineEndElement(
-                offset, true, MyElementRendererKt(effects, numberOfWhitespacesProvider, editorFontMetricsProvider)
+                offset, true, MyElementRendererKt(effects, numberOfWhitespaces, editorFontMetricsProvider)
             )!!
         }
 
@@ -69,8 +69,8 @@ interface RenderElementKt {
         private val effects: List<GraphicsComponentKt>,
         private val offset: Int,
         private val lineStartOffset: Int,
-        private val editorFontDataProvider: FontDataProvider,
-        private val numberOfWhitespacesProvider: NumberOfWhitespacesProvider,
+        private val editorFontData: FontData,
+        private val numberOfWhitespaces: NumberOfWhitespaces,
     ) : RenderElementKt {
 
         override fun render(editor: Editor): Disposable {
@@ -79,7 +79,7 @@ interface RenderElementKt {
 
             return editor.inlayModel.addBlockElement(
                 offset, true, false, 0,
-                RustStyleElementRenderer(effects, offsetFromLineStart, editorFontDataProvider, numberOfWhitespacesProvider)
+                RustStyleElementRenderer(effects, offsetFromLineStart, editorFontData, numberOfWhitespaces)
             )!!
         }
 

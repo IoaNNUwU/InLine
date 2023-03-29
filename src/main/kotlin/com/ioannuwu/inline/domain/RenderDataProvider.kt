@@ -10,12 +10,12 @@ import com.ioannuwu.inline.domain.settings.SettingsChangeObservable
 import com.ioannuwu.inline.domain.wrapper.RangeHighlighterWrapper
 import java.awt.Color
 
-interface RenderDataProviderKt : HighlightersValidator {
+interface RenderDataProvider : HighlightersValidator {
 
     fun provide(highlighter: RangeHighlighterWrapper): RenderData
 
 
-    object BySettings : RenderDataProviderKt, SettingsChangeListener {
+    object BySettings : RenderDataProvider, SettingsChangeListener {
 
         init {
             MySettingsService.OBSERVABLE.subscribe(this, SettingsChangeObservable.Priority.DEFAULT)

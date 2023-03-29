@@ -1,6 +1,6 @@
 package com.ioannuwu.inline.domain.graphics
 
-import com.ioannuwu.inline.data.FontDataProvider
+import com.ioannuwu.inline.data.FontData
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.Rectangle
@@ -14,7 +14,7 @@ interface EffectComponentKt : GraphicsComponentKt {
         get() = -100
 
     class Box(
-        private val fontMetricsProvider: FontDataProvider,
+        private val fontMetricsProvider: FontData,
         private val color: Color,
     ) : EffectComponentKt {
 

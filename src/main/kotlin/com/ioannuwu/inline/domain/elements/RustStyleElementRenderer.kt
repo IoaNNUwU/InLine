@@ -3,8 +3,8 @@ package com.ioannuwu.inline.domain.elements
 import com.intellij.openapi.editor.EditorCustomElementRenderer
 import com.intellij.openapi.editor.Inlay
 import com.intellij.openapi.editor.markup.TextAttributes
-import com.ioannuwu.inline.data.FontDataProvider
-import com.ioannuwu.inline.domain.NumberOfWhitespacesProvider
+import com.ioannuwu.inline.data.FontData
+import com.ioannuwu.inline.domain.NumberOfWhitespaces
 import com.ioannuwu.inline.domain.graphics.GraphicsComponentKt
 import java.awt.Graphics
 import java.awt.Rectangle
@@ -15,8 +15,8 @@ import java.awt.Rectangle
 class RustStyleElementRenderer(
     private val graphicsComponents: Collection<GraphicsComponentKt>,
     private val offsetFromLineStart: Int,
-    private val editorFontDataProvider: FontDataProvider,
-    private val numberOfWhitespacesProvider: NumberOfWhitespacesProvider,
+    private val editorFontData: FontData,
+    private val numberOfWhitespaces: NumberOfWhitespaces,
 ) : EditorCustomElementRenderer {
 
 
@@ -25,9 +25,9 @@ class RustStyleElementRenderer(
 
     override fun paint(inlay: Inlay<*>, g: Graphics, targetRegion: Rectangle, textAttributes: TextAttributes) {
 
-        val charWidth = editorFontDataProvider.fontMetrics.charWidth('a')
+        val charWidth = editorFontData.fontMetrics.charWidth('a')
 
-        val newX = targetRegion.x + charWidth * offsetFromLineStart + charWidth * numberOfWhitespacesProvider.provide()
+        val newX = targetRegion.x + charWidth * offsetFromLineStart + charWidth * numberOfWhitespaces.numberOfWhitespaces
 
         val newTargetRegion = Rectangle(newX,targetRegion.y,targetRegion.width, targetRegion.height)
 

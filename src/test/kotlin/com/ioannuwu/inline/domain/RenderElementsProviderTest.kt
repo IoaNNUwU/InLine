@@ -2,7 +2,7 @@ package com.ioannuwu.inline.domain
 
 import com.ioannuwu.inline.data.DefaultSettings
 import com.ioannuwu.inline.data.EffectType
-import com.ioannuwu.inline.data.FontDataProvider
+import com.ioannuwu.inline.data.FontData
 import com.ioannuwu.inline.domain.elements.RenderElementKt
 import com.ioannuwu.inline.domain.wrapper.RangeHighlighterWrapper
 import com.ioannuwu.inline.utils.TEST
@@ -17,7 +17,7 @@ class RenderElementsProviderTest {
     @Test
     fun `render elements provider provides correct elements`() {
 
-        val provider = RenderElementsProvider.Impl(TestRenderDataProvider, TestFontDataProvider, TestFontDataProvider)
+        val provider = RenderElementsProvider.Impl(TestRenderDataProvider, TestFontData, TestFontData, TestNumberOfWhitespaces)
 
         val mostImportantHelper = TestHighlighterHelper(300, 300)
 
@@ -41,7 +41,7 @@ private class TestHighlighterHelper(offset: Int, priority: Int) : TestRangeHighl
     override fun toString(): String = "Helper { $offset }"
 }
 
-private object TestRenderDataProvider : RenderDataProviderKt {
+private object TestRenderDataProvider : RenderDataProvider {
 
     override fun provide(highlighter: RangeHighlighterWrapper): RenderData = RenderData( // only background
         true, false, true, false, Color.RED, Color.BLACK, Color.WHITE, 2, 3,
@@ -51,11 +51,16 @@ private object TestRenderDataProvider : RenderDataProviderKt {
     override fun isValid(highlighter: RangeHighlighterWrapper): Boolean = TEST()
 }
 
-private object TestFontDataProvider : FontDataProvider {
+private object TestFontData : FontData {
     override val font: Font
         get() = TEST()
     override val fontMetrics: FontMetrics
         get() = TEST()
     override val lineHeight: Int
         get() = TEST()
+}
+
+private object TestNumberOfWhitespaces : NumberOfWhitespaces {
+    override val numberOfWhitespaces: Int
+        get() = 2
 }

@@ -1,6 +1,6 @@
 package com.ioannuwu.inline.domain.graphics
 
-import com.ioannuwu.inline.data.FontDataProvider
+import com.ioannuwu.inline.data.FontData
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.Rectangle
@@ -10,7 +10,7 @@ interface TextComponent : GraphicsComponentKt {
     override fun drawFancy(g: Graphics, targetRegion: Rectangle, color: Color)
 
     class Impl(
-        private val fontData: FontDataProvider,
+        private val fontData: FontData,
         private val textColor: Color,
         private val text: String,
     ) : TextComponent {
@@ -41,7 +41,7 @@ interface TextComponent : GraphicsComponentKt {
     }
 
     class None(
-        private val fontData: FontDataProvider,
+        private val fontData: FontData,
         private val text: String,
     ) : TextComponent {
 

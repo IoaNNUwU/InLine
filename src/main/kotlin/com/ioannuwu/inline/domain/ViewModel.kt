@@ -3,7 +3,6 @@ package com.ioannuwu.inline.domain
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.util.Disposer
-import com.ioannuwu.inline.domain.elements.RenderElementKt
 import com.ioannuwu.inline.domain.wrapper.RangeHighlighterWrapper
 import com.ioannuwu.inline.domain.wrapper.WrapperComparator
 
@@ -16,7 +15,7 @@ interface ViewModel {
     class Impl(
         private val renderElementsProvider: RenderElementsProvider,
         private val editor: Editor,
-        private val maxPerLine: MaxErrorsPerLineProvider,
+        private val maxPerLine: MaxErrorsPerLine,
         private val highlightersValidator: HighlightersValidator,
     ) : ViewModel {
 

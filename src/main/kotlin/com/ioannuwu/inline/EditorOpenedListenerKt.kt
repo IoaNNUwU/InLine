@@ -8,7 +8,7 @@ import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.vfs.VirtualFile
-import com.ioannuwu.inline.data.FontDataProvider
+import com.ioannuwu.inline.data.FontData
 import com.ioannuwu.inline.data.MySettingsService
 import com.ioannuwu.inline.domain.*
 import com.ioannuwu.inline.domain.settings.SettingsChangeEvent
@@ -39,9 +39,9 @@ class EditorOpenedListenerKt : FileEditorManagerListener, SettingsChangeListener
 
             val graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment()!!
 
-            val fontDataProvider = FontDataProvider.BySettings(editor, graphicsEnvironment, fileEditor)
+            val fontData = FontData.BySettings(editor, graphicsEnvironment, fileEditor)
             val renderElementsProvider =
-                RenderElementsProvider.Impl(renderDataProvider, fontDataProvider, FontDataProvider.ByEditor(editor), NumberOfWhitespacesProvider.BySettings)
+                RenderElementsProvider.Impl(renderDataProvider, fontData, FontData.ByEditor(editor), NumberOfWhitespaces.BySettings)
 
             val viewModel = ViewModel.Impl(renderElementsProvider, editor, maxPerLine, renderDataProvider)
 
@@ -70,7 +70,7 @@ class EditorOpenedListenerKt : FileEditorManagerListener, SettingsChangeListener
     companion object {
         private val map: MutableMap<TextEditor, MarkupModelListener> = HashMap()
 
-        private val renderDataProvider: RenderDataProviderKt = RenderDataProviderKt.BySettings
-        private val maxPerLine: MaxErrorsPerLineProvider = MaxErrorsPerLineProvider.BySettings
+        private val renderDataProvider: RenderDataProvider = RenderDataProvider.BySettings
+        private val maxPerLine: MaxErrorsPerLine = MaxErrorsPerLine.BySettings
     }
 }

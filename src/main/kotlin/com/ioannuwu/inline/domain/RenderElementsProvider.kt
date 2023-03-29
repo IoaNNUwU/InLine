@@ -1,7 +1,7 @@
 package com.ioannuwu.inline.domain
 
 import com.ioannuwu.inline.data.EffectType
-import com.ioannuwu.inline.data.FontDataProvider
+import com.ioannuwu.inline.data.FontData
 import com.ioannuwu.inline.domain.elements.RenderElementKt
 import com.ioannuwu.inline.domain.graphics.EffectComponentKt
 import com.ioannuwu.inline.domain.graphics.GraphicsComponentKt
@@ -18,10 +18,10 @@ interface RenderElementsProvider {
 
 
     class Impl(
-        private val renderDataProvider: RenderDataProviderKt,
-        private val fontDataProvider: FontDataProvider,
-        private val editorFontDataProvider: FontDataProvider,
-        private val numberOfWhitespacesProvider: NumberOfWhitespacesProvider,
+        private val renderDataProvider: RenderDataProvider,
+        private val fontData: FontData,
+        private val editorFontData: FontData,
+        private val numberOfWhitespaces: NumberOfWhitespaces,
     ) : RenderElementsProvider {
 
         override fun provide(
@@ -68,8 +68,8 @@ interface RenderElementsProvider {
                 val renderData = renderDataForEachHighlighterByPriority[i]
                 if (renderData.showText || renderData.showEffect) {
                     val textComponent = if (renderData.showText)
-                        TextComponent.Impl(fontDataProvider, renderData.textColor, renderData.description)
-                    else TextComponent.None(fontDataProvider, renderData.description)
+                        TextComponent.Impl(fontData, renderData.textColor, renderData.description)
+                    else TextComponent.None(fontData, renderData.description)
 
                     val graphicsComponents = mutableListOf<GraphicsComponentKt>(textComponent)
 
@@ -78,7 +78,7 @@ interface RenderElementsProvider {
                             EffectType.NONE -> Unit
                             EffectType.BOX -> graphicsComponents.add(
                                 EffectComponentKt.Box(
-                                    fontDataProvider, renderData.effectColor
+                                    fontData, renderData.effectColor
                                 )
                             )
 
@@ -97,15 +97,15 @@ interface RenderElementsProvider {
                             graphicsComponents,
                             highlighter.offset,
                             lineStartOffset,
-                            editorFontDataProvider,
-                            numberOfWhitespacesProvider
+                            editorFontData,
+                            numberOfWhitespaces
                         )
 
                         TextStyle.AFTERLINE -> RenderElementKt.DefaultText(
                             graphicsComponents,
                             highlighter.offset,
-                            numberOfWhitespacesProvider,
-                            editorFontDataProvider
+                            numberOfWhitespaces,
+                            editorFontData
                         )
                     }
 

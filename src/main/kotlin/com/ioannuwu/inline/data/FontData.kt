@@ -13,7 +13,7 @@ import java.awt.Font
 import java.awt.FontMetrics
 import java.awt.GraphicsEnvironment
 
-interface FontDataProvider {
+interface FontData {
 
     val font: Font
     val fontMetrics: FontMetrics
@@ -24,7 +24,7 @@ interface FontDataProvider {
         graphicsEnvironment: GraphicsEnvironment,
 
         parentDisposable: Disposable,
-    ) : FontDataProvider, Disposable, SettingsChangeListener {
+    ) : FontData, Disposable, SettingsChangeListener {
 
         private val allFonts: Array<Font> = graphicsEnvironment.allFonts
 
@@ -73,7 +73,7 @@ interface FontDataProvider {
 
     class ByEditor(
         private val editor: Editor
-    ) : FontDataProvider {
+    ) : FontData {
         override val font: Font
             get() = editor.colorsScheme.getFont(EditorFontType.PLAIN)
         override val fontMetrics: FontMetrics
