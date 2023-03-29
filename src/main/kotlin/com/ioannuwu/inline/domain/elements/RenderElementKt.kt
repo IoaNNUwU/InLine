@@ -4,6 +4,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.editor.Editor
 import com.ioannuwu.inline.data.FontDataProvider
 import com.ioannuwu.inline.domain.MyTextAttributes
+import com.ioannuwu.inline.domain.NumberOfWhitespacesProvider
 import com.ioannuwu.inline.domain.graphics.GraphicsComponentKt
 import com.ioannuwu.inline.domain.wrapper.RangeHighlighterAdapter
 import java.awt.Color
@@ -50,11 +51,13 @@ interface RenderElementKt {
     class DefaultText(
         private val effects: List<GraphicsComponentKt>,
         private val offset: Int,
+        private val numberOfWhitespacesProvider: NumberOfWhitespacesProvider,
+        private val editorFontMetricsProvider: FontDataProvider,
     ) : RenderElementKt {
 
         override fun render(editor: Editor): Disposable {
             return editor.inlayModel.addAfterLineEndElement(
-                offset, true, MyElementRendererKt(effects)
+                offset, true, MyElementRendererKt(effects, numberOfWhitespacesProvider, editorFontMetricsProvider)
             )!!
         }
 
@@ -67,6 +70,7 @@ interface RenderElementKt {
         private val offset: Int,
         private val lineStartOffset: Int,
         private val editorFontDataProvider: FontDataProvider,
+        private val numberOfWhitespacesProvider: NumberOfWhitespacesProvider,
     ) : RenderElementKt {
 
         override fun render(editor: Editor): Disposable {
@@ -75,7 +79,7 @@ interface RenderElementKt {
 
             return editor.inlayModel.addBlockElement(
                 offset, true, false, 0,
-                RustStyleElementRenderer(effects, offsetFromLineStart, editorFontDataProvider)
+                RustStyleElementRenderer(effects, offsetFromLineStart, editorFontDataProvider, numberOfWhitespacesProvider)
             )!!
         }
 

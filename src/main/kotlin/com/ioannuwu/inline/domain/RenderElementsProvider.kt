@@ -21,6 +21,7 @@ interface RenderElementsProvider {
         private val renderDataProvider: RenderDataProviderKt,
         private val fontDataProvider: FontDataProvider,
         private val editorFontDataProvider: FontDataProvider,
+        private val numberOfWhitespacesProvider: NumberOfWhitespacesProvider,
     ) : RenderElementsProvider {
 
         override fun provide(
@@ -91,11 +92,21 @@ interface RenderElementsProvider {
                     val highlighter = highlightersToBeShownSortedByPriority[i]
 
                     val textElement = when (renderData.textStyle) {
+
                         TextStyle.RUST -> RenderElementKt.RustStyleText(
-                            graphicsComponents, highlighter.offset, lineStartOffset, editorFontDataProvider
+                            graphicsComponents,
+                            highlighter.offset,
+                            lineStartOffset,
+                            editorFontDataProvider,
+                            numberOfWhitespacesProvider
                         )
 
-                        TextStyle.AFTERLINE -> RenderElementKt.DefaultText(graphicsComponents, highlighter.offset)
+                        TextStyle.AFTERLINE -> RenderElementKt.DefaultText(
+                            graphicsComponents,
+                            highlighter.offset,
+                            numberOfWhitespacesProvider,
+                            editorFontDataProvider
+                        )
                     }
 
                     renderElements[i].add(textElement)

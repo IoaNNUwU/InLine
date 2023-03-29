@@ -4,6 +4,7 @@ import com.intellij.openapi.editor.EditorCustomElementRenderer
 import com.intellij.openapi.editor.Inlay
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.ioannuwu.inline.data.FontDataProvider
+import com.ioannuwu.inline.domain.NumberOfWhitespacesProvider
 import com.ioannuwu.inline.domain.graphics.GraphicsComponentKt
 import java.awt.Graphics
 import java.awt.Rectangle
@@ -14,7 +15,8 @@ import java.awt.Rectangle
 class RustStyleElementRenderer(
     private val graphicsComponents: Collection<GraphicsComponentKt>,
     private val offsetFromLineStart: Int,
-    private val editorFontDataProvider: FontDataProvider
+    private val editorFontDataProvider: FontDataProvider,
+    private val numberOfWhitespacesProvider: NumberOfWhitespacesProvider,
 ) : EditorCustomElementRenderer {
 
 
@@ -25,7 +27,7 @@ class RustStyleElementRenderer(
 
         val charWidth = editorFontDataProvider.fontMetrics.charWidth('a')
 
-        val newX = targetRegion.x + charWidth * offsetFromLineStart
+        val newX = targetRegion.x + charWidth * offsetFromLineStart + charWidth * numberOfWhitespacesProvider.provide()
 
         val newTargetRegion = Rectangle(newX,targetRegion.y,targetRegion.width, targetRegion.height)
 

@@ -40,7 +40,7 @@ interface RenderDataProviderKt : HighlightersValidator {
             val bc = levelState.backgroundColor
             val backGroundColor = Color(bc.red, bc.green, bc.blue, 60)
 
-            return RenderData( // TODO textStyle oneGutterMode
+            return RenderData(
                 levelState.showGutterIcon, levelState.showText, levelState.showBackground, levelState.showEffect,
                 levelState.textColor, backGroundColor, levelState.effectColor,
                 state.numberOfWhitespaces, state.maxErrorsPerLine, state.effectType,

@@ -41,7 +41,7 @@ class EditorOpenedListenerKt : FileEditorManagerListener, SettingsChangeListener
 
             val fontDataProvider = FontDataProvider.BySettings(editor, graphicsEnvironment, fileEditor)
             val renderElementsProvider =
-                RenderElementsProvider.Impl(renderDataProvider, fontDataProvider, FontDataProvider.ByEditor(editor))
+                RenderElementsProvider.Impl(renderDataProvider, fontDataProvider, FontDataProvider.ByEditor(editor), NumberOfWhitespacesProvider.BySettings)
 
             val viewModel = ViewModel.Impl(renderElementsProvider, editor, maxPerLine, renderDataProvider)
 
