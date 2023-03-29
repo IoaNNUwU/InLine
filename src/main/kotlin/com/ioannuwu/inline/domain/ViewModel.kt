@@ -71,15 +71,10 @@ interface ViewModel {
             val renderElementsFromRightToLeft = lineRenderElementsSortedByPriority.asSequence()
                 .sortedWith(OFFSET_FROM_RIGHT_TO_LEFT)
                 .map { it.value }
+                .toList()
 
-            val disposablesAfterRender = renderElementsFromRightToLeft
-                .map { collection ->
-                    collection.map { it.render(editor) }
-                }.toList()
-
-            for (i in disposablesAfterRender.indices) {
-                val fromTop: RangeHighlighterWrapper = topN[i]
-                map[fromTop] = disposablesAfterRender[i]
+            for (i in renderElementsFromRightToLeft.indices) {
+                map[topN[i]] = renderElementsFromRightToLeft[i].map { it.render(editor) }
             }
         }
 

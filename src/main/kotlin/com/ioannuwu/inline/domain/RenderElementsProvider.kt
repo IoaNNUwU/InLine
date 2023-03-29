@@ -90,6 +90,8 @@ interface RenderElementsProvider {
             for (i in indices) { // text
                 val renderData = renderDataForEachHighlighterByPriority[i]
 
+                val priority = highlightersToBeShownSortedByPriority[i].offset
+
                 if (renderData.showText) {
                     val highlighter = highlightersToBeShownSortedByPriority[i]
 
@@ -98,9 +100,10 @@ interface RenderElementsProvider {
                         TextStyle.RUST -> RenderElementKt.RustStyleText(
                             effects[i],
                             highlighter.offset,
+                            priority,
                             lineStartOffset,
                             editorFontData,
-                            numberOfWhitespaces
+                            numberOfWhitespaces,
                         )
 
                         TextStyle.AFTERLINE -> RenderElementKt.DefaultText(
@@ -113,6 +116,7 @@ interface RenderElementsProvider {
                     renderElements[i].add(textElement)
                 }
             }
+
             val map = HashMap<RangeHighlighterWrapper, List<RenderElementKt>>()
             for (i in indices) {
                 val wrapper = highlightersToBeShownSortedByPriority[i]

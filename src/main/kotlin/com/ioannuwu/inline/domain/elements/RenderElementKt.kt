@@ -68,6 +68,7 @@ interface RenderElementKt {
     class RustStyleText(
         private val effects: List<GraphicsComponentKt>,
         private val offset: Int,
+        private val priority: Int,
         private val lineStartOffset: Int,
         private val editorFontData: FontData,
         private val numberOfWhitespaces: NumberOfWhitespaces,
@@ -78,7 +79,7 @@ interface RenderElementKt {
             val offsetFromLineStart = offset - lineStartOffset
 
             return editor.inlayModel.addBlockElement(
-                offset, true, false, 0,
+                offset, true, false, priority,
                 RustStyleElementRenderer(effects, offsetFromLineStart, editorFontData, numberOfWhitespaces)
             )!!
         }
