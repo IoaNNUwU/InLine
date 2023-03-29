@@ -7,15 +7,15 @@ import javax.swing.*;
 import java.awt.*;
 
 public class DefaultSettings {
-    public static final int NUMBER_OF_WHITESPACES = 2;
+    public static final int NUMBER_OF_WHITESPACES = 0;
 
     public static final EffectType EFFECT_TYPE = EffectType.NONE;
 
-    public static final int MAX_ERRORS_PER_LINE = 2;
+    public static final int MAX_ERRORS_PER_LINE = 5;
 
     public static final FontSettingsState FONT = new FontSettingsState("Dialog.plain", "sample");
 
-    public static final TextStyle TEXT_STYLE = TextStyle.RUST;
+    public static final TextStyle TEXT_STYLE = TextStyle.UNDERLINE;
     public static final boolean ONE_GUTTER_MODE = true;
 
     public static final SeverityLevelState ERROR = defaultSeverityLevelState(new Color(183, 43, 43));

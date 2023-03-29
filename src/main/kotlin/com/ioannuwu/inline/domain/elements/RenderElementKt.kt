@@ -72,6 +72,7 @@ interface RenderElementKt {
         private val lineStartOffset: Int,
         private val editorFontData: FontData,
         private val numberOfWhitespaces: NumberOfWhitespaces,
+        private val arrowColor: Color,
     ) : RenderElementKt {
 
         override fun render(editor: Editor): Disposable {
@@ -80,7 +81,9 @@ interface RenderElementKt {
 
             return editor.inlayModel.addBlockElement(
                 offset, true, false, priority,
-                RustStyleElementRenderer(effects, offsetFromLineStart, editorFontData, numberOfWhitespaces)
+                RustStyleElementRenderer(
+                    effects, offsetFromLineStart, editorFontData, numberOfWhitespaces, priority, arrowColor
+                )
             )!!
         }
 

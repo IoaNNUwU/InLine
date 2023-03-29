@@ -1,3 +1,3 @@
 package com.ioannuwu.inline.domain
 
-enum class TextStyle { RUST, AFTERLINE }
+enum class TextStyle { UNDERLINE, AFTERLINE }

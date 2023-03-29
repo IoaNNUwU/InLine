@@ -7,7 +7,6 @@ import com.ioannuwu.inline.domain.graphics.EffectComponentKt
 import com.ioannuwu.inline.domain.graphics.GraphicsComponentKt
 import com.ioannuwu.inline.domain.graphics.TextComponent
 import com.ioannuwu.inline.domain.wrapper.RangeHighlighterWrapper
-import com.ioannuwu.inline.domain.wrapper.WrapperComparator
 
 interface RenderElementsProvider {
 
@@ -87,23 +86,33 @@ interface RenderElementsProvider {
                 effects[i].add(textComponent)
             }
 
+            val indentationLevelMap = highlightersToBeShownSortedByPriority.asSequence()
+                .sortedBy { it.offset }
+                .mapIndexed { index, wrapper -> Pair(wrapper, index) }
+                .toMap()
+
             for (i in indices) { // text
                 val renderData = renderDataForEachHighlighterByPriority[i]
 
-                val priority = highlightersToBeShownSortedByPriority[i].offset
+                val currentHighlighter = highlightersToBeShownSortedByPriority[i]
+
+                val indentationLevel = indentationLevelMap[currentHighlighter]!!
 
                 if (renderData.showText) {
                     val highlighter = highlightersToBeShownSortedByPriority[i]
 
                     val textElement = when (renderData.textStyle) {
 
-                        TextStyle.RUST -> RenderElementKt.RustStyleText(
+                        TextStyle.UNDERLINE -> RenderElementKt.RustStyleText(
                             effects[i],
                             highlighter.offset,
-                            priority,
+                            // offset is passed as priority because we want last elements to be shown first
+                            // as it is closer to line and has the smallest arrow.
+                            indentationLevel - indentationLevelMap.size,
                             lineStartOffset,
                             editorFontData,
                             numberOfWhitespaces,
+                            renderData.textColor
                         )
 
                         TextStyle.AFTERLINE -> RenderElementKt.DefaultText(

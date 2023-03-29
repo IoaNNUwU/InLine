@@ -35,14 +35,12 @@ interface ViewModel {
             val dis = map.remove(highlighter) ?: return
             dis.forEach(Disposable::dispose)
 
+            val line = highlighter.lineNumber
+            if (line == -1) return
+
             hideFromMapAndRemoveInvalid()
 
-            val lineNumber = if (highlighter.isValidInDocument())
-                highlighter.lineNumber
-            else
-                editor.document.lineCount
-
-            displayHighlightersOnCurrentLineAndUpdateMap(lineNumber)
+            displayHighlightersOnCurrentLineAndUpdateMap(line)
         }
 
         private fun displayHighlightersOnCurrentLineAndUpdateMap(currentLine: Int) {
