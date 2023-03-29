@@ -23,7 +23,9 @@ class RenderElementsProviderTest {
 
         val highlighters = listOf( mostImportantHelper, TestHighlighterHelper(100, 100), TestHighlighterHelper(10, 10))
 
-        val renderElements = provider.provide(10, highlighters)
+        val renderElements = provider.provide(10, highlighters).entries
+            .sortedBy { -it.key.priority }
+            .map { it.value }
 
         highlighters.forEach { println(it) }
         renderElements.forEach { println(it) }

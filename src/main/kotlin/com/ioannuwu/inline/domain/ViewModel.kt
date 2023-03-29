@@ -68,20 +68,14 @@ interface ViewModel {
             val lineRenderElementsSortedByPriority: Map<RangeHighlighterWrapper, Collection<RenderElementKt>> =
                 renderElementsProvider.provide(lineStartOffset, topN)
 
-            val renderElementsFromLeftToRight = lineRenderElementsSortedByPriority.asSequence()
-                .sortedWith(OFFSET_FROM_LEFT_TO_RIGHT)
+            val renderElementsFromRightToLeft = lineRenderElementsSortedByPriority.asSequence()
+                .sortedWith(OFFSET_FROM_RIGHT_TO_LEFT)
                 .map { it.value }
 
-            val disposablesAfterRender = mutableListOf<List<Disposable>>()
-
-            for (renderElementCollection in renderElementsFromLeftToRight) {
-                val innerList = mutableListOf<Disposable>()
-                for (elem in renderElementCollection) {
-                    val dis = elem.render(editor)
-                    innerList.add(dis)
-                }
-                disposablesAfterRender.add(innerList)
-            }
+            val disposablesAfterRender = renderElementsFromRightToLeft
+                .map { collection ->
+                    collection.map { it.render(editor) }
+                }.toList()
 
             for (i in disposablesAfterRender.indices) {
                 val fromTop: RangeHighlighterWrapper = topN[i]
@@ -106,7 +100,7 @@ interface ViewModel {
                         WrapperComparator.ByOffsetTakeLastOnTheLine then
                         WrapperComparator.ByDescription
 
-            val OFFSET_FROM_LEFT_TO_RIGHT = Comparator<Map.Entry<RangeHighlighterWrapper, *>> { h1, h2 ->
+            val OFFSET_FROM_RIGHT_TO_LEFT = Comparator<Map.Entry<RangeHighlighterWrapper, *>> { h1, h2 ->
                 WrapperComparator.ByOffsetTakeLastOnTheLine.compare(h1.key, h2.key)
             }
         }
