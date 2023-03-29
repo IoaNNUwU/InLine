@@ -7,6 +7,7 @@ import com.ioannuwu.inline.domain.MyTextAttributes
 import com.ioannuwu.inline.domain.NumberOfWhitespaces
 import com.ioannuwu.inline.domain.graphics.GraphicsComponentKt
 import com.ioannuwu.inline.domain.wrapper.RangeHighlighterAdapter
+import com.jetbrains.rd.util.printlnError
 import java.awt.Color
 import javax.swing.Icon
 
@@ -57,7 +58,7 @@ interface RenderElementKt {
 
         override fun render(editor: Editor): Disposable {
             return editor.inlayModel.addAfterLineEndElement(
-                offset, true, MyElementRendererKt(effects, numberOfWhitespaces, editorFontMetricsProvider)
+                offset, false, MyElementRendererKt(effects, numberOfWhitespaces, editorFontMetricsProvider)
             )!!
         }
 
@@ -73,18 +74,32 @@ interface RenderElementKt {
         private val editorFontData: FontData,
         private val numberOfWhitespaces: NumberOfWhitespaces,
         private val arrowColor: Color,
+        private val doMoveRight: Boolean
     ) : RenderElementKt {
 
         override fun render(editor: Editor): Disposable {
 
             val offsetFromLineStart = offset - lineStartOffset
 
-            return editor.inlayModel.addBlockElement(
-                offset, true, false, priority,
-                RustStyleElementRenderer(
-                    effects, offsetFromLineStart, editorFontData, numberOfWhitespaces, priority, arrowColor
-                )
-            )!!
+            val elem: Disposable = try {
+                editor.inlayModel.addBlockElement(
+                    offset, false, false, priority,
+                    RustStyleElementRenderer(
+                        effects,
+                        offsetFromLineStart,
+                        editorFontData,
+                        numberOfWhitespaces,
+                        priority,
+                        arrowColor,
+                        doMoveRight
+                    )
+                )!!
+            } catch (e: IllegalStateException) {
+                printlnError("RustStyleElement failed to add $e")
+                Disposable {}
+            }
+
+            return elem
         }
 
         override fun toString(): String =

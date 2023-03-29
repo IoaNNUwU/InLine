@@ -1,5 +1,6 @@
 package com.ioannuwu.inline.domain
 
+import com.intellij.util.containers.reverse
 import com.ioannuwu.inline.data.EffectType
 import com.ioannuwu.inline.data.FontData
 import com.ioannuwu.inline.domain.elements.RenderElementKt
@@ -26,7 +27,7 @@ interface RenderElementsProvider {
         override fun provide(
             lineStartOffset: Int,
             highlightersToBeShownSortedByPriority: List<RangeHighlighterWrapper>,
-        ): Map<RangeHighlighterWrapper,Collection<RenderElementKt>> {
+        ): Map<RangeHighlighterWrapper, Collection<RenderElementKt>> {
 
             val indices = highlightersToBeShownSortedByPriority.indices
 
@@ -88,7 +89,7 @@ interface RenderElementsProvider {
 
             val indentationLevelMap = highlightersToBeShownSortedByPriority.asSequence()
                 .sortedBy { it.offset }
-                .mapIndexed { index, wrapper -> Pair(wrapper, index) }
+                .mapIndexed { index, wrapper -> Pair(wrapper, Pair(index, wrapper.offset)) }
                 .toMap()
 
             for (i in indices) { // text
@@ -96,14 +97,22 @@ interface RenderElementsProvider {
 
                 val currentHighlighter = highlightersToBeShownSortedByPriority[i]
 
-                val indentationLevel = indentationLevelMap[currentHighlighter]!!
+                val indentationLevel = indentationLevelMap[currentHighlighter]!!.first
+
+                val size = indentationLevelMap.size
+                val offset = indentationLevelMap[currentHighlighter]!!.second
+
+                val doMoveRight: Boolean = indentationLevelMap.toList().reversed().asSequence()
+                    .drop(size - indentationLevel)
+                    .any { it.second.second == offset }
+
 
                 if (renderData.showText) {
                     val highlighter = highlightersToBeShownSortedByPriority[i]
 
                     val textElement = when (renderData.textStyle) {
 
-                        TextStyle.UNDERLINE -> RenderElementKt.RustStyleText(
+                        TextStyle.RUST_STYLE_UNDER_LINE -> RenderElementKt.RustStyleText(
                             effects[i],
                             highlighter.offset,
                             // offset is passed as priority because we want last elements to be shown first
@@ -112,10 +121,11 @@ interface RenderElementsProvider {
                             lineStartOffset,
                             editorFontData,
                             numberOfWhitespaces,
-                            renderData.textColor
+                            renderData.textColor,
+                            doMoveRight
                         )
 
-                        TextStyle.AFTERLINE -> RenderElementKt.DefaultText(
+                        TextStyle.AFTER_LINE -> RenderElementKt.DefaultText(
                             effects[i],
                             highlighter.offset,
                             numberOfWhitespaces,

@@ -1,5 +1,7 @@
 package com.ioannuwu.inline
 
+import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.editor.ex.RangeHighlighterEx
 import com.intellij.openapi.editor.impl.event.MarkupModelListener
 import com.ioannuwu.inline.domain.EditorCallback

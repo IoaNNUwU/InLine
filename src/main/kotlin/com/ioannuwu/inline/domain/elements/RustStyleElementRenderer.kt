@@ -20,6 +20,7 @@ class RustStyleElementRenderer(
     private val numberOfWhitespaces: NumberOfWhitespaces,
     private val priority: Int,
     private val arrowColor: Color,
+    private val doMoveRight: Boolean
 ) : EditorCustomElementRenderer {
 
 
@@ -38,7 +39,7 @@ class RustStyleElementRenderer(
         val indentationLevel = -priority - 1
         val lineHeight = editorFontData.lineHeight
 
-        if (indentationLevel == 0) {
+        if (indentationLevel == 0 || doMoveRight) {
             graphicsComponents.asSequence()
                 .sortedBy(GraphicsComponentKt::priority)
                 .forEach {

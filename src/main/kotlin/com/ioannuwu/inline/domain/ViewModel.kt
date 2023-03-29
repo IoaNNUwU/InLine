@@ -1,6 +1,7 @@
 package com.ioannuwu.inline.domain
 
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.util.Disposer
 import com.ioannuwu.inline.domain.elements.RenderElementKt
@@ -26,9 +27,12 @@ interface ViewModel {
 
             hideFromMapAndRemoveInvalid()
 
+            val line = highlighter.lineNumber
+            if (line == -1) return
+
             map[highlighter] = emptyList()
 
-            displayHighlightersOnCurrentLineAndUpdateMap(highlighter.lineNumber)
+            displayHighlightersOnCurrentLineAndUpdateMap(line)
         }
 
         override fun remove(highlighter: RangeHighlighterWrapper) {
@@ -44,6 +48,8 @@ interface ViewModel {
         }
 
         private fun displayHighlightersOnCurrentLineAndUpdateMap(currentLine: Int) {
+
+            val lineStartOffset = editor.document.getLineStartOffset(currentLine)
 
             val highlightersOnCurrentLine = map.keys.asSequence()
                 .filter { it.lineNumber == currentLine }
@@ -61,8 +67,6 @@ interface ViewModel {
                 .take(maxPerLine.maxPerLine)
                 .toList()
 
-            val lineStartOffset = editor.document.getLineStartOffset(currentLine)
-
             val lineRenderElementsSortedByPriority: Map<RangeHighlighterWrapper, Collection<RenderElementKt>> =
                 renderElementsProvider.provide(lineStartOffset, topN)
 
@@ -74,6 +78,7 @@ interface ViewModel {
             for (i in renderElementsFromRightToLeft.indices) {
                 map[topN[i]] = renderElementsFromRightToLeft[i].map { it.render(editor) }
             }
+
         }
 
         private fun hideFromMapAndRemoveInvalid() {
