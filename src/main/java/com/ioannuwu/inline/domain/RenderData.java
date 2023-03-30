@@ -16,9 +16,14 @@ public class RenderData extends SeverityLevelState {
     public final @NotNull String description;
     public final @Nullable Icon icon;
 
+    public final @NotNull TextStyle textStyle;
+    public final Boolean oneGutterMode;
+
     public RenderData(boolean showGutterIcon, boolean showText, boolean showBackground, boolean showEffect,
                       @NotNull Color textColor, @NotNull Color backgroundColor, @NotNull Color effectColor, int numberOfWhitespaces,
-                      int maxErrorsPerLine, @NotNull EffectType effectType, @NotNull String description, @Nullable Icon icon) {
+                      int maxErrorsPerLine, @NotNull EffectType effectType, @NotNull String description, @Nullable Icon icon, @NotNull TextStyle textStyle, Boolean oneGutterMode) {
+        this.textStyle = textStyle;
+        this.oneGutterMode = oneGutterMode;
         this.showGutterIcon = showGutterIcon;
         this.showText = showText;
         this.showBackground = showBackground;

@@ -15,7 +15,7 @@ interface RangeHighlighterWrapper {
     fun isValidInDocument(): Boolean
 
 
-    class Impl(private val highlighter: RangeHighlighter) : RangeHighlighterWrapper {
+    class Impl(val highlighter: RangeHighlighter) : RangeHighlighterWrapper {
 
         private var markerIsSufficient = false
 
@@ -52,9 +52,9 @@ interface RangeHighlighterWrapper {
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
-            if (other !is RangeHighlighterWrapper) return false
+            if (other !is Impl) return false
 
-            return hashCode() == other.hashCode()
+            return highlighter == other.highlighter
         }
 
         override fun hashCode(): Int = highlighter.hashCode()

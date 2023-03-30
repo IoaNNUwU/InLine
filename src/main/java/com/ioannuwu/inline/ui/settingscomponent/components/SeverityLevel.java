@@ -41,9 +41,9 @@ public class SeverityLevel implements Component, State<SeverityLevelState> {
         this.effectColorPanel = new ColorPanel();
         this.effectColorPanel.setSelectedColor(data.effectColor);
 
-        this.showTextCheckBox = new JBCheckBox("Text color                                                             ", data.showText);
-        this.showBackgroundCheckBox = new JBCheckBox("Background color                                               ", data.showBackground);
-        this.showEffectCheckBox = new JBCheckBox("Effect color                                                          ", data.showEffect);
+        this.showTextCheckBox = new JBCheckBox("Text color", data.showText);
+        this.showBackgroundCheckBox = new JBCheckBox("Background color", data.showBackground);
+        this.showEffectCheckBox = new JBCheckBox("Effect color", data.showEffect);
     }
 
     @Override

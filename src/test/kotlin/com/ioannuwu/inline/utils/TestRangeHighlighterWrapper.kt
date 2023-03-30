@@ -2,7 +2,7 @@ package com.ioannuwu.inline.utils
 
 import com.ioannuwu.inline.domain.wrapper.RangeHighlighterWrapper
 
-class TestRangeHighlighterWrapper(
+open class TestRangeHighlighterWrapper(
     override val priority: Int,
     override val description: String,
     override val offset: Int,

@@ -1,5 +1,7 @@
 package com.ioannuwu.inline.data;
 
+import com.ioannuwu.inline.domain.TextStyle;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
@@ -15,6 +17,9 @@ public class SettingsState implements Serializable {
     public int maxErrorsPerLine = DefaultSettings.MAX_ERRORS_PER_LINE;
 
     public FontSettingsState font = DefaultSettings.FONT;
+
+    public TextStyle textStyle = DefaultSettings.TEXT_STYLE;
+    public boolean oneGutterMode = DefaultSettings.ONE_GUTTER_MODE;
 
     public SeverityLevelState error = DefaultSettings.ERROR;
     public SeverityLevelState warning = DefaultSettings.WARNING;
@@ -35,13 +40,13 @@ public class SettingsState implements Serializable {
                 Objects.equals(weakWarning, that.weakWarning) && Objects.equals(information, that.information) &&
                 Objects.equals(serverError, that.serverError) && Objects.equals(otherError, that.otherError) &&
                 Arrays.equals(ignoreList, that.ignoreList) && Objects.equals(effectType, that.effectType) &&
-                Objects.equals(font, that.font);
+                Objects.equals(font, that.font) && textStyle.equals(that.textStyle) && oneGutterMode == that.oneGutterMode;
     }
 
     @Override
     public int hashCode() {
         int result = Objects.hash(numberOfWhitespaces, maxErrorsPerLine, error, warning, weakWarning,
-                information, serverError, otherError, effectType, font);
+                information, serverError, otherError, effectType, font, textStyle, oneGutterMode);
         result = 31 * result + Arrays.hashCode(ignoreList);
         return result;
     }
@@ -53,6 +58,8 @@ public class SettingsState implements Serializable {
                 "\neffectType=" + effectType +
                 "\nmaxErrorsPerLine=" + maxErrorsPerLine +
                 "\nfont=" + font +
+                "\ntextStyle=" + textStyle +
+                "\noneGutterMode=" + oneGutterMode +
                 "\nerror=" + error +
                 "\nwarning=" + warning +
                 "\nweakWarning=" + weakWarning +

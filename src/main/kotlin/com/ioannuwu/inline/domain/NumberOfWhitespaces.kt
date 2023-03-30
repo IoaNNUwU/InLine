@@ -1,29 +1,28 @@
 package com.ioannuwu.inline.domain
 
-import com.ioannuwu.inline.data.DefaultSettings
 import com.ioannuwu.inline.data.MySettingsService
 import com.ioannuwu.inline.domain.settings.SettingsChangeEvent
 import com.ioannuwu.inline.domain.settings.SettingsChangeListener
 import com.ioannuwu.inline.domain.settings.SettingsChangeObservable
 
-interface MaxErrorsPerLineProvider {
+interface NumberOfWhitespaces {
 
-    val maxPerLine: Int
+    val numberOfWhitespaces: Int
 
 
-    object BySettings : MaxErrorsPerLineProvider, SettingsChangeListener {
+    object BySettings : NumberOfWhitespaces, SettingsChangeListener {
 
         init {
             MySettingsService.OBSERVABLE.subscribe(this, SettingsChangeObservable.Priority.DEFAULT)
         }
 
-        private var _maxPerLine: Int = DefaultSettings.MAX_ERRORS_PER_LINE
+        private var currentNumberOfWhitespaces: Int = 0
 
-        override val maxPerLine: Int
-            get() = _maxPerLine
+        override val numberOfWhitespaces: Int
+            get() = currentNumberOfWhitespaces
 
         override fun onSettingsChange(event: SettingsChangeEvent) {
-            _maxPerLine = event.newSettingsState.maxErrorsPerLine
+            currentNumberOfWhitespaces = event.newSettingsState.numberOfWhitespaces
         }
 
     }

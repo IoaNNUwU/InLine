@@ -1,6 +1,5 @@
 package com.ioannuwu.inline
 
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.editor.ex.MarkupModelEx
 import com.intellij.openapi.editor.ex.RangeHighlighterEx
 import com.intellij.openapi.editor.impl.DocumentMarkupModel
@@ -9,7 +8,7 @@ import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.vfs.VirtualFile
-import com.ioannuwu.inline.data.FontDataProvider
+import com.ioannuwu.inline.data.FontData
 import com.ioannuwu.inline.data.MySettingsService
 import com.ioannuwu.inline.domain.*
 import com.ioannuwu.inline.domain.settings.SettingsChangeEvent
@@ -40,11 +39,11 @@ class EditorOpenedListenerKt : FileEditorManagerListener, SettingsChangeListener
 
             val graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment()!!
 
-            val fontDataProvider = FontDataProvider.BySettings(editor, graphicsEnvironment, fileEditor)
-            val renderElementsProvider = RenderElementsProviderKt.Impl(renderDataProvider, fontDataProvider)
+            val fontData = FontData.BySettings(editor, graphicsEnvironment, fileEditor)
+            val renderElementsProvider =
+                RenderElementsProvider.Impl(renderDataProvider, fontData, FontData.ByEditor(editor), NumberOfWhitespaces.BySettings)
 
-            val view = View.EditorView(editor)
-            val viewModel = ViewModel.Impl(view, renderElementsProvider, document, maxPerLine)
+            val viewModel = ViewModel.Impl(renderElementsProvider, editor, maxPerLine, renderDataProvider)
 
             val markupModelListener = MarkupModelListenerKt(EditorCallback.ViewModelEditorCallback(viewModel))
 
@@ -71,7 +70,7 @@ class EditorOpenedListenerKt : FileEditorManagerListener, SettingsChangeListener
     companion object {
         private val map: MutableMap<TextEditor, MarkupModelListener> = HashMap()
 
-        private val renderDataProvider: RenderDataProviderKt = RenderDataProviderKt.BySettings
-        private val maxPerLine: MaxErrorsPerLineProvider = MaxErrorsPerLineProvider.BySettings
+        private val renderDataProvider: RenderDataProvider = RenderDataProvider.BySettings
+        private val maxPerLine: MaxErrorsPerLine = MaxErrorsPerLine.BySettings
     }
 }

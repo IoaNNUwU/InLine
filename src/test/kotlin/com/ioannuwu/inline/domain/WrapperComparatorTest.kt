@@ -22,7 +22,7 @@ class WrapperComparatorTest {
         val testValues2 = listOf(wrapper1, wrapper6, wrapper3, wrapper2, wrapper5, wrapper4)
 
         val sorted1 = testValues2.asSequence()
-            .sortedWith(WrapperComparator.ByPriority then WrapperComparator.ByOffsetLowestIsLast)
+            .sortedWith(WrapperComparator.ByPriority then WrapperComparator.ByOffsetTakeLastOnTheLine)
             .take(3)
             .toList()
 
@@ -58,7 +58,7 @@ class WrapperComparatorTest {
     @Test
     fun `lowest is last`() {
         val sortedList = testValues
-            .sortedWith(WrapperComparator.ByOffsetLowestIsLast)
+            .sortedWith(WrapperComparator.ByOffsetTakeLastOnTheLine)
 
         assert(sortedList[0] === GoodWrapper)
         assert(sortedList[1] === GoodWrapper)
@@ -70,7 +70,7 @@ class WrapperComparatorTest {
     @Test
     fun `lowest is first`() {
         val sortedList = testValues
-            .sortedWith(WrapperComparator.ByOffsetLowestIsFirstLikeOnTheLine)
+            .sortedWith(WrapperComparator.ByOffsetTakeFirstOnTheLine)
 
         assert(sortedList[0] === BadWrapper)
         assert(sortedList[1] === BadWrapper)

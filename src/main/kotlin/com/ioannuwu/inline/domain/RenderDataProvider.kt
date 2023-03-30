@@ -10,14 +10,12 @@ import com.ioannuwu.inline.domain.settings.SettingsChangeObservable
 import com.ioannuwu.inline.domain.wrapper.RangeHighlighterWrapper
 import java.awt.Color
 
-interface RenderDataProviderKt {
+interface RenderDataProvider : HighlightersValidator {
 
-    fun provide(highlighter: RangeHighlighterWrapper): RenderData?
-
-    fun isValid(highlighter: RangeHighlighterWrapper): Boolean
+    fun provide(highlighter: RangeHighlighterWrapper): RenderData
 
 
-    object BySettings : RenderDataProviderKt, SettingsChangeListener {
+    object BySettings : RenderDataProvider, SettingsChangeListener {
 
         init {
             MySettingsService.OBSERVABLE.subscribe(this, SettingsChangeObservable.Priority.DEFAULT)
@@ -25,12 +23,11 @@ interface RenderDataProviderKt {
 
         private var state: SettingsState = SettingsState.NONE
 
-        /**
-         * @return null if RenderDataProvider.isValid(highlighter) == false
-         */
-        override fun provide(highlighter: RangeHighlighterWrapper): RenderData? {
+        override fun provide(highlighter: RangeHighlighterWrapper): RenderData {
 
-            if (!highlighter.isSufficient()) return null
+            if (!isValid(highlighter))
+                throw IllegalArgumentException("highlighters should be checked with " +
+                        "RenderDataProvider.isValid(highlighter)")
 
             val (levelState, icon) = when (highlighter.priority) {
                 in ERROR..Int.MAX_VALUE -> Pair(state.error, DefaultSettings.Icons.ERROR)
@@ -47,7 +44,7 @@ interface RenderDataProviderKt {
                 levelState.showGutterIcon, levelState.showText, levelState.showBackground, levelState.showEffect,
                 levelState.textColor, backGroundColor, levelState.effectColor,
                 state.numberOfWhitespaces, state.maxErrorsPerLine, state.effectType,
-                highlighter.description, icon
+                highlighter.description, icon, state.textStyle, state.oneGutterMode
             )
         }
 

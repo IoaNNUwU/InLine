@@ -32,6 +32,9 @@ public interface SettingsComponentProvider extends State<SettingsState> {
 
         private FontSelectionComponent fontSelectionComponent;
 
+        private OneGutterModeComponent oneGutterModeComponent;
+        private TextStyleSelectionComponent textStyleSelectionComponent;
+
         private SeverityLevel errorComponent;
         private SeverityLevel warningComponent;
         private SeverityLevel weakWarningComponent;
@@ -54,6 +57,9 @@ public interface SettingsComponentProvider extends State<SettingsState> {
                     settingsState.font.fontName,
                     GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts());
 
+            oneGutterModeComponent = new OneGutterModeComponent(settingsState.oneGutterMode);
+            textStyleSelectionComponent = new TextStyleSelectionComponent(settingsState.textStyle);
+
             errorComponent = new SeverityLevel(settingsState.error,
                     "Error", "Compilation errors");
             warningComponent = new SeverityLevel(settingsState.warning,
@@ -71,28 +77,34 @@ public interface SettingsComponentProvider extends State<SettingsState> {
 
             final FormBuilder formBuilder = FormBuilder.createFormBuilder();
 
-            numberOfWhitespacesComponent.addToBuilder(formBuilder);
-            maxErrorsPerLineComponent.addToBuilder(formBuilder);
-
+            formBuilder.addSeparator();
+            fontSelectionComponent.addToBuilder(formBuilder);
+            formBuilder.addSeparator();
+            textStyleSelectionComponent.addToBuilder(formBuilder);
             effectTypeComponent.addToBuilder(formBuilder);
 
-            fontSelectionComponent.addToBuilder(formBuilder);
+            formBuilder.addSeparator();
+            oneGutterModeComponent.addToBuilder(formBuilder);
+            formBuilder.addSeparator();
+            maxErrorsPerLineComponent.addToBuilder(formBuilder);
+            numberOfWhitespacesComponent.addToBuilder(formBuilder);
 
-            formBuilder.addComponent(new JPanel());
-
+            formBuilder.addSeparator();
             errorComponent.addToBuilder(formBuilder);
-            formBuilder.addComponent(new JPanel());
+            formBuilder.addSeparator();
             warningComponent.addToBuilder(formBuilder);
-            formBuilder.addComponent(new JPanel());
+            formBuilder.addSeparator();
             weakWarningComponent.addToBuilder(formBuilder);
-            formBuilder.addComponent(new JPanel());
+            formBuilder.addSeparator();
             informationComponent.addToBuilder(formBuilder);
-            formBuilder.addComponent(new JPanel());
+            formBuilder.addSeparator();
             serverErrorComponent.addToBuilder(formBuilder);
-            formBuilder.addComponent(new JPanel());
+            formBuilder.addSeparator();
             otherErrorComponent.addToBuilder(formBuilder);
+            formBuilder.addSeparator();
 
             ignoreListComponent.addToBuilder(formBuilder);
+            formBuilder.addSeparator();
 
             return formBuilder.getPanel();
         }
@@ -108,6 +120,9 @@ public interface SettingsComponentProvider extends State<SettingsState> {
             state.maxErrorsPerLine = maxErrorsPerLineComponent.getState();
 
             state.font = fontSelectionComponent.getState();
+
+            state.textStyle = textStyleSelectionComponent.getState();
+            state.oneGutterMode = oneGutterModeComponent.getState();
 
             state.error = errorComponent.getState();
             state.warning = warningComponent.getState();
