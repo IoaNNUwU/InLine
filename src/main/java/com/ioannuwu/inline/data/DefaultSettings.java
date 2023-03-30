@@ -13,7 +13,7 @@ public class DefaultSettings {
 
     public static final int MAX_ERRORS_PER_LINE = 5;
 
-    public static final FontSettingsState FONT = new FontSettingsState("JetBrains Mono Regular", "sample");
+    public static final FontSettingsState FONT = new FontSettingsState("Dialog.plain", "sample");
 
     public static final TextStyle TEXT_STYLE = TextStyle.RUST_STYLE_UNDER_LINE;
     public static final boolean ONE_GUTTER_MODE = true;
