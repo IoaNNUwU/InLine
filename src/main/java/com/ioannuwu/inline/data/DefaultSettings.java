@@ -29,7 +29,9 @@ public class DefaultSettings {
             "TODO",
             "Typo",
             "Automatically declared based on the expected type",
-            "Value captured in a closure"
+            "Value captured in a closure",
+            "Expression should use clarifying parentheses",
+            "Missing trailing comma",
     };
 
     public static class Icons {
