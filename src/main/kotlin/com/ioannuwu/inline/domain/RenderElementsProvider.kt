@@ -115,8 +115,6 @@ interface RenderElementsProvider {
                         TextStyle.RUST_STYLE_UNDER_LINE -> RenderElementKt.RustStyleText(
                             effects[i],
                             highlighter.offset,
-                            // offset is passed as priority because we want last elements to be shown first
-                            // as it is closer to line and has the smallest arrow.
                             indentationLevel - indentationLevelMap.size,
                             lineStartOffset,
                             editorFontData,

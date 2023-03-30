@@ -25,7 +25,12 @@ public class DefaultSettings {
     public static final SeverityLevelState SERVER_ERROR = defaultSeverityLevelState(new Color(128, 29, 185));
     public static final SeverityLevelState OTHER_ERROR = defaultSeverityLevelState(new Color(141, 169, 169));
 
-    public static final String[] IGNORE_LIST = new String[]{"Typo", "TODO"};
+    public static final String[] IGNORE_LIST = new String[]{
+            "TODO",
+            "Typo",
+            "Automatically declared based on the expected type",
+            "Value captured in a closure"
+    };
 
     public static class Icons {
         public static final Icon ERROR = AllIcons.General.Error;

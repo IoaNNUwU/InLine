@@ -82,6 +82,17 @@ interface RenderElementKt {
             val offsetFromLineStart = offset - lineStartOffset
 
             val elem: Disposable = try {
+                /*
+                 * This try-catch block is very important. For some reason
+                 * InlayMode.addBlockElements() sometimes crashes with IllegalStateException,
+                 * but InlayMode.addAfterLineEndElement() doesn't. So it was surprising to
+                 * encounter such an issue. This has to do with multithreading, but I was
+                 * unable to find a way to use WriteAction.run {} because UI was freezing.
+                 * So I came up with this solution. Just ignoring all unsuccessful block
+                 * elements works surprisingly well, because it is happening only after
+                 * deletion of big amount of highlighters, all of which was unnecessary
+                 * to render.
+                 */
                 editor.inlayModel.addBlockElement(
                     offset, false, false, priority,
                     RustStyleElementRenderer(
