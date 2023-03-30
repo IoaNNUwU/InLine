@@ -52,7 +52,7 @@ This plugin is open source. You can report bugs and contribute at [GitHub](https
 <!-- Plugin description end -->
 ### Change notes:
 <!-- Change notes -->
-* __1.1.0__ - Add __Rust Style Errors__ that are shown under line similar to __Rust compiler__
+* __1.1.0__ - Add __Rust Style Errors__ that are shown under line similar to __Rust compiler__ messages
 * __1.0.1__ - Bug fixes & Font change support (Fix Chinese characters being shown as `?`)
 * __1.0__ - Release
 <!-- Change notes end -->
