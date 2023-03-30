@@ -1,38 +1,37 @@
 package com.ioannuwu.inline.domain
 
+import com.intellij.util.containers.reverse
 import com.ioannuwu.inline.data.EffectType
-import com.ioannuwu.inline.data.FontDataProvider
+import com.ioannuwu.inline.data.FontData
 import com.ioannuwu.inline.domain.elements.RenderElementKt
 import com.ioannuwu.inline.domain.graphics.EffectComponentKt
 import com.ioannuwu.inline.domain.graphics.GraphicsComponentKt
 import com.ioannuwu.inline.domain.graphics.TextComponent
 import com.ioannuwu.inline.domain.wrapper.RangeHighlighterWrapper
-import com.ioannuwu.inline.domain.wrapper.WrapperComparator
 
 interface RenderElementsProvider {
 
     fun provide(
         lineStartOffset: Int,
         highlightersToBeShownSortedByPriority: List<RangeHighlighterWrapper>,
-    ): List<Collection<RenderElementKt>>
+    ): Map<RangeHighlighterWrapper, Collection<RenderElementKt>>
 
 
     class Impl(
-        private val renderDataProvider: RenderDataProviderKt,
-        private val fontDataProvider: FontDataProvider,
-        private val editorFontDataProvider: FontDataProvider,
-        private val numberOfWhitespacesProvider: NumberOfWhitespacesProvider,
+        private val renderDataProvider: RenderDataProvider,
+        private val fontData: FontData,
+        private val editorFontData: FontData,
+        private val numberOfWhitespaces: NumberOfWhitespaces,
     ) : RenderElementsProvider {
 
         override fun provide(
             lineStartOffset: Int,
             highlightersToBeShownSortedByPriority: List<RangeHighlighterWrapper>,
-        ): List<Collection<RenderElementKt>> {
+        ): Map<RangeHighlighterWrapper, Collection<RenderElementKt>> {
 
             val indices = highlightersToBeShownSortedByPriority.indices
 
             val renderDataForEachHighlighterByPriority = highlightersToBeShownSortedByPriority.asSequence()
-                .sortedWith(WrapperComparator.ByOffsetLowestIsLast)
                 .map(renderDataProvider::provide)
                 .toList()
 
@@ -64,56 +63,85 @@ interface RenderElementsProvider {
                 }
             }
 
-            for (i in indices) { // text and effects
+            val effects = mutableListOf<MutableList<GraphicsComponentKt>>()
+            for (i in indices) { // init effects list
+                effects.add(mutableListOf())
+            }
+
+            for (i in indices) { // effects
                 val renderData = renderDataForEachHighlighterByPriority[i]
-                if (renderData.showText || renderData.showEffect) {
-                    val textComponent = if (renderData.showText)
-                        TextComponent.Impl(fontDataProvider, renderData.textColor, renderData.description)
-                    else TextComponent.None(fontDataProvider, renderData.description)
 
-                    val graphicsComponents = mutableListOf<GraphicsComponentKt>(textComponent)
+                if (!renderData.showEffect) continue
 
-                    if (renderData.showEffect)
-                        when (renderData.effectType) {
-                            EffectType.NONE -> Unit
-                            EffectType.BOX -> graphicsComponents.add(
-                                EffectComponentKt.Box(
-                                    fontDataProvider, renderData.effectColor
-                                )
-                            )
+                val textComponent = if (renderData.showText)
+                    TextComponent.Impl(fontData, renderData.textColor, renderData.description)
+                else TextComponent.None(fontData, renderData.description)
 
-                            EffectType.SHADOW -> graphicsComponents.add(
-                                EffectComponentKt.Shadow(
-                                    renderData.effectColor, textComponent
-                                )
-                            )
-                        }
+                val effect = when (renderData.effectType) {
+                    EffectType.NONE -> EffectComponentKt.EMPTY
+                    EffectType.BOX -> EffectComponentKt.Box(fontData, renderData.effectColor)
+                    EffectType.SHADOW -> EffectComponentKt.Shadow(renderData.effectColor, textComponent)
+                }
 
+                effects[i].add(effect)
+                effects[i].add(textComponent)
+            }
+
+            val indentationLevelMap = highlightersToBeShownSortedByPriority.asSequence()
+                .sortedBy { it.offset }
+                .mapIndexed { index, wrapper -> Pair(wrapper, Pair(index, wrapper.offset)) }
+                .toMap()
+
+            for (i in indices) { // text
+                val renderData = renderDataForEachHighlighterByPriority[i]
+
+                val currentHighlighter = highlightersToBeShownSortedByPriority[i]
+
+                val indentationLevel = indentationLevelMap[currentHighlighter]!!.first
+
+                val size = indentationLevelMap.size
+                val offset = indentationLevelMap[currentHighlighter]!!.second
+
+                val doMoveRight: Boolean = indentationLevelMap.toList().reversed().asSequence()
+                    .drop(size - indentationLevel)
+                    .any { it.second.second == offset }
+
+
+                if (renderData.showText) {
                     val highlighter = highlightersToBeShownSortedByPriority[i]
 
                     val textElement = when (renderData.textStyle) {
 
-                        TextStyle.RUST -> RenderElementKt.RustStyleText(
-                            graphicsComponents,
+                        TextStyle.RUST_STYLE_UNDER_LINE -> RenderElementKt.RustStyleText(
+                            effects[i],
                             highlighter.offset,
+                            indentationLevel - indentationLevelMap.size,
                             lineStartOffset,
-                            editorFontDataProvider,
-                            numberOfWhitespacesProvider
+                            editorFontData,
+                            numberOfWhitespaces,
+                            renderData.textColor,
+                            doMoveRight
                         )
 
-                        TextStyle.AFTERLINE -> RenderElementKt.DefaultText(
-                            graphicsComponents,
+                        TextStyle.AFTER_LINE -> RenderElementKt.DefaultText(
+                            effects[i],
                             highlighter.offset,
-                            numberOfWhitespacesProvider,
-                            editorFontDataProvider
+                            numberOfWhitespaces,
+                            editorFontData
                         )
                     }
-
                     renderElements[i].add(textElement)
                 }
             }
 
-            return renderElements
+            val map = HashMap<RangeHighlighterWrapper, List<RenderElementKt>>()
+            for (i in indices) {
+                val wrapper = highlightersToBeShownSortedByPriority[i]
+                val elements = renderElements[i]
+
+                map[wrapper] = elements
+            }
+            return map
         }
     }
 }

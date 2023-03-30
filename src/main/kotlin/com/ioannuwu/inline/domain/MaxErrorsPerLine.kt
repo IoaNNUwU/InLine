@@ -6,12 +6,12 @@ import com.ioannuwu.inline.domain.settings.SettingsChangeEvent
 import com.ioannuwu.inline.domain.settings.SettingsChangeListener
 import com.ioannuwu.inline.domain.settings.SettingsChangeObservable
 
-interface MaxErrorsPerLineProvider {
+interface MaxErrorsPerLine {
 
     val maxPerLine: Int
 
 
-    object BySettings : MaxErrorsPerLineProvider, SettingsChangeListener {
+    object BySettings : MaxErrorsPerLine, SettingsChangeListener {
 
         init {
             MySettingsService.OBSERVABLE.subscribe(this, SettingsChangeObservable.Priority.DEFAULT)

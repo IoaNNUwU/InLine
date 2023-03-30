@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.resolve.compatibility
+
 fun properties(key: String) = project.findProperty(key).toString()
 
 plugins {
@@ -13,14 +15,14 @@ repositories {
     mavenCentral()
 }
 
-kotlin {
-
-}
-
 intellij {
     pluginName.set(properties("pluginName"))
     version.set(properties("platformVersion"))
     type.set(properties("platformType"))
+}
+
+kotlin {
+    jvmToolchain(11)
 }
 
 tasks {

@@ -5,12 +5,12 @@ import com.ioannuwu.inline.domain.settings.SettingsChangeEvent
 import com.ioannuwu.inline.domain.settings.SettingsChangeListener
 import com.ioannuwu.inline.domain.settings.SettingsChangeObservable
 
-interface NumberOfWhitespacesProvider {
+interface NumberOfWhitespaces {
 
-    fun provide(): Int
+    val numberOfWhitespaces: Int
 
 
-    object BySettings : NumberOfWhitespacesProvider, SettingsChangeListener {
+    object BySettings : NumberOfWhitespaces, SettingsChangeListener {
 
         init {
             MySettingsService.OBSERVABLE.subscribe(this, SettingsChangeObservable.Priority.DEFAULT)
@@ -18,7 +18,8 @@ interface NumberOfWhitespacesProvider {
 
         private var currentNumberOfWhitespaces: Int = 0
 
-        override fun provide(): Int = currentNumberOfWhitespaces
+        override val numberOfWhitespaces: Int
+            get() = currentNumberOfWhitespaces
 
         override fun onSettingsChange(event: SettingsChangeEvent) {
             currentNumberOfWhitespaces = event.newSettingsState.numberOfWhitespaces

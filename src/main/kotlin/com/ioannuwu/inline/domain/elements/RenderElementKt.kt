@@ -2,11 +2,12 @@ package com.ioannuwu.inline.domain.elements
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.editor.Editor
-import com.ioannuwu.inline.data.FontDataProvider
+import com.ioannuwu.inline.data.FontData
 import com.ioannuwu.inline.domain.MyTextAttributes
-import com.ioannuwu.inline.domain.NumberOfWhitespacesProvider
+import com.ioannuwu.inline.domain.NumberOfWhitespaces
 import com.ioannuwu.inline.domain.graphics.GraphicsComponentKt
 import com.ioannuwu.inline.domain.wrapper.RangeHighlighterAdapter
+import com.jetbrains.rd.util.printlnError
 import java.awt.Color
 import javax.swing.Icon
 
@@ -51,13 +52,13 @@ interface RenderElementKt {
     class DefaultText(
         private val effects: List<GraphicsComponentKt>,
         private val offset: Int,
-        private val numberOfWhitespacesProvider: NumberOfWhitespacesProvider,
-        private val editorFontMetricsProvider: FontDataProvider,
+        private val numberOfWhitespaces: NumberOfWhitespaces,
+        private val editorFontMetricsProvider: FontData,
     ) : RenderElementKt {
 
         override fun render(editor: Editor): Disposable {
             return editor.inlayModel.addAfterLineEndElement(
-                offset, true, MyElementRendererKt(effects, numberOfWhitespacesProvider, editorFontMetricsProvider)
+                offset, false, MyElementRendererKt(effects, numberOfWhitespaces, editorFontMetricsProvider)
             )!!
         }
 
@@ -68,19 +69,48 @@ interface RenderElementKt {
     class RustStyleText(
         private val effects: List<GraphicsComponentKt>,
         private val offset: Int,
+        private val priority: Int,
         private val lineStartOffset: Int,
-        private val editorFontDataProvider: FontDataProvider,
-        private val numberOfWhitespacesProvider: NumberOfWhitespacesProvider,
+        private val editorFontData: FontData,
+        private val numberOfWhitespaces: NumberOfWhitespaces,
+        private val arrowColor: Color,
+        private val doMoveRight: Boolean
     ) : RenderElementKt {
 
         override fun render(editor: Editor): Disposable {
 
             val offsetFromLineStart = offset - lineStartOffset
 
-            return editor.inlayModel.addBlockElement(
-                offset, true, false, 0,
-                RustStyleElementRenderer(effects, offsetFromLineStart, editorFontDataProvider, numberOfWhitespacesProvider)
-            )!!
+            val elem: Disposable = try {
+                /*
+                 * This try-catch block is very important. For some reason
+                 * InlayMode.addBlockElements() sometimes crashes with IllegalStateException,
+                 * but InlayMode.addAfterLineEndElement() doesn't. So it was surprising to
+                 * encounter such an issue. This has to do with multithreading, but I was
+                 * unable to find a way to use WriteAction.run {} because UI was freezing.
+                 * So I came up with this solution. Just ignoring all unsuccessful block
+                 * elements works surprisingly well, because it is happening only after
+                 * deletion of big amount of highlighters, all of which was unnecessary
+                 * to render.
+                 */
+                editor.inlayModel.addBlockElement(
+                    offset, false, false, priority,
+                    RustStyleElementRenderer(
+                        effects,
+                        offsetFromLineStart,
+                        editorFontData,
+                        numberOfWhitespaces,
+                        priority,
+                        arrowColor,
+                        doMoveRight
+                    )
+                )!!
+            } catch (e: IllegalStateException) {
+                printlnError("RustStyleElement failed to add $e")
+                Disposable {}
+            }
+
+            return elem
         }
 
         override fun toString(): String =

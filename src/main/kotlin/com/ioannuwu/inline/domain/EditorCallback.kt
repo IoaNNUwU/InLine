@@ -32,7 +32,7 @@ interface EditorCallback {
         override fun onRemoved(highlighter: RangeHighlighter) {
 
             val wrapper = wrappers[highlighter] ?: return
-
+            wrappers.remove(highlighter)
             viewModel.remove(wrapper)
         }
     }

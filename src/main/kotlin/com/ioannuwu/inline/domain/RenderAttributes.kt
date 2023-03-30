@@ -1,16 +1,16 @@
 package com.ioannuwu.inline.domain
 
-import com.ioannuwu.inline.data.FontDataProvider
+import com.ioannuwu.inline.data.FontData
 
 interface RenderAttributes {
 
     val offSetFromLineStart: Int
 
-    val editorFontMetricsProvider: FontDataProvider
+    val editorFontMetricsProvider: FontData
 
 
     class Impl(
         override val offSetFromLineStart: Int,
-        override val editorFontMetricsProvider: FontDataProvider
+        override val editorFontMetricsProvider: FontData
     ) : RenderAttributes
 }
