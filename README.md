@@ -23,14 +23,14 @@
 * Change font of the hints
 * __Ignore__ some errors by description
 
-![](https://raw.githubusercontent.com/IoaNNUwU/InLine/main/media/github_example.png)
+![](https://raw.githubusercontent.com/IoaNNUwU/InLine/main/media/example.png)
 
 ### Inspired by
 * [Inspection Lens](https://plugins.jetbrains.com/plugin/19678-inspection-lens) - Plugin I've used before.
 It lacks customization and features
 * [Inline Problems](https://plugins.jetbrains.com/plugin/20789-inlineproblems) - Amazing plugin I stole box effect idea from.
 
-### Choises
+### Choices
 
 There are already multiple plugins like this inspired by VSCode ErrorLens extension - check <kbd>Inspired by</kbd> section.
 I've decided to make my own because I want to have some extra features for code __writing and demonstration__ purposes such as:
