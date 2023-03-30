@@ -27,9 +27,6 @@ class RenderElementsProviderTest {
             .sortedBy { -it.key.priority }
             .map { it.value }
 
-        highlighters.forEach { println(it) }
-        renderElements.forEach { println(it) }
-
         assert(renderElements[0].size == 2)
         assert(renderElements[1].size == 1)
         assert(renderElements[2].size == 1)
