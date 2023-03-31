@@ -50,6 +50,7 @@ tasks {
                     }
                     subList(indexOf(start) + 1, indexOf(end))
                 }.joinToString("\n")
+                    .replace("example.png", "mini_example.png")
                     .let { org.jetbrains.changelog.markdownToHTML(it) }
         )
 
