@@ -4,13 +4,11 @@
 [![Rating](https://img.shields.io/jetbrains/plugin/r/rating/21051-inline?color=30aa30)](https://plugins.jetbrains.com/plugin/21051-inline)
 <!-- Plugin description -->
 ### InLine is highly customizable plugin that shows errors and hints inline. 
-### Also supports gutter icons, colorful background and special effects.
+#### Also supports gutter icons, colorful background and special effects.
 
 * Errors are filtered on the line by priority
 * Supports different fonts and languages
 * Supports different hints styles __After Line, Rust Style__
-
-> If you have Chinese symbols shown incorrectly, select compatible font in plugin settings
 
 <kbd>Settings</kbd> > <kbd>Appearance & Behaviour</kbd> > <kbd>⚙ InLine</kbd>
 ### In plugin settings you can:
