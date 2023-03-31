@@ -1,6 +1,5 @@
 package com.ioannuwu.inline.domain
 
-import com.intellij.util.containers.reverse
 import com.ioannuwu.inline.data.EffectType
 import com.ioannuwu.inline.data.FontData
 import com.ioannuwu.inline.domain.elements.RenderElementKt
@@ -112,7 +111,7 @@ interface RenderElementsProvider {
 
                     val textElement = when (renderData.textStyle) {
 
-                        TextStyle.RUST_STYLE_UNDER_LINE -> RenderElementKt.RustStyleText(
+                        TextStyle.UNDER_LINE -> RenderElementKt.RustStyleText(
                             effects[i],
                             highlighter.offset,
                             indentationLevel - indentationLevelMap.size,

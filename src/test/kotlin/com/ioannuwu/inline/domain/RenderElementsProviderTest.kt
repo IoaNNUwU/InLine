@@ -47,7 +47,7 @@ private object TestRenderDataProvider : RenderDataProvider {
 
     override fun provide(highlighter: RangeHighlighterWrapper): RenderData = RenderData( // only background
         true, false, true, false, Color.RED, Color.BLACK, Color.WHITE, 2, 3,
-        EffectType.BOX, "test", DefaultSettings.Icons.OTHER_ERROR, TextStyle.RUST_STYLE_UNDER_LINE, false
+        EffectType.BOX, "test", DefaultSettings.Icons.OTHER_ERROR, TextStyle.UNDER_LINE, false
     )
 
     override fun isValid(highlighter: RangeHighlighterWrapper): Boolean = TEST()
