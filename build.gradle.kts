@@ -1,5 +1,4 @@
 import org.jetbrains.intellij.tasks.RunPluginVerifierTask
-import org.jetbrains.kotlin.resolve.compatibility
 
 fun properties(key: String) = project.findProperty(key).toString()
 
