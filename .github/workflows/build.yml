@@ -31,8 +31,8 @@ jobs:
       - name: Build
         run: ./gradlew build
 
-      - name: Build
-        run: ./gradlew tests
+      - name: Test
+        run: ./gradlew test
 
       - name: Collect Tests Result
         if: ${{ failure() }}
