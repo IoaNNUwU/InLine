@@ -16,9 +16,6 @@ jobs:
           sudo rm -rf /usr/local/lib/android
           sudo rm -rf /opt/ghc
 
-      - name: Cleanup
-        run: ./gradlew clean
-
       - name: Fetch Sources
         uses: actions/checkout@v3
 
@@ -29,10 +26,13 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: zulu
-          java-version: 11
+          java-version: 17
 
-      - name: Run Tests
-        run: ./gradlew check
+      - name: Build
+        run: ./gradlew build
+
+      - name: Build
+        run: ./gradlew tests
 
       - name: Collect Tests Result
         if: ${{ failure() }}
