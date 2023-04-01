@@ -21,8 +21,14 @@ intellij {
     type.set(properties("platformType"))
 }
 
+java {
+    toolchain {
+        version = 17
+    }
+}
+
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(17)
 }
 
 tasks {

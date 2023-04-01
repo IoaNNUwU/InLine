@@ -1,8 +1,8 @@
 package com.ioannuwu.inline.utils.simpletests
 
+import com.intellij.testFramework.UsefulTestCase.assertThrows
 import com.ioannuwu.inline.utils.TEST
 import org.junit.Test
-import kotlin.test.assertFails
 
 class TestingUtilsTest {
 
@@ -13,7 +13,9 @@ class TestingUtilsTest {
 
     @Test
     fun `using bar should crash`() {
-        assertFails { ObjectUsesFoo.bar() }
+        assertThrows(Throwable::class.java) {
+            ObjectUsesFoo.bar()
+        }
     }
 }
 
