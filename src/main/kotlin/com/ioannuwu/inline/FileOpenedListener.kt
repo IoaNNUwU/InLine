@@ -5,8 +5,8 @@ import com.intellij.openapi.editor.ex.RangeHighlighterEx
 import com.intellij.openapi.editor.impl.DocumentMarkupModel
 import com.intellij.openapi.editor.impl.event.MarkupModelListener
 import com.intellij.openapi.fileEditor.*
+import com.intellij.openapi.fileEditor.ex.FileEditorWithProvider
 import com.intellij.openapi.util.Disposer
-import com.intellij.openapi.util.Pair
 import com.intellij.openapi.vfs.VirtualFile
 import com.ioannuwu.inline.data.FontData
 import com.ioannuwu.inline.data.MySettingsService
@@ -16,18 +16,16 @@ import com.ioannuwu.inline.domain.settings.SettingsChangeListener
 import com.ioannuwu.inline.domain.settings.SettingsChangeObservable
 import java.awt.GraphicsEnvironment
 
-class EditorOpenedListenerKt : FileEditorManagerListener, SettingsChangeListener {
+class FileOpenedListener : FileOpenedSyncListener, SettingsChangeListener {
 
     init {
         MySettingsService.OBSERVABLE.subscribe(this, SettingsChangeObservable.Priority.LAST)
     }
 
-    override fun fileOpenedSync(
-        source: FileEditorManager,
-        file: VirtualFile,
-        editors: Pair<Array<FileEditor>, Array<FileEditorProvider>>
-    ) {
-        for (fileEditor in editors.first) {
+    override fun fileOpenedSync(source: FileEditorManager, file: VirtualFile, editorsWithProviders: List<FileEditorWithProvider>) {
+        for (fileEditorWithProvider in editorsWithProviders) {
+
+            val fileEditor = fileEditorWithProvider.fileEditor
 
             if (fileEditor !is TextEditor) continue
 
@@ -41,7 +39,7 @@ class EditorOpenedListenerKt : FileEditorManagerListener, SettingsChangeListener
 
             val fontData = FontData.BySettings(editor, graphicsEnvironment, fileEditor)
             val renderElementsProvider =
-                RenderElementsProvider.Impl(renderDataProvider, fontData, FontData.ByEditor(editor), NumberOfWhitespaces.BySettings)
+                    RenderElementsProvider.Impl(renderDataProvider, fontData, FontData.ByEditor(editor), NumberOfWhitespaces.BySettings)
 
             val viewModel = ViewModel.Impl(renderElementsProvider, editor, maxPerLine, renderDataProvider)
 

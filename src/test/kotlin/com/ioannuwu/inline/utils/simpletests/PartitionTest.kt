@@ -1,7 +1,7 @@
 package com.ioannuwu.inline.utils.simpletests
 
+import junit.framework.TestCase.assertTrue
 import org.junit.Test
-import kotlin.test.assertTrue
 
 class PartitionTest {
 
@@ -11,8 +11,8 @@ class PartitionTest {
 
         val (fancy, ugly) = list.partition(PartitionHelper::isFancy)
 
-        assertTrue { fancy.count() == 1 }
-        assertTrue { ugly.count() == 2 }
+        assertTrue(fancy.count() == 1)
+        assertTrue(ugly.count() == 2)
     }
 }
 
