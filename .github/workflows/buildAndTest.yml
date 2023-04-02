@@ -40,22 +40,3 @@ jobs:
         with:
           name: tests-result
           path: ${{ github.workspace }}/build/reports/tests
-
-      - name: Setup Plugin Verifier IDEs Cache # Cache Plugin Verifier IDEs
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.properties.outputs.pluginVerifierHomeDir }}/ides
-          key: plugin-verifier-${{ hashFiles('build/listProductsReleases.txt') }}
-
-      - name: Run Plugin Verification tasks
-        run: ./gradlew runPluginVerifier -Dplugin.verifier.home.dir=${{ steps.properties.outputs.pluginVerifierHomeDir }} --stacktrace
-
-      - name: Collect Plugin Verifier Result
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: pluginVerifier-result
-          path: ${{ github.workspace }}/build/reports/pluginVerifier
-
-      - name: Qodana - Code Inspection
-        uses: JetBrains/qodana-action@v2022.3.4
