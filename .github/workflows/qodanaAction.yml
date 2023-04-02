@@ -1,4 +1,4 @@
-name: Build
+name: Qodana
 on:
   push:
     branches: [main]
