@@ -29,10 +29,10 @@ jobs:
           java-version: 17
 
       - name: Build
-        run: ./gradlew build
+        run: ./gradlew build --stacktrace
 
       - name: Test
-        run: ./gradlew test
+        run: ./gradlew test --stacktrace
 
       - name: Collect Tests Result
         if: ${{ failure() }}
@@ -48,7 +48,7 @@ jobs:
           key: plugin-verifier-${{ hashFiles('build/listProductsReleases.txt') }}
 
       - name: Run Plugin Verification tasks
-        run: ./gradlew runPluginVerifier -Dplugin.verifier.home.dir=${{ steps.properties.outputs.pluginVerifierHomeDir }}
+        run: ./gradlew runPluginVerifier -Dplugin.verifier.home.dir=${{ steps.properties.outputs.pluginVerifierHomeDir }} --stacktrace
 
       - name: Collect Plugin Verifier Result
         if: ${{ always() }}
