@@ -1,8 +1,6 @@
 package com.ioannuwu.inline.data;
 
 import com.intellij.util.xmlb.annotations.Attribute;
-import com.intellij.util.xmlb.annotations.OptionTag;
-import org.apache.xmlgraphics.java2d.color.DefaultColorConverter;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
