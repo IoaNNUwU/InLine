@@ -5,12 +5,12 @@ import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBTextArea;
 import com.intellij.util.ui.FormBuilder;
 import com.ioannuwu.inline.ui.settingscomponent.Component;
-import com.ioannuwu.inline.ui.settingscomponent.State;
+import com.ioannuwu.inline2.settings.data.MutableState;
 
 import javax.swing.*;
 import java.util.Arrays;
 
-public class IgnoreListComponent implements Component, State<String[]> {
+public class IgnoreListComponent implements Component, MutableState<String[]> {
 
     private static final String PREFIX = " >   ";
 

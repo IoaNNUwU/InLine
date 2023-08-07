@@ -6,13 +6,13 @@ import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
 import com.ioannuwu.inline.data.FontSettingsState;
 import com.ioannuwu.inline.ui.settingscomponent.Component;
-import com.ioannuwu.inline.ui.settingscomponent.State;
+import com.ioannuwu.inline2.settings.data.MutableState;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class FontSelectionComponent implements Component, State<FontSettingsState> {
+public class FontSelectionComponent implements Component, MutableState<FontSettingsState> {
 
     private final FontListComboBox comboBoxElement;
 
@@ -35,11 +35,10 @@ public class FontSelectionComponent implements Component, State<FontSettingsStat
         JPanel panel = new JPanel();
         panel.add(new JBLabel("Hints font"));
         panel.add(textField);
-        panel.add(ContextHelpLabel.create("<h2 id=\"press-enter-to-update-list-of-fonts-after-entering-characters\">PRESS ENTER TO UPDATE LIST OF FONTS AFTER ENTERING CHARACTERS</h2>\n" +
-                "<h2 id=\"input-character-from-your-language-and-press-enter-to-update-list-of-fonts-that-support-this-character-language-\">Input character from your language and press <code>  Enter  </code> to update list of fonts that support this character (language)</h2>\n" +
-                "<h2 id=\"note-default-editor-font-jetbrains-mono-cannot-display-chinese-and-possible-other-characters-for-some-reason-if-you-are-seeing-question-marks-instead-of-some-characters-change-font-\">" +
-                "Note: default editor font (JetBrains Mono) cannot display Chinese (and possible other) characters for some reason. If you are seeing question marks instead of some characters, input them in sample box, press <code>  Enter  </code> to update list of fonts and" +
-                " select font supporting your language</h2>"));
+        panel.add(ContextHelpLabel.create("""
+                <h2 id="press-enter-to-update-list-of-fonts-after-entering-characters">PRESS ENTER TO UPDATE LIST OF FONTS AFTER ENTERING CHARACTERS</h2>
+                <h2 id="input-character-from-your-language-and-press-enter-to-update-list-of-fonts-that-support-this-character-language-">Input character from your language and press <code>  Enter  </code> to update list of fonts that support this character (language)</h2>
+                <h2 id="note-default-editor-font-jetbrains-mono-cannot-display-chinese-and-possible-other-characters-for-some-reason-if-you-are-seeing-question-marks-instead-of-some-characters-change-font-">Note: default editor font (JetBrains Mono) cannot display Chinese (and possible other) characters for some reason. If you are seeing question marks instead of some characters, input them in sample box, press <code>  Enter  </code> to update list of fonts and select font supporting your language</h2>"""));
         panel.add(new JBLabel(""));
         panel.add(comboBoxElement);
         formBuilder.addLabeledComponent(panel, new JLabel());

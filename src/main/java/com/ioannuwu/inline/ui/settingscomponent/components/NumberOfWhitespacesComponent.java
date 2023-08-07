@@ -4,16 +4,16 @@ import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
 import com.ioannuwu.inline.ui.settingscomponent.Component;
-import com.ioannuwu.inline.ui.settingscomponent.State;
+import com.ioannuwu.inline2.settings.data.MutableState;
 
 import javax.swing.*;
 
-public class NumberOfWhitespacesComponent implements Component, State<Integer> {
+public class NumberOfWhitespacesComponent implements Component, MutableState<Integer> {
 
     private final JBTextField numberOfWhitespacesField;
 
     public NumberOfWhitespacesComponent(int numberOfWhitespaces) {
-        this.numberOfWhitespacesField = new JBTextField("" + numberOfWhitespaces);
+        this.numberOfWhitespacesField = new JBTextField(String.valueOf(numberOfWhitespaces));
     }
 
     @Override

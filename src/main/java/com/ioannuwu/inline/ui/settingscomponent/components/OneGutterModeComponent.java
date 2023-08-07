@@ -4,11 +4,11 @@ import com.intellij.ui.ContextHelpLabel;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.util.ui.FormBuilder;
 import com.ioannuwu.inline.ui.settingscomponent.Component;
-import com.ioannuwu.inline.ui.settingscomponent.State;
+import com.ioannuwu.inline2.settings.data.MutableState;
 
 import javax.swing.*;
 
-public class OneGutterModeComponent implements Component, State<Boolean> {
+public class OneGutterModeComponent implements Component, MutableState<Boolean> {
 
     private final JBCheckBox checkBox;
 

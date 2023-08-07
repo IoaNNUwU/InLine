@@ -8,13 +8,14 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationConfigurable parentId="appearance"
-                                 instance="com.ioannuwu.inline.ui.MyConfigurable"
+                                 instance="com.ioannuwu.inline2.settings.ui.InLineSettingsConfigurable"
                                  displayName="⚙  InLine"/>
-        <applicationService serviceImplementation="com.ioannuwu.inline.data.MySettingsService"/>
+
+        <applicationService serviceImplementation="com.ioannuwu.inline2.settings.data.SettingsService"/>
     </extensions>
 
     <projectListeners>
-        <listener class="com.ioannuwu.inline.FileOpenedListener"
+        <listener class="com.ioannuwu.inline2.pluginlogic.FileOpenedListener"
                   topic="com.intellij.openapi.fileEditor.FileOpenedSyncListener"/>
     </projectListeners>
 </idea-plugin>

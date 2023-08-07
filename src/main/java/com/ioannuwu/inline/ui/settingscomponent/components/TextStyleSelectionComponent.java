@@ -2,14 +2,14 @@ package com.ioannuwu.inline.ui.settingscomponent.components;
 
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.util.ui.FormBuilder;
-import com.ioannuwu.inline.domain.TextStyle;
+import com.ioannuwu.inline.data.TextStyle;
 import com.ioannuwu.inline.ui.settingscomponent.Component;
-import com.ioannuwu.inline.ui.settingscomponent.State;
+import com.ioannuwu.inline2.settings.data.MutableState;
 
 import javax.swing.*;
 import java.util.ArrayList;
 
-public class TextStyleSelectionComponent implements Component, State<TextStyle> {
+public class TextStyleSelectionComponent implements Component, MutableState<TextStyle> {
 
     private static final String[] values = getValues();
 

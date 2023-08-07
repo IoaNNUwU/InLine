@@ -5,11 +5,11 @@ import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
 import com.ioannuwu.inline.data.DefaultSettings;
 import com.ioannuwu.inline.ui.settingscomponent.Component;
-import com.ioannuwu.inline.ui.settingscomponent.State;
+import com.ioannuwu.inline2.settings.data.MutableState;
 
 import javax.swing.*;
 
-public class MaxErrorsPerLineComponent implements Component, State<Integer> {
+public class MaxErrorsPerLineComponent implements Component, MutableState<Integer> {
 
     private final JBTextField maxErrorsPerLineField;
 

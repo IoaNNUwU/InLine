@@ -1,7 +1,6 @@
 package com.ioannuwu.inline.data;
 
 import com.intellij.icons.AllIcons;
-import com.ioannuwu.inline.domain.TextStyle;
 
 import javax.swing.*;
 import java.awt.*;

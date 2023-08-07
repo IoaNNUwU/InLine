@@ -7,11 +7,11 @@ import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ui.FormBuilder;
 import com.ioannuwu.inline.data.SeverityLevelState;
 import com.ioannuwu.inline.ui.settingscomponent.Component;
-import com.ioannuwu.inline.ui.settingscomponent.State;
+import com.ioannuwu.inline2.settings.data.MutableState;
 
 import javax.swing.*;
 
-public class SeverityLevel implements Component, State<SeverityLevelState> {
+public class SeverityLevel implements Component, MutableState<SeverityLevelState> {
 
     private static final String PREFIX = " >   ";
 

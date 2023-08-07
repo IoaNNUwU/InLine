@@ -5,12 +5,12 @@ import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ui.FormBuilder;
 import com.ioannuwu.inline.data.EffectType;
 import com.ioannuwu.inline.ui.settingscomponent.Component;
-import com.ioannuwu.inline.ui.settingscomponent.State;
+import com.ioannuwu.inline2.settings.data.MutableState;
 
 import javax.swing.*;
 import java.util.ArrayList;
 
-public class EffectTypeComponent implements Component, State<EffectType> {
+public class EffectTypeComponent implements Component, MutableState<EffectType> {
 
     private static final String[] values = getValues();
 
