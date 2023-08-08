@@ -2,15 +2,16 @@ package com.ioannuwu.inline2.pluginlogic
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.ex.MarkupModelEx
+import com.intellij.openapi.editor.ex.RangeHighlighterEx
 import com.intellij.openapi.editor.impl.DocumentMarkupModel
-import com.intellij.openapi.editor.impl.event.MarkupModelListener
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.FileOpenedSyncListener
 import com.intellij.openapi.fileEditor.TextEditor
 import com.intellij.openapi.fileEditor.ex.FileEditorWithProvider
 import com.intellij.openapi.vfs.VirtualFile
 import com.ioannuwu.inline2.pluginlogic.editormodel.EditorModelImpl
-import com.ioannuwu.inline2.pluginlogic.render.BySettingsTextElementMetricsSelector
+import com.ioannuwu.inline2.pluginlogic.render.BySettingsDataSelector
+import com.ioannuwu.inline2.pluginlogic.utils.runOnEDT
 import com.ioannuwu.inline2.settings.data.SettingsService
 import com.ioannuwu.inline2.settings.event.SettingsChangeDispatcher
 
@@ -32,18 +33,16 @@ class FileOpenedListener : FileOpenedSyncListener {
 
             markupModel as? MarkupModelEx ?: continue
 
-            val supplier = BySettingsTextElementMetricsSelector(
+            val dataSelector = BySettingsDataSelector(
                 ApplicationManager.getApplication().getService(SettingsService::class.java).state
             )
 
-            SettingsChangeDispatcher.subscribe(supplier)
+            SettingsChangeDispatcher.subscribe(dataSelector)
 
             val markupModelListener =
-                ErrorMarkupModelListener(
-                    EditorModelImpl(editor), supplier, editor
-                )
+                ErrorMarkupModelListener(EditorModelImpl(editor), dataSelector, dataSelector, editor)
 
-            listeners.add(markupModelListener)
+            listeners.add(Pair(markupModel, markupModelListener))
 
             markupModel.addMarkupModelListener(fileEditor, markupModelListener)
         }
@@ -51,10 +50,16 @@ class FileOpenedListener : FileOpenedSyncListener {
 
     companion object {
 
-        private val listeners: MutableList<ErrorMarkupModelListener> = mutableListOf()
+        private val listeners: MutableList<Pair<MarkupModelEx, ErrorMarkupModelListener>> = mutableListOf()
 
         fun updateAllListeners() {
-            listeners.forEach { it.updateAllHighlighters() }
+            listeners.forEach { (model, listener) ->
+                model.allHighlighters
+                    .filterIsInstance(RangeHighlighterEx::class.java)
+                    .forEach {
+                        listener.attributesChanged(it, true, true)
+                    }
+            }
         }
     }
 }

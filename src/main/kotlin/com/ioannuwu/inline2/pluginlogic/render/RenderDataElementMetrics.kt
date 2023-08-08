@@ -18,7 +18,7 @@ class RenderDataElementMetrics(
 
     override fun textColor(): Color? = renderData.textColor()
     override fun backgroundColor(): Color? = renderData.backgroundColor()
-    override fun effectColor(): Color? = renderData.backgroundColor()
+    override fun effectColor(): Color? = renderData.effectColor()
 
     override fun text(): String = renderData.text()
 

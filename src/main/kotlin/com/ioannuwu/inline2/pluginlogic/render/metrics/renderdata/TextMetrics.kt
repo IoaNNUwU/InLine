@@ -1,4 +1,4 @@
-package com.ioannuwu.inline2.pluginlogic.render.metrics
+package com.ioannuwu.inline2.pluginlogic.render.metrics.renderdata
 
 import java.awt.Color
 

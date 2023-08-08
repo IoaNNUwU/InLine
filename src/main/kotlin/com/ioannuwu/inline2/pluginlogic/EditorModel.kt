@@ -3,6 +3,7 @@ package com.ioannuwu.inline2.pluginlogic
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.editor.EditorCustomElementRenderer
 import java.awt.Color
+import javax.swing.Icon
 
 /**
  * Represents common view on the editor which can be
@@ -25,5 +26,15 @@ interface EditorModel {
     /**
      * Should be used only from EDT
      */
-    fun addLineHighlighter(offset: Int, renderer: Color): Disposable
+    fun addLineHighlighter(offset: Int, backgroundColor: Color): Disposable
+
+    /**
+     * Should be used only from EDT
+     */
+    fun addGutterIcon(offset: Int, icon: Icon): Disposable
+
+    /**
+     * Should be used only from EDT
+     */
+    fun addUnderLineElement(offset: Int, renderer: EditorCustomElementRenderer): Disposable
 }

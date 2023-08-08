@@ -15,7 +15,7 @@ public class DefaultSettings {
     public static final FontSettingsState FONT = new FontSettingsState("Dialog.plain", "sample");
 
     public static final TextStyle TEXT_STYLE = TextStyle.AFTER_LINE;
-    public static final boolean ONE_GUTTER_MODE = true;
+    public static final boolean ONE_GUTTER_MODE = false;
 
     public static final SeverityLevelState ERROR = defaultSeverityLevelState(new Color(183, 43, 43));
     public static final SeverityLevelState WARNING = defaultSeverityLevelState(new Color(189, 115, 37));
