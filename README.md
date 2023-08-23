@@ -11,6 +11,11 @@
 * Supports different hints styles __After Line, Rust Style__
 
 <kbd>Settings</kbd> > <kbd>Appearance & Behaviour</kbd> > <kbd>⚙ InLine</kbd>
+
+### Shortcuts:
+* Hide all errors __alt L__
+* Change text style __alt K__
+
 ### In plugin settings you can:
 * Show or hide specific __level of errors__ - _error, warning, weak warning, information_
 * Change __text colors & text visibility__ for each error level
@@ -50,6 +55,7 @@ This plugin is open source. You can report bugs and contribute at [GitHub](https
 <!-- Plugin description end -->
 ### Change notes:
 <!-- Change notes -->
+* __1.3.0__ - Add hide & change text type actions & bug fixes
 * __1.2.0__ - Update to latest IntelliJ version (2023.2)
 * __1.1.1__ - Update to latest IntelliJ version
 * __1.1.0__ - Add __Rust Style Errors__ that are shown under line similar to __Rust compiler__ messages
