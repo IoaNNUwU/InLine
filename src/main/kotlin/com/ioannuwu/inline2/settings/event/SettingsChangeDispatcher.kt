@@ -26,11 +26,18 @@ object SettingsChangeDispatcher {
         lastQueue.remove(listener)
     }
 
-    fun notify(newState: SettingsState) {
+    private var oldSettingsState: SettingsState = SettingsState()
+
+    fun notify(newStateFromOld: (SettingsState) -> SettingsState) {
+
+        val newState = newStateFromOld(oldSettingsState)
+
         firstQueue.forEach { it.onSettingsChange(newState) }
         defaultQueue.forEach { it.onSettingsChange(newState) }
         lastQueue.forEach { it.onSettingsChange(newState) }
 
         FileOpenedListener.updateAllListeners()
+
+        oldSettingsState = newState
     }
 }

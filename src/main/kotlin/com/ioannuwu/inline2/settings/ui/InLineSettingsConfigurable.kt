@@ -23,6 +23,6 @@ class InLineSettingsConfigurable : Configurable {
         val newState = settingsUIView.state
 
         settingsService.loadState(newState)
-        SettingsChangeDispatcher.notify(newState)
+        SettingsChangeDispatcher.notify { newState }
     }
 }

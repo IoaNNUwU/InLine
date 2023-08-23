@@ -25,6 +25,24 @@ class SettingsState {
 
     var ignoreList: Array<String> = DefaultSettings.IGNORE_LIST
 
+    fun copy(): SettingsState {
+        val state = SettingsState()
+        state.numberOfWhitespaces = numberOfWhitespaces
+        state.effectType = effectType
+        state.maxErrorsPerLine = maxErrorsPerLine
+        state.font = font
+        state.textStyle = textStyle
+        state.oneGutterMode = oneGutterMode
+        state.error = error
+        state.warning = warning
+        state.weakWarning = weakWarning
+        state.information = information
+        state.serverError = serverError
+        state.otherError = otherError
+        state.ignoreList = ignoreList
+        return state
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false

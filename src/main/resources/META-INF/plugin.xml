@@ -18,4 +18,18 @@
         <listener class="com.ioannuwu.inline2.pluginlogic.FileOpenedListener"
                   topic="com.intellij.openapi.fileEditor.FileOpenedSyncListener"/>
     </projectListeners>
+
+    <actions>
+        <action id="com.ioannuwu.inline2.pluginlogic.action.ChangeErrorTypeAction"
+                class="com.ioannuwu.inline2.pluginlogic.action.ChangeErrorTypeAction"
+                text="Change Error Style (Under/After Line)" description="Changes error style">
+            <keyboard-shortcut keymap="$default" first-keystroke="alt L"/>
+        </action>
+
+        <action id="com.ioannuwu.inline2.pluginlogic.action.ChangeErrorVisibilityAction"
+                class="com.ioannuwu.inline2.pluginlogic.action.ChangeErrorVisibilityAction"
+                text="Change Errors Visibility" description="Changes visibility of all inline errors in the editor">
+            <keyboard-shortcut keymap="$default" first-keystroke="alt K"/>
+        </action>
+    </actions>
 </idea-plugin>

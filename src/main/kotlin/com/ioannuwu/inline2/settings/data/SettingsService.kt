@@ -21,6 +21,6 @@ class SettingsService : PersistentStateComponent<SettingsState>{
     }
 
     override fun initializeComponent() {
-        SettingsChangeDispatcher.notify(settingsState)
+        SettingsChangeDispatcher.notify { settingsState }
     }
 }
