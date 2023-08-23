@@ -39,7 +39,7 @@ class DefaultTextRenderer(
                     font = renderMetrics.font()
 
                     drawRoundRect(
-                        targetRegion.x + renderMetrics.lineHeight() / 20,
+                        targetRegion.x - renderMetrics.lineHeight() / 20 * 3,
                         targetRegion.y + renderMetrics.lineHeight() / 20,
                         targetRegion.width - renderMetrics.lineHeight() / 20 * 2,
                         targetRegion.height - renderMetrics.lineHeight() / 20 * 2,
@@ -55,7 +55,7 @@ class DefaultTextRenderer(
 
                     drawString(
                         text,
-                        (renderMetrics.lineHeight() * 0.1).toInt(),
+                        (targetRegion.x + renderMetrics.lineHeight() * 0.1).toInt(),
                         (targetRegion.y + renderMetrics.ascent() + renderMetrics.lineHeight() * 0.05).toInt(),
                     )
                 }
