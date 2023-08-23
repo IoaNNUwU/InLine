@@ -35,7 +35,6 @@ class BySettingsDataSelector(
         if (info.description.isNullOrBlank()) return null
 
         val description: String = info.description
-
         val state = currentSettingsState
 
         if (state.ignoreList.any { description.contains(it) }) return null
@@ -72,6 +71,17 @@ class BySettingsDataSelector(
             override fun font(): Font = currentFont
             override fun gutterIcon(): Icon? = gutterIcon
         }
+    }
+
+    override fun isValid(highlighter: RangeHighlighter): Boolean {
+
+        val info: HighlightInfo = highlighter.errorStripeTooltip as? HighlightInfo ?: return false
+        if (info.description.isNullOrBlank()) return false
+
+        val description: String = info.description
+        val state = currentSettingsState
+
+        return !state.ignoreList.any { description.contains(it) }
     }
 
     override fun selectOtherData(highlighter: RangeHighlighter): OtherData {

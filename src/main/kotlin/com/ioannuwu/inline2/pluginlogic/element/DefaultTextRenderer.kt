@@ -12,7 +12,6 @@ import java.awt.Rectangle
 
 class DefaultTextRenderer(
     private val renderMetrics: ElementMetrics,
-    private val numberOfWhitespaces: NumberOfWhitespaces,
     private val effectTypeSelector: () -> EffectType,
 ) : EditorCustomElementRenderer {
 
@@ -40,9 +39,7 @@ class DefaultTextRenderer(
                     font = renderMetrics.font()
 
                     drawRoundRect(
-                        targetRegion.x
-                                + renderMetrics.charWidth() * (numberOfWhitespaces.numberOfWhitespaces() - 2)
-                                + renderMetrics.lineHeight() / 20,
+                        targetRegion.x + renderMetrics.lineHeight() / 20,
                         targetRegion.y + renderMetrics.lineHeight() / 20,
                         targetRegion.width - renderMetrics.lineHeight() / 20 * 2,
                         targetRegion.height - renderMetrics.lineHeight() / 20 * 2,
@@ -58,8 +55,7 @@ class DefaultTextRenderer(
 
                     drawString(
                         text,
-                        (targetRegion.x + renderMetrics.charWidth() * numberOfWhitespaces.numberOfWhitespaces()
-                                + renderMetrics.lineHeight() * 0.1).toInt(),
+                        (renderMetrics.lineHeight() * 0.1).toInt(),
                         (targetRegion.y + renderMetrics.ascent() + renderMetrics.lineHeight() * 0.05).toInt(),
                     )
                 }
@@ -72,7 +68,7 @@ class DefaultTextRenderer(
 
             drawString(
                 text,
-                targetRegion.x + renderMetrics.charWidth() * numberOfWhitespaces.numberOfWhitespaces(),
+                targetRegion.x,
                 targetRegion.y + renderMetrics.ascent(),
             )
         }

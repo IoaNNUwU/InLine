@@ -5,6 +5,8 @@ import com.intellij.openapi.editor.EditorCustomElementRenderer
 import java.awt.Color
 import javax.swing.Icon
 
+import com.intellij.openapi.util.Key
+
 /**
  * Represents common view on the editor which can be
  * used to interact with necessary models

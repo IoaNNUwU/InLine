@@ -19,7 +19,7 @@ public class NumberOfWhitespacesComponent implements Component, MutableState<Int
     @Override
     public void addToBuilder(FormBuilder formBuilder) {
         JPanel panel = new JPanel();
-        panel.add(new JBLabel("Number of whitespaces after end of the line"));
+        panel.add(new JBLabel("Space after end of the line and between hints"));
         panel.add(numberOfWhitespacesField);
         formBuilder.addLabeledComponent(panel, new JBLabel());
     }

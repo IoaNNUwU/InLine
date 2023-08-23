@@ -5,8 +5,8 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.ex.RangeHighlighterEx
 import com.intellij.openapi.editor.impl.event.MarkupModelListener
-import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.util.Key
 import com.ioannuwu.inline.data.EffectType
 import com.ioannuwu.inline.data.TextStyle
 import com.ioannuwu.inline2.pluginlogic.element.DefaultTextRenderer
@@ -15,13 +15,11 @@ import com.ioannuwu.inline2.pluginlogic.render.ElementMetrics
 import com.ioannuwu.inline2.pluginlogic.render.OtherDataSelector
 import com.ioannuwu.inline2.pluginlogic.render.RenderDataElementMetrics
 import com.ioannuwu.inline2.pluginlogic.render.RenderDataSelector
-import com.ioannuwu.inline2.pluginlogic.render.metrics.FontMetrics
-import com.ioannuwu.inline2.pluginlogic.render.metrics.LineMetrics
 import com.ioannuwu.inline2.pluginlogic.render.metrics.OtherData
 import com.ioannuwu.inline2.pluginlogic.render.metrics.RenderData
 import com.ioannuwu.inline2.pluginlogic.utils.runOnEDT
+import com.ioannuwu.inline2.pluginlogic.utils.runOnEDTIgnoringIndexOutOfBounds
 import com.jetbrains.rd.util.ConcurrentHashMap
-import kotlinx.html.dom.document
 
 class ErrorMarkupModelListener(
     private val model: EditorModel,
@@ -45,33 +43,55 @@ class ErrorMarkupModelListener(
 
         val metrics: ElementMetrics = RenderDataElementMetrics(renderData, editor)
 
-        runOnEDT {
+        runOnEDTIgnoringIndexOutOfBounds {
+
+            highlighter.putUserData(VALID_HIGHLIGHTER_MARKER, Unit)
 
             val disposables: MutableList<Disposable> = map[highlighter] ?: mutableListOf()
-
-            val textStyleRenderer = when (otherData.textStyle()) {
-                TextStyle.AFTER_LINE -> DefaultTextRenderer(metrics, otherData) { otherData.effectType() }
-                TextStyle.UNDER_LINE ->
-                    UnderLineTextRenderer(
-                        metrics, highlighter, editor,
-                        otherData::effectType
-                    )
-            }
 
             if (renderData.textColor() != null) {
 
                 when (otherData.textStyle()) {
-                    TextStyle.AFTER_LINE -> disposables.add(
-                        model.addAfterLineEndElement(
-                            highlighter.startOffset, textStyleRenderer
-                        )
-                    )
 
-                    TextStyle.UNDER_LINE -> disposables.add(
-                        model.addUnderLineElement(
-                            highlighter.startOffset, textStyleRenderer
+                    TextStyle.AFTER_LINE -> {
+
+                        val textStyleRenderer = DefaultTextRenderer(metrics) { otherData.effectType() }
+                        /* TODO
+                        val isThereValidHighlightersOnTheLine = editor.markupModel.allHighlighters
+                            .filter {
+                                highlighter.document.getLineNumber(it.startOffset) ==
+                                        highlighter.document.getLineNumber(highlighter.startOffset)
+                            }.any { it.getUserData(VALID_HIGHLIGHTER_MARKER) != null }
+                         */
+                        disposables.add(
+                            model.addAfterLineEndElement(
+                                highlighter.startOffset,
+                                DefaultTextRenderer(
+                                    metrics.whitespaces(otherData)
+                                ) { EffectType.NONE }
+                            )
                         )
-                    )
+
+                        disposables.add(
+                            model.addAfterLineEndElement(
+                                highlighter.startOffset, textStyleRenderer
+                            )
+                        )
+                    }
+
+                    TextStyle.UNDER_LINE -> {
+
+                        val textStyleRenderer = UnderLineTextRenderer(
+                            metrics, highlighter, editor,
+                            otherData::effectType
+                        )
+
+                        disposables.add(
+                            model.addUnderLineElement(
+                                highlighter.startOffset, textStyleRenderer
+                            )
+                        )
+                    }
                 }
             }
 
@@ -111,3 +131,5 @@ class ErrorMarkupModelListener(
         }
     }
 }
+
+private val VALID_HIGHLIGHTER_MARKER: Key<Unit> = Key("inline_valid_highlighter")

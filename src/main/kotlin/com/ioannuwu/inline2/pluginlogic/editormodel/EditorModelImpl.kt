@@ -19,7 +19,7 @@ class EditorModelImpl(private val editor: Editor) : EditorModel {
         return try {
             editor.inlayModel.addAfterLineEndElement(offset, true, renderer)!!
         } catch (e: IndexOutOfBoundsException) {
-            Disposable { }
+            EmptyDisposable
         }
     }
 
@@ -31,7 +31,7 @@ class EditorModelImpl(private val editor: Editor) : EditorModel {
         return try {
             editor.inlayModel.addBlockElement(offset, true, false, 9, renderer)!!
         } catch (e: IndexOutOfBoundsException) {
-            Disposable { }
+            EmptyDisposable
         }
 
     }
@@ -47,7 +47,7 @@ class EditorModelImpl(private val editor: Editor) : EditorModel {
             highlighter.makeDisposable { it.dispose() }
 
         } catch (e: IndexOutOfBoundsException) {
-            Disposable { }
+            EmptyDisposable
         }
     }
 
@@ -70,7 +70,11 @@ class EditorModelImpl(private val editor: Editor) : EditorModel {
             highlighter.makeDisposable { it.dispose() }
 
         } catch (e: IndexOutOfBoundsException) {
-            Disposable { }
+            EmptyDisposable
         }
     }
+}
+
+private object EmptyDisposable : Disposable {
+    override fun dispose() = Unit
 }

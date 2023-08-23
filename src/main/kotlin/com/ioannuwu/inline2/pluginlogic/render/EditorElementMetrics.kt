@@ -4,6 +4,7 @@ import com.intellij.icons.AllIcons
 import com.intellij.openapi.editor.Editor
 import com.intellij.ui.JBColor
 import com.ioannuwu.inline2.pluginlogic.render.ElementMetrics
+import com.ioannuwu.inline2.pluginlogic.render.metrics.otherdata.NumberOfWhitespaces
 import java.awt.Color
 import java.awt.Font
 import javax.swing.Icon
@@ -28,6 +29,8 @@ class EditorElementMetrics(
 
     override fun stringWidth(string: String): Int =
         editor.component.getFontMetrics(font()).stringWidth(string)
+
+    override fun whitespaces(n: NumberOfWhitespaces): ElementMetrics = this
 
     override fun gutterIcon(): Icon = AllIcons.General.Error
 

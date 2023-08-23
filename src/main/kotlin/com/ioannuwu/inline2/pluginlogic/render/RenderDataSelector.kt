@@ -7,4 +7,6 @@ import com.ioannuwu.inline2.pluginlogic.render.metrics.RenderData
 interface RenderDataSelector {
 
     operator fun invoke(highlighter: RangeHighlighter): RenderData?
+
+    fun isValid(highlighter: RangeHighlighter): Boolean
 }
