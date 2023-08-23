@@ -13,8 +13,8 @@
 <kbd>Settings</kbd> > <kbd>Appearance & Behaviour</kbd> > <kbd>⚙ InLine</kbd>
 
 ### Shortcuts:
-* Hide all errors __alt L__
-* Change text style __alt K__
+* Hide/Show all errors __alt K__
+* Change text style (After/Underline) __alt L__
 
 ### In plugin settings you can:
 * Show or hide specific __level of errors__ - _error, warning, weak warning, information_
