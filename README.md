@@ -3,6 +3,21 @@
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/21051-inline.svg?color=aa3090)](https://plugins.jetbrains.com/plugin/21051-inline)
 [![Rating](https://img.shields.io/jetbrains/plugin/r/rating/21051-inline?color=30aa30)](https://plugins.jetbrains.com/plugin/21051-inline)
 <!-- Plugin description -->
+
+# !! Deprecation warning !!
+I'm not interested in developing `InLine` and using `IntelliJ IDEA` anymore since JetBrains dropped support for [Free Rust Plugin](https://plugins.jetbrains.com/plugin/8182--deprecated-rust) 
+and started focusing on `new UI` that is IMO ugly. I don't like the direction this IDE is going and decided to switch away.
+
+You should consider using alternative plugins:
+* [Inspection Lens](https://plugins.jetbrains.com/plugin/19678-inspection-lens)
+* [Inline Problems](https://plugins.jetbrains.com/plugin/20789-inlineproblems)
+
+You can consider using alternative IDE:
+* [VSCode](https://code.visualstudio.com/) - feature & plugin Rich IDE with not great UI (By Microsoft).
+* [Lapce](https://lapce.dev/) - Middleground between VIM & VSCode with fast user-friendly UI similar to __old__ `IntelliJ IDEA` UI, modal editing and built-in LSP & Inline errors. Lacks certain features, __But is written in Rust__ so you can contribute.
+
+
+---
 ### InLine is highly customizable plugin that shows errors and hints inline. 
 #### Also supports gutter icons, colorful background and special effects.
 
@@ -27,11 +42,6 @@
 * __Ignore__ some errors by description
 
 ![](https://raw.githubusercontent.com/IoaNNUwU/InLine/main/media/example.png)
-
-### Inspired by
-* [Inspection Lens](https://plugins.jetbrains.com/plugin/19678-inspection-lens) - Plugin I've used before.
-It lacks customization and features
-* [Inline Problems](https://plugins.jetbrains.com/plugin/20789-inlineproblems) - Amazing plugin I stole box effect idea from.
 
 ### Choices
 
